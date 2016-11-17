@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import scipy.integrate as integrate
+import scipy.special as special
 
 # aircraft_Class.py
 # - Creates aircraft from input file parameters
@@ -40,17 +42,17 @@ class Surface():
 	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, Afiles = [], Ainc = np.array([])):
 
 		# Assign Inputs to aircraft object
-		self.num_Sections = num_Sections
-		self.is_linear = is_linear
-		self.b_wing = b_wing
-		self.sweep = sweep
-		self.chord = chord
-		self.Xo = Xo
-		self.Yo = Yo
-		self.Zo = Zo
-		self.Afiles = Afiles
-		self.Ainc = Ainc
-		self.sec_span = self.b_wing/2/self.num_Sections
+		self.num_Sections = num_Sections-1 		# Number of sections per half-wing
+		self.is_linear = is_linear				# 0 for non-linear cubic varying chord, 1 for linearly varying wing values
+		self.b_wing = b_wing					# Wing span (not half-span)
+		self.sweep = sweep						# Wing sweep (quarter chord)
+		self.chord = chord 						# Chord as a function of half-span (b_wing/2)
+		self.Xo = Xo 							# Root chord, leading edge, X position
+		self.Yo = Yo							# Root chord, leading edge, X position
+		self.Zo = Zo 							# Root chord, leading edge, X position
+		self.Afiles = Afiles					# File for initial airfoil input
+		self.Ainc = Ainc						# Angle of incidence as a function of half-span (b_wing/2)
+		self.sec_span = self.b_wing/2/self.num_Sections 	# Span of each section of wing
 
 		# If no starting airfoil given, default airfoil to start is NACA2412
 		if Afiles == []:
@@ -61,7 +63,7 @@ class Surface():
 
 		# Calculate chord values at each section
 		self.chord_vals = self.getChord(self.chord,self.sec_span)
-		print(self.chord_vals)
+		print("Chord Vals",self.chord_vals)
 
 		# Calculate leading edge coordinates
 		[self.Xle, self.Yle, self.Zle] = self.calcLeading_Edge()
@@ -94,7 +96,7 @@ class Surface():
 		Xo_quar = self.Zo-self.chord_vals[0]/4
 		for i in range(self.num_Sections):
 			angle = self.sweep[i]*math.pi/180
-			self.Xle[i] = Xo_quar - self.sec_span*math.tan(angle) 
+			self.Xle[i] = Xo_quar - self.sec_span*i*math.tan(angle) 
 			self.Yle[i] = self.sec_span*i
 			self.Zle[i] = self.Zo # No dihedral right now
 		return np.array([self.Xle,
@@ -102,27 +104,30 @@ class Surface():
 						 self.Zle])
 
 	# Function: Calculate reference area for surface
+	# Sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefWing(self):
 		self.Sref = 0
-		for i in range(self.num_Sections-1):
-			self.Sref += (self.Xle[i+1] - self.Xle[i])/2.0*(self.Yle[i] + self.Yle[i+1])
-			
+		self.Sref = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
+			self.chord[2]*y + self.chord[3] ), 0, self.b_wing/2)
+		print("Sref",self.Sref[0])
+		self.Sref = self.Sref[0]*2
+		print("Sref",self.Sref)
 		return self.Sref
 
 	# Function: Calculate mean aerodynaic chord for surface
+	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC(self):
-		# Calculate shape function for surface
-		def shape_func(y,A,B):
-			return ( A**2*y - A*(A-B)/(self.b_wing/4)*y**2 + (A - B)**2/(3*(self.b_wing/4)**2)*y**3)
-
 		self.MAC = 0
-		print(self.num_Sections)
-		for i in range(self.num_Sections-1):
-			print(i)
-			self.MAC += 2/self.Sref_wing*(shape_func(self.Yle[i+1], self.chord_vals[i], self.chord_vals[i+1]) \
-				- shape_func(self.Yle[i], self.chord_vals[i], self.chord_vals[i+1]))
-			print(self.MAC)
-		return
+		self.MAC = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
+			self.chord[2]*y + self.chord[3] )**2, 0, self.b_wing/2)
+		self.MAC = self.MAC[0]*2/self.Sref_wing
+		print("chordvals",self.chord_vals)
+		print("secspan",self.sec_span)
+		print("sref",self.Sref_wing)
+		
+
+		print("MAC",self.MAC)
+		return self.MAC
 
 	def addControlSurface(self, secStart, secEnd, hvec, name):
 

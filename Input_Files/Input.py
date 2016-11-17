@@ -19,8 +19,8 @@ M6.booms = 1
 # Per half-wing		
 M6.num_Sections = 5
 
-# 0 = Non-Linear (cubic) interpolation between spanwise sections
-# 1 = Linear interpolation between spanwise sections 
+# 0 = Non-Linear (cubic) varying wing values
+# 1 = Linear constant sweep leading edge, linearly varying wing values
 M6.is_linear = 1
 
 # Specify origin for aicraft build (root chord leading edge position)
@@ -33,7 +33,7 @@ M6.Zo = 100
 #		Initial Conditions for Optimizer
 #       =========================================================================
 # Wingspan (feet)
-M6.b_wing = 5
+M6.b_wing = 6
 M6.b_wing_max = 20
 M6.b_wing_min = 2
 # Quarter Chord Sweep in degrees for each section
@@ -42,7 +42,7 @@ M6.sweep = np.array([10, 10, 10, 10, 10])
 M6.sweep_max = 35
 M6.sweep_min = -5		
 # Chord (quadratic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = 1; ch_b = 1; ch_c = 1; ch_d = 1;
+ch_a = -0.0056; ch_b = 0.4; ch_c = -1.5; ch_d = 5;
 M6.chord = np.array([ch_a, ch_b, ch_c, ch_d])
 M6.chord_max = 5
 M6.chord_min = -5
