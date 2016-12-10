@@ -1,6 +1,5 @@
 from __future__ import division
 
-
 from scipy.optimize import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,10 +12,18 @@ import string
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
+# lib_plot.py
+# Created by Josh Anibal (JLA), modified by Chris Reynolds (CLR)
+# - Plots aircraft:
+#    - During each iteration and at the end (plot_geo_final)
+#    - Plots wing (blue) and tail (red)
+#	 - Plots CG (black) and NP (light blue - cyan)
+#    - Includes configuration number (fig)
 
-
+# Class for plotting each iteration and a final geometry plotter
 class Plot(Component):
 	
+	# Plots each iteration configuration
 	def __init__(self, geo1, geo2, A, writer, fig):
 		super(Plot,self).__init__()
 
@@ -110,7 +117,8 @@ class Plot(Component):
 		self.A[2].lines = []
 		self.A[3].lines = []
 		self.A[4].lines = []
-                                      
+
+# Function: Plots a final geometry with given inputs                                      
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)
 #		Yle: Wing leading edge at each section (y coord.)
@@ -150,13 +158,13 @@ def plot_geo_final(Xle, Yle, C, Xle_t, Yle_t, C_t, x_cg, NP, score):
 	geo1.plot( [Yle[0], Yle[0]] , [Xle[0] ,Xle[0] + C[0]] ,  'm--')
 	geo1.plot( [Yle[1], Yle[1]] , [Xle[1] ,Xle[1] + C[1]] ,  'm--')
 	geo1.plot( [Yle[2], Yle[2]] , [Xle[2] ,Xle[2] + C[2]] ,  'm--')
-	geo1.plot( [Yle[3], Yle[3]] , [Xle[3] ,Xle[3 ]+ C[3]] ,  'm--')
+	geo1.plot( [Yle[3], Yle[3]] , [Xle[3] ,Xle[3] + C[3]] ,  'm--')
 	geo1.plot( [Yle[4], Yle[4]] , [Xle[4] ,Xle[4] + C[4]] ,  'm--')
 	geo1.plot(0, x_cg, 'ko', 0, NP, 'co')
+	# Automatic axis scaling
 	geo1.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
-	#geo1.set_xlim([-4, 4])
 	geo1.set_ylim([-1, max(Xle_t)*2.0])
-	#geo1.set_ylim([-4, 14])	
+
 
 	at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
 	at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
@@ -164,10 +172,10 @@ def plot_geo_final(Xle, Yle, C, Xle_t, Yle_t, C_t, x_cg, NP, score):
 
 	geo2.plot(  wing_pos, wing_zpos ,  'b-', tail_pos, tail_zpos, 'r-')
 	geo2.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
-	#geo2.set_xlim([-4, 4])
+	# Automatic axis scaling
 	geo2.set_ylim([-1, max(Xle_t)*2.0])
-	#geo2.set_ylim([-4, 14])
-
+	
+	# # Use other subplots in window for plotting sectional airfoils
 	# for i in range (1, len(A) +1):
 	# 	f = open('./airfoils/A_' + str(i) + '.dat', 'r')
 	# 	flines = f.readlines()

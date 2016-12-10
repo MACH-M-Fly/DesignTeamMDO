@@ -38,7 +38,7 @@ class Aircraft():
 		return
 
 class Wing():
-# Surface class fully defines all surfaces.
+# Wing class fully defines wing surface(s).
 	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, boom_len, Afiles = [], Ainc = np.array([])):
 
 		# Assign Inputs to aircraft object
@@ -161,7 +161,7 @@ class Wing():
 		pass
 
 class Tail():
-# Surface class fully defines all surfaces.
+# Tail class fully deines tail surface(s).
 	def __init__(self, num_Sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len):
 
 		# Assign Inputs to aircraft object

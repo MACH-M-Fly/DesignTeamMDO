@@ -21,7 +21,7 @@ M6.num_Sections = 5
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-M6.is_linear = 1
+M6.is_linear = 0
 
 # Specify origin for aicraft build (root chord leading edge position)
 M6.Xo = 0
@@ -42,12 +42,12 @@ M6.dihedral_max = 25
 M6.dihedral_min = -10
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
-s_a = 0; s_b = 0; s_c = 0; s_d = 0;
+s_a = 0; s_b = 0; s_c = 0; s_d = 10;
 M6.sweep = np.array([s_a, s_b, s_c, s_d])
 M6.sweep_max = 35
 M6.sweep_min = -5		
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = 0; ch_b = 0; ch_c = 0; ch_d = 3;
+ch_a = -.03; ch_b = -2; ch_c = -0.5; ch_d = 3;
 M6.chord = np.array([ch_a, ch_b, ch_c, ch_d])
 M6.chord_max = 5
 M6.chord_min = -5
