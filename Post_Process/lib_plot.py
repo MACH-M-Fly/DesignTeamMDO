@@ -1,3 +1,13 @@
+'''
+ lib_plot.py
+ Created by Josh Anibal (JLA), modified by Chris Reynolds (CLR)
+ - Plots aircraft:
+    - During each iteration and at the end (plot_geo_final)
+    - Plots wing (blue) and tail (red)
+ 	- Plots CG (black) and NP (light blue - cyan)
+    - Includes configuration number (fig)
+'''
+
 from __future__ import division
 
 from scipy.optimize import *
@@ -12,13 +22,7 @@ import string
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
-# lib_plot.py
-# Created by Josh Anibal (JLA), modified by Chris Reynolds (CLR)
-# - Plots aircraft:
-#    - During each iteration and at the end (plot_geo_final)
-#    - Plots wing (blue) and tail (red)
-#	 - Plots CG (black) and NP (light blue - cyan)
-#    - Includes configuration number (fig)
+
 
 # Class for plotting each iteration and a final geometry plotter
 class Plot(Component):
@@ -175,29 +179,29 @@ def plot_geo_final(Xle, Yle, C, Xle_t, Yle_t, C_t, x_cg, NP, score):
 	# Automatic axis scaling
 	geo2.set_ylim([-1, max(Xle_t)*2.0])
 	
-	# # Use other subplots in window for plotting sectional airfoils
-	# for i in range (1, len(A) +1):
-	# 	f = open('./airfoils/A_' + str(i) + '.dat', 'r')
-	# 	flines = f.readlines()
+	# Use other subplots in window for plotting sectional airfoils
+	for i in range (1, len(A) +1):
+		f = open('./airfoils/A_' + str(i) + '.dat', 'r')
+		flines = f.readlines()
 
-	# 	X = []
-	# 	Y = []
-	# 	for j in range(1, len(flines)):
-	# 		words = string.split(flines[j]) 
-	# 		X.append(float(words[ 0]))
-	# 		Y.append(float(words[ 1]))
+		X = []
+		Y = []
+		for j in range(1, len(flines)):
+			words = str.split(flines[j]) 
+			X.append(float(words[ 0]))
+			Y.append(float(words[ 1]))
 
-	# 	A[i -1].set_xlim([0, max(C)])
-	# 	A[i -1].set_ylim([(max(C)*min(Y)-0.02),(max(C)*max(Y)+0.02)])
+		A[i -1].set_xlim([0, max(C)])
+		A[i -1].set_ylim([(max(C)*min(Y)-0.02),(max(C)*max(Y)+0.02)])
 
-	# 	X = [C[i - 1]*x for x in X]
-	# 	Y = [C[i - 1]*x for x in Y]
-	# 	X = [x + Xle[i -1] for x in X]
+		X = [C[i - 1]*x for x in X]
+		Y = [C[i - 1]*x for x in Y]
+		X = [x + Xle[i -1] for x in X]
 
-	# 	# print(X,Y)
+		# print(X,Y)
 
 
-	# 	A[i -1].plot(X, Y, 'm-')
+		A[i -1].plot(X, Y, 'm-')
 
 
 	plt.tight_layout()
