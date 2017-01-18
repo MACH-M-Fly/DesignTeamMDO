@@ -8,17 +8,17 @@ from time import localtime, strftime
 
 # xfoil_lib.py
 # - Executes Xfoil
-#   - xfoil_alt: Function to alter airfoil geometry
+#   - xfoil_alt: Function to alter airfoil geometry and run it
 #   - xfoil_run_flap: Function to iterate flap alpha
 #   - xfoil_run:  Function to execute xfoil
 #   - xfoil_final:  Final xfoil airfoil altering
 #   - getdata_xfoil: Return lift and drag data from xfoil run
 
-xfoilpath = './Aerodynamics/xfoil'
+xfoilpath = './xfoil'
 
 
 def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
-
+    # Alter, run, and save
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -37,7 +37,7 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd(' ')
 
 
-    # Cmd('load ./airfoils/'+name+'.dat')
+    Cmd('load ./airfoils/'+name+'.dat')
     Cmd('load E420.dat')
 
     # alter geometry
@@ -88,7 +88,7 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     ps.wait()
 
 def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
-
+    # Makes a flap, run
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -172,7 +172,7 @@ def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
 
 
 def xfoil_run(name, Re, alpha_start, alpha_end ):
-
+    # Run xfoil without alterring airfoil
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -222,7 +222,7 @@ def xfoil_run(name, Re, alpha_start, alpha_end ):
     ps.wait()
 
 def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
-
+    # Alter, run, save picture of xfoil
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -272,7 +272,7 @@ def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
 
 
 def getData_xfoil(filename):
-    
+    # Getting data
     f = open(filename, 'r')
     flines = f.readlines()
 
