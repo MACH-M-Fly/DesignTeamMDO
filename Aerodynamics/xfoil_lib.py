@@ -14,7 +14,9 @@ from time import localtime, strftime
 #   - xfoil_final:  Final xfoil airfoil altering
 #   - getdata_xfoil: Return lift and drag data from xfoil run
 
-xfoilpath = './xfoil'
+print("Current Path", os.getcwd())
+xfoilpath = './Aerodynamics/xfoil'
+print("Xfoil Path", xfoilpath)
 
 
 def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
@@ -38,7 +40,7 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
 
 
     Cmd('load ./airfoils/'+name+'.dat')
-    Cmd('load E420.dat')
+    Cmd('load ./airfoils/E420.dat')
 
     # alter geometry
     Cmd('GDES')
