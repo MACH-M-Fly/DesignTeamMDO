@@ -160,32 +160,32 @@ AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
 
 
 
-print '=============== Initial wing Parameters ============='
-print 'AC.wing.num_Sections: ', AC.wing.num_Sections
-print 'AC.wing.is_linear: ', AC.wing.is_linear
-print 'AC.wing.b_wing: ', AC.wing.b_wing
-print 'AC.wing.sweep: ', AC.wing.sweep
-print 'AC.wing.chord: ', AC.wing.chord
-print 'AC.wing.Xo: ', AC.wing.Xo
-print 'AC.wing.Yo: ', AC.wing.Yo
-print 'AC.wing.Zo: ', AC.wing.Zo
-print 'AC.wing.dihedral: ', AC.wing.dihedral
-print 'AC.wing.Afiles: ', AC.wing.Afiles
-print 'AC.wing.Ainc: ', AC.wing.Ainc
-print 'AC.wing.sec_span: ', AC.wing.sec_span
+print('=============== Initial wing Parameters =============')
+print('AC.wing.num_Sections: ', AC.wing.num_Sections)
+print('AC.wing.is_linear: ', AC.wing.is_linear)
+print('AC.wing.b_wing: ', AC.wing.b_wing)
+print('AC.wing.sweep: ', AC.wing.sweep)
+print('AC.wing.chord: ', AC.wing.chord)
+print('AC.wing.Xo: ', AC.wing.Xo)
+print('AC.wing.Yo: ', AC.wing.Yo)
+print('AC.wing.Zo: ', AC.wing.Zo)
+print('AC.wing.dihedral: ', AC.wing.dihedral)
+print('AC.wing.Afiles: ', AC.wing.Afiles)
+print('AC.wing.Ainc: ', AC.wing.Ainc)
+print('AC.wing.sec_span: ', AC.wing.sec_span)
 
-print '\n'
-print '=============== Initial tail Parameters ============='
-print 'AC.tail.num_Sections: ', AC.tail.num_Sections
-print 'AC.tail.is_linear: ', AC.tail.is_linear
-print 'AC.tail.b_htail: ', AC.tail.b_htail
-print 'AC.tail.htail_chord: ', AC.tail.htail_chord
-print 'AC.tail.b_vtail: ', AC.tail.b_vtail
-print 'AC.tail.vtail_chord: ', AC.tail.vtail_chord
-print 'AC.tail.Xo: ', AC.tail.Xo
-print 'AC.tail.Yo: ', AC.tail.Yo
-print 'AC.tail.Zo: ', AC.tail.Zo
-print 'AC.tail.boom_len: ', AC.tail.boom_len
-print 'AC.tail.sec_span_htail: ', AC.tail.sec_span_htail
-print 'AC.tail.sec_span_vtail: ', AC.tail.sec_span_vtail
-print '\n'
+print('\n')
+print('=============== Initial tail Parameters =============')
+print('AC.tail.num_Sections: ', AC.tail.num_Sections)
+print('AC.tail.is_linear: ', AC.tail.is_linear)
+print('AC.tail.b_htail: ', AC.tail.b_htail)
+print('AC.tail.htail_chord: ', AC.tail.htail_chord)
+print('AC.tail.b_vtail: ', AC.tail.b_vtail)
+print('AC.tail.vtail_chord: ', AC.tail.vtail_chord)
+print('AC.tail.Xo: ', AC.tail.Xo)
+print('AC.tail.Yo: ', AC.tail.Yo)
+print('AC.tail.Zo: ', AC.tail.Zo)
+print('AC.tail.boom_len: ', AC.tail.boom_len)
+print('AC.tail.sec_span_htail: ', AC.tail.sec_span_htail)
+print('AC.tail.sec_span_vtail: ', AC.tail.sec_span_vtail)
+print('\n')

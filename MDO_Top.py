@@ -12,16 +12,10 @@ from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
 from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
-#user defined libraries
-from PostProcess import post_process
-from weight import weight
-from obj import obj
-from lib_plot import *
+# Import modules (components)
+# from Aerodynamics.AeroAnalysis import AeroAnalysis
+from CreateAC import createAC
 
-
-FFMpegWriter = animation.writers['ffmpeg']
-metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
-writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class Constrained_MDO(Group):
 
@@ -49,7 +43,7 @@ class Constrained_MDO(Group):
 		
   
 # ====================================== Connections ============================================ # 
-
+		self.connect('b_wing.b_wing',['createAC.b_wing'])
 
 		
 # ==================================== Initailize plots for animation ===================================== #
@@ -59,11 +53,11 @@ class Constrained_MDO(Group):
 prob = Problem()
 prob.root = Constrained_MDO()
 
-# ================================================ Add Driver ============================================== #
-prob.driver = pyOptSparseDriver()
-prob.driver.options['optimizer'] = 'ALPSO'
-prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
-				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
+# # ================================================ Add Driver ============================================== #
+# prob.driver = pyOptSparseDriver()
+# prob.driver.options['optimizer'] = 'ALPSO'
+# prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
+# 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
 # prob.driver = ScipyOptimizer()
 # prob.driver.options['optimizer'] = 'SLSQP'
@@ -72,50 +66,53 @@ prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
 # prob.root.fd_options['step_size'] = 1e-3,
 
 
-# ===================================== Add design Varibles and Bounds ==================================== #
-prob.driver.add_desvar('b_wing.b_wing',   				lower = 1,    upper = 3 )
-prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
-prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
-prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)
-prob.driver.add_desvar('t4.t4',			  				lower = 0.6,  upper = 1.0)
-prob.driver.add_desvar('t5.t5',			  				lower = 0.6,  upper = 1.0)
-prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
-prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.5,  upper = 1.5)
-prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
-										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
-prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
-														upper = np.array([0.50, 0.50, 0.50, 0.50, 0.50 ]))
-prob.driver.add_desvar('thickness.thickness',   		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
-											    		upper = np.array([0.15, 0.15, 0.15, 0.15, 0.15 ]) )
-prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
-prob.driver.add_desvar('c_r_ht.c_r_ht', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.6,  upper = 1.2)
-prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
-# add objective
-prob.driver.add_objective('obj.score')
-
-
-
-# =============== Setup & Run ================ #
-prob.setup()
-
-with writer.saving(fig, "OPT_#.mp4", 100):
-	prob.run()
+# # ===================================== Add design Varibles and Bounds ==================================== #
+# prob.driver.add_desvar('b_wing.b_wing',   				lower = 1,    upper = 3 )
+# prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
+# prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
+# prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)
+# prob.driver.add_desvar('t4.t4',			  				lower = 0.6,  upper = 1.0)
+# prob.driver.add_desvar('t5.t5',			  				lower = 0.6,  upper = 1.0)
+# prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
+# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.5,  upper = 1.5)
+# prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# 										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
+# prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
+# 														upper = np.array([0.50, 0.50, 0.50, 0.50, 0.50 ]))
+# prob.driver.add_desvar('thickness.thickness',   		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# 											    		upper = np.array([0.15, 0.15, 0.15, 0.15, 0.15 ]) )
+# prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
+# prob.driver.add_desvar('c_r_ht.c_r_ht', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.6,  upper = 1.2)
+# prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
 
 
 # ======================================== Post-Processing ============================================== #
 
+
+root = Group()
+root.add('indep_var', IndepVarComp('span', 7.0))
+root.add('my_comp', createAC())
+root.connect('indep_var.span', 'my_comp.span')
+
+prob = Problem(root)
+prob.setup()
+prob.run()
+
+out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
 print('\n')
-print('Score: ' + str(-1*prob['obj.score']))
-
+print(out_ac.wing.b_wing)
+# count = prob.root.my_comp.counter
+# print(result)
+# print(count)
 

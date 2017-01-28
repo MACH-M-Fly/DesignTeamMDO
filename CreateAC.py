@@ -69,17 +69,3 @@ class createAC(Component):
 			# print('==============================================')
 
 
-root = Group()
-root.add('indep_var', IndepVarComp('span', 7.0))
-root.add('my_comp', createAC())
-root.connect('indep_var.span', 'my_comp.span')
-
-prob = Problem(root)
-prob.setup()
-prob.run()
-
-out_ac = prob['my_comp.aircraft']
-print out_ac.wing.b_wing
-# count = prob.root.my_comp.counter
-# print(result)
-# print(count)
