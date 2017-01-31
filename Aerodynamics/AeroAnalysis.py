@@ -1,3 +1,17 @@
+'''
+ Aero.py
+ - Obtain aerodynamic parameters for aircraft (cl, cd, L/D, etc.)
+ - Run AVL for whole vehicle
+ - Modify airfoils in AVL
+
+Inputs:
+- Aircraft_Class
+ 
+Outputs:
+- Aero data (CL, CD, neutral point)
+- Loads data
+
+'''
 
 # LAP TIME
 from __future__ import division
@@ -21,42 +35,42 @@ from lib_aero import get_aeroCoef, num_laps
 
 
 
-class AeroAnalysis(Component):
-	'''calculate score'''
-	# set up interface to the framework
+
+class exampleComponent(Component):
+	"""
+		exampleComponent: Uses the current iteration of the aircraft, performances
+		"input analysis name" analysis
+		Inputs:
+			- Aircraft_Class: Input aircraft instance
+			- Design variables: These will be modified based on new MDO iteration
+		Outputs:
+			- Aircraft_Class: Output and modified aircraft instance 
+	"""
+
 	def __init__(self ):
-		super(obj,self).__init__()
+		super(createAC,self).__init__()
 
-		self.add_param('aircraft',val=aircraft(),desc='Wing Span [m]')
+		# Input instance of aircraft - before modification
+		self.add_param('def_aircraft',val=AC, desc='Input Aircraft Class')
 
+		# Output instance of aircaft - after modification
 
 		# # set up outputs
+		self.add_param('out_aircraft',val=AC, desc='Output Aircraft Class')
 
-		self.add_output('score', val= 0.0,desc='score ')
-		self.add_output('N', val = 0.0, desc = 'number of laps')
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
 		self.add_output('tot_time', val = 0.0, desc = 'time')
 
 	def solve_nonlinear(self,params,unknowns,resids):
-		# make all input variables local for ease
-		# C = [params['C1'], params['C2'], params['C3'], params['C4'], params['C5']]
-		b_wing = params['b_wing']
-		Sref_wing = params['Sref_wing']
-		Sref_tail = params['Sref_tail']
+		# Used passed in instance of aircraft
+		AC = params['def_aircraft']
+	
+		# Modify instance of aircraft - This is where analysis would happen
+		AC.wing.b_wing = params['b_wing']
 
-		# print(params['mass'])
-
-
-
-
-		# unknowns['SM'] = 0.0
-		unknowns['N'] = 0
-		unknowns['score'] = 0.0
-		unknowns['tot_time'] = 300
-		unknowns['NP'] = MAC/4.0
-
-
+		# Set output to updated instance of aircraft
+		unknowns['lift_coefficient'] = 2*AC.wing.b_wing
 
 
 		print('\n')
@@ -66,4 +80,77 @@ class AeroAnalysis(Component):
 		print('Score: ' + str( unknowns['score']))
 		print('\n')
 
-			# print('==============================================')
+
+def get_aeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
+		'''
+        Summary:
+
+       
+        Inputs
+        ----------
+        geo_filename : String
+            File name of the AVL geometry file for the aircraft
+
+        mass_filename : String
+            File name of the AVL geometry file for the aircraft
+
+        Outputs
+        ----------
+        CL,CD, CD : Functions
+            Functions that will return the value for the coeffiecent 
+            for a given angle of attack 
+            example: CL(10*np.pi/180)  <- note the use of radians
+
+        NP : float
+           X location of NP in AVL coordinate system
+
+    
+        # Examples
+        # --------
+        # >>> # Take unique square in x-z plane and and 10 along z-direction (spanWise)
+        # >>> # and the along x-direction (chordWise)
+        # >>> leList = [[0, 0, 0], [0, 0, 1]]
+        # >>> teList = [[1, 0, 0], [0, 0, 1]]
+        # >>> DVCon.addThicknessConstraints2D(leList, teList, 10, 3, 
+        #                         lower=1.0, scaled=True)
+        # '''
+
+
+	avl_run(filename, 0, 12 )
+	
+	alphas, CLs, CDs, CMs = getData_AVL(filename +'_data.dat')[0:4]
+	NP = getNP_AVL('stab.txt')
+
+
+	alphas = [x * np.pi/180 for x in alphas]
+	
+	# get func for aero coeificent
+	CL = np.poly1d(np.polyfit(alphas,CLs, 1))
+	CD = np.poly1d(np.polyfit(alphas,CDs, 2))
+	CM = np.poly1d(np.polyfit(alphas,CMs, 2))
+
+
+	# ----------------- Plot Outputs --------------------------
+	# plt.figure(3)
+	# plt.subplot(311)
+	# plt.ylabel('CL')
+	# plt.xlabel('Alpha')
+	# plt.plot(alphas, CLs, 'b')
+
+	# plt.subplot(312)
+	# plt.ylabel('CD')
+	# plt.xlabel('Alpha')
+	# plt.plot(alphas, CDs, 'b')
+
+
+	# plt.subplot(313)
+	# plt.ylabel('CM')
+	# plt.xlabel('Alpha')
+	# plt.plot(alphas, CMs, 'b')
+
+	# convert to radians
+
+	
+	return (CL, CD, CM, NP)
+
+

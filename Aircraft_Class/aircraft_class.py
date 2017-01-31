@@ -31,11 +31,15 @@ class Aircraft():
 
 	def calcMass(self):
 		pass
+
 		return
 
 	def calcI(self):
 		pass
 		return
+
+
+
 
 class Wing():
 # Wing class fully defines wing surface(s).
