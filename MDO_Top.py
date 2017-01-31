@@ -43,6 +43,20 @@ class Constrained_MDO(Group):
 		
 # ====================================== Connections ============================================ # 
 		self.connect('b_wing.b_wing',['createAC.b_wing'])
+		self.connect('dihedral.dihedral',['createAC.dihedral'])
+		self.connect('sweep.sweep',['createAC.sweep'])
+		self.connect('chord.chord',['createAC.chord'])
+		self.connect('dist_LG.dist_LG',['createAC.dist_LG'])
+		self.connect('boom_len.boom_len',['createAC.boom_len'])
+		self.connect('camber.camber',['createAC.camber'])
+		self.connect('max_camber.max_camber',['createAC.max_camber'])
+		self.connect('thickness.thickness',['createAC.thickness'])
+		self.connect('max_thickness.max_thickness',['createAC.max_thickness'])
+		self.connect('Ainc.Ainc',['createAC.Ainc'])
+		self.connect('c_r_ht.c_r_ht',['createAC.c_r_ht'])
+		self.connect('c_r_vt.c_r_vt',['createAC.c_r_vt'])
+		self.connect('b_htail.b_htail',['createAC.b_htail'])
+		self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
 # ==================================== Initailize plots for animation ===================================== #
 
