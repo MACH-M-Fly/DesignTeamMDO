@@ -77,11 +77,11 @@ class Wing():
 			self.Ainc=np.zeros(self.num_Sections)
 
 		# Calculate wing chord values at each section
-		self.chord_vals = self.getChord(self.chord,self.sec_span)
+		self.chord_vals = self.getChord()
 		# print("Chord Vals",self.chord_vals)
 
 		# Calculate sweep values at each section
-		self.sweep_vals = self.getSweep(self.sweep,self.sec_span)
+		self.sweep_vals = self.getSweep(self.sweep)
 		# print("Sweep Vals", self.sweep_vals)
 
 		# Calculate leading edge coordinates
@@ -89,29 +89,32 @@ class Wing():
 		# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
 
 		# Calulate wing surface reference area
-		self.Sref_wing = self.calcSrefWing()
-		# print("Wing Sref", self.Sref_wing)
+		self.Sref = self.calcSrefWing()
+		# print("Wing Sref", self.Sref)
 
 		# Calculate the mean aerodynamic chord
 		self.MAC = self.calcMAC()
 		# print("Wing MAC", self.MAC)
 
+		# Calculate the CG of the aircraft
+		self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
+
 	# Function: Calculate sweep values at sectional chord locations
-	def getSweep(self, sweep, sec_span):
+	def getSweep(self, sweep):
 		self.sweep_vals = np.zeros(self.num_Sections)
 		for i in range(self.num_Sections):
-			span = (i+1)*sec_span
+			span = (i+1)*self.sec_span
 			self.sweep_vals[i] =  sweep[0]*span**3 + sweep[0]*span**2 + \
 			sweep[2]*span + sweep[3] 
 		return self.sweep_vals
 
 	# Function: Calculate chord at sectional chord locations
-	def getChord(self,chord,sec_span):
+	def getChord(self):
 		self.chord_vals = np.zeros(self.num_Sections)
 		for i in range(self.num_Sections):
-			span = (i+1)*sec_span
-			self.chord_vals[i] =  chord[0]*span**3 + chord[0]*span**2 + \
-			chord[2]*span + chord[3] 
+			span = (i+1)*self.sec_span
+			self.chord_vals[i] =  self.chord[0]*span**3 + self.chord[0]*span**2 + \
+			self.chord[2]*span + self.chord[3] 
 		return self.chord_vals
 
 	# Calculate wing leading edge coordinates
@@ -150,7 +153,7 @@ class Wing():
 		self.MAC = 0
 		self.MAC = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
 			self.chord[2]*y + self.chord[3] )**2, 0, self.b_wing/2)
-		self.MAC = self.MAC[0]*2.0/self.Sref_wing
+		self.MAC = self.MAC[0]*2.0/self.Sref
 		return self.MAC
 
 	def addControlSurface(self, secStart, secEnd, hvec, name):
@@ -163,6 +166,9 @@ class Wing():
 
 	def addSpar(self):
 		pass
+
+	def updateAircraft(self):
+		self.getChord()
 
 class Tail():
 # Tail class fully deines tail surface(s).

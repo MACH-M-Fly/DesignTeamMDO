@@ -34,7 +34,7 @@ import pyAVL
 
 
 
-class exampleComponent(Component):
+class aeroAnalysis(Component):
 	"""
 		exampleComponent: Uses the current iteration of the aircraft, performances
 		"input analysis name" analysis
@@ -131,23 +131,23 @@ def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 	NP = case.calcNP
 
 	# ----------------- Plot Outputs --------------------------
-	# plt.figure(3)
-	# plt.subplot(311)
-	# plt.ylabel('CL')
-	# plt.xlabel('Alpha')
-	# plt.plot(case.alpha, case.CL, 'b')
+	plt.figure(3)
+	plt.subplot(311)
+	plt.ylabel('CL')
+	plt.xlabel('Alpha')
+	plt.plot(case.alpha, case.CL, 'b')
 
-	# plt.subplot(312)
-	# plt.xlabel('CD')
-	# plt.ylabel('CL')
-	# plt.plot( case.CD, case.CL, 'b')
+	plt.subplot(312)
+	plt.xlabel('CD')
+	plt.ylabel('CL')
+	plt.plot( case.CD, case.CL, 'b')
 
 
-	# plt.subplot(313)
-	# plt.ylabel('CM')
-	# plt.xlabel('Alpha')
-	# plt.plot(case.alpha, case.CM, 'b')
-	# plt.show()
+	plt.subplot(313)
+	plt.ylabel('CM')
+	plt.xlabel('Alpha')
+	plt.plot(case.alpha, case.CM, 'b')
+	plt.show()
 
 
 	return (CL, CD, CM, NP)
