@@ -56,27 +56,26 @@ class exampleComponent(Component):
 		# # set up outputs
 		self.add_param('out_aircraft',val=AC, desc='Output Aircraft Class')
 
-		self.add_output('SM', val = 0.0, desc = 'static margin')
-		self.add_output('NP', val = 0.0, desc = 'Netual point')
-		self.add_output('tot_time', val = 0.0, desc = 'time')
+		# self.add_output('SM', val = 0.0, desc = 'static margin')
+		# self.add_output('NP', val = 0.0, desc = 'Netual point')
+		# self.add_output('tot_time', val = 0.0, desc = 'time')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
 	
 		# Modify instance of aircraft - This is where analysis would happen
-		AC.wing.b_wing = params['b_wing']
+		AC.Aero.CL, AC.Aero.CD, AC.Aero.CM, AC.Aero.NP = getAeroCoef()
 
 		# Set output to updated instance of aircraft
-		unknowns['lift_coefficient'] = 2*AC.wing.b_wing
+		unknowns['out_aircraft'] = AC
 
-
-		print('\n')
-		print('============== output =================')
-		print('N: ' + str(unknowns['N']))	
-		print('SM: ' + str(unknowns['SM']))
-		print('Score: ' + str( unknowns['score']))
-		print('\n')
+		# print('\n')
+		# print('============== output =================')
+		# print('N: ' + str(unknowns['N']))	
+		# print('SM: ' + str(unknowns['SM']))
+		# print('Score: ' + str( unknowns['score']))
+		# print('\n')
 
 
 def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
@@ -121,7 +120,6 @@ def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 
 
 
-	# return
 
 	# case.alpha = [x * np.pi/180 for x in case.alpha]
 
