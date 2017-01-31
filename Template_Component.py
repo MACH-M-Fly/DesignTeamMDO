@@ -16,8 +16,7 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 
 # Import self-created components
-from CreateAC import createAC
-
+from Input_Files.Input import AC
 
 class exampleComponent(Component):
 	"""
@@ -37,7 +36,7 @@ class exampleComponent(Component):
 		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		self.add_output('lift_coefficient', val=0.0,desc='Coefficient of Lift')
+		self.add_output('output_data', val=0.0,desc='Example of Output Data')
 
 
 	def solve_nonlinear(self,params,unknowns,resids):
@@ -48,4 +47,8 @@ class exampleComponent(Component):
 		AC.wing.b_wing = params['b_wing']
 
 		# Set output to updated instance of aircraft
-		unknowns['lift_coefficient'] = 2*AC.wing.b_wing
+		unknowns['output_data'] = 2*AC.wing.b_wing
+
+
+
+# Insert component analysis functions here
