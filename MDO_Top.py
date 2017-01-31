@@ -117,7 +117,7 @@ root.add('my_comp', createAC())
 root.add('Aero_Analysis', aeroAnalysis())
 
 root.connect('indep_var.chord', 'my_comp.chord')
-root.connect('my_comp.aircraft','aeroAnalysis.aircraft')
+root.connect('my_comp.aircraft','Aero_Analysis.in_aircraft')
 
 prob = Problem(root)
 prob.setup()

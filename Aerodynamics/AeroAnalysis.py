@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 from time import localtime, strftime, time
 
 import pyAVL
+from Input_Files.Input import AC
 
 
 
@@ -46,10 +47,10 @@ class aeroAnalysis(Component):
 	"""
 
 	def __init__(self ):
-		super(createAC,self).__init__()
+		super(aeroAnalysis,self).__init__()
 
 		# Input instance of aircraft - before modification
-		self.add_param('def_aircraft',val=AC, desc='Input Aircraft Class')
+		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
 
@@ -62,7 +63,7 @@ class aeroAnalysis(Component):
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
-		AC = params['def_aircraft']
+		AC = params['in_aircraft']
 	
 		# Modify instance of aircraft - This is where analysis would happen
 		AC.Aero.CL, AC.Aero.CD, AC.Aero.CM, AC.Aero.NP = getAeroCoef()
@@ -71,6 +72,7 @@ class aeroAnalysis(Component):
 		unknowns['out_aircraft'] = AC
 
 		# print('\n')
+		
 		# print('============== output =================')
 		# print('N: ' + str(unknowns['N']))	
 		# print('SM: ' + str(unknowns['SM']))
@@ -78,7 +80,7 @@ class aeroAnalysis(Component):
 		# print('\n')
 
 
-def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
+def getAeroCoef(geo_filename = 'Aerodynamics/aircraft.txt', mass_filename = 'Aerodynamics/aircraft.mass'):
 	'''
 	Summary:
 
@@ -106,17 +108,17 @@ def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 
 
 	# stead level flight contraints
-	case.addConstraint('elevator', 0.00)
-	case.addConstraint('rudder', 0.00)
+	# case.addConstraint('elevator', 0.00)
+	# case.addConstraint('rudder', 0.00)
 
 	case.alphaSweep(-8, 15)
 	# case.calcNP()
 
 
-	# print '----------------- alpha sweep ----------------'
-	# print 'Angle      Cl         Cd         Cm'
-	# for i in xrange(len(case.alpha)):
-	#     print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
+	print '----------------- alpha sweep ----------------'
+	print 'Angle      Cl         Cd         Cm'
+	for i in xrange(len(case.alpha)):
+	    print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
 
 
 
