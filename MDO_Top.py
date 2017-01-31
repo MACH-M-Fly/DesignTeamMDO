@@ -12,19 +12,19 @@ from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
 from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
-# Import modules (components)
-# from Aerodynamics.AeroAnalysis import AeroAnalysis
+# Import self-created components
 from CreateAC import createAC
 
 
 class Constrained_MDO(Group):
-
+	"""
+		Constrained_MDO: Top level OpenMDAO setup script for constrained MDO
+		on the Joint MDO design team project
+	"""
 	def __init__(self):
 		super(Constrained_MDO,self).__init__()
 
-
 		# ====================================== Params =============================================== #
-
 		self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
 		self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
@@ -41,13 +41,10 @@ class Constrained_MDO(Group):
 		self.add('b_htail',IndepVarComp('b_htail',3.0))
 		self.add('b_vtail',IndepVarComp('b_vtail',1.0))
 		
-  
 # ====================================== Connections ============================================ # 
 		self.connect('b_wing.b_wing',['createAC.b_wing'])
-
 		
 # ==================================== Initailize plots for animation ===================================== #
-
 
 # ============================================== Create Problem ============================================ #
 prob = Problem()
@@ -97,12 +94,10 @@ prob.root = Constrained_MDO()
 
 
 # ======================================== Post-Processing ============================================== #
-
-
 root = Group()
-root.add('indep_var', IndepVarComp('span', 7.0))
+root.add('indep_var', IndepVarComp('b_wing', 7.0))
 root.add('my_comp', createAC())
-root.connect('indep_var.span', 'my_comp.span')
+root.connect('indep_var.b_wing', 'my_comp.b_wing')
 
 prob = Problem(root)
 prob.setup()

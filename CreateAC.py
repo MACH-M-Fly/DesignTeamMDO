@@ -1,71 +1,54 @@
-
-# LAP TIME
+#python stantdard libraries 
 from __future__ import division
+from time import localtime, strftime, time
 
+# addition python libraries 
+import numpy as np
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+
+#open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
 from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-
 from scipy.optimize import *
 from sympy import Symbol, nsolve
-import numpy as np
-import matplotlib.pyplot as plt
 
-from time import localtime, strftime, time
-
-
-
+# Import self-created components
 from Input_Files.Input import AC
 
 
 class createAC(Component):
-	'''calculate score'''
-	# set up interface to the framework
+	"""
+		createAC: Updates the aircraft parameters after every iteration of MDO
+		Inputs:
+			- Aircraft_Class: Input aircraft instance
+			- Design variables: These will be modified based on new MDO iteration
+		Outputs:
+			- Aircraft_Class: Output and modified aircraft instance 
+	"""
+
 	def __init__(self ):
 		super(createAC,self).__init__()
 
+		# Input instance of aircraft - before modification
 		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
-		self.add_param('span',val=0.0, desc='wing span')
+
+		# Parameter(s) of aicraft to be modified within this component
+		self.add_param('b_wing',val=0.0, desc='wing span')
 
 
-		# # set up outputs
-
+		# Output instance of aircaft - after modification
 		self.add_output('aircraft', val=AC,desc='score ')
-		# self.add_output('N', val = 0.0, desc = 'number of laps')
-		# self.add_output('SM', val = 0.0, desc = 'static margin')
-		# self.add_output('NP', val = 0.0, desc = 'Netual point')
-		# self.add_output('tot_time', val = 0.0, desc = 'time')
+
 
 	def solve_nonlinear(self,params,unknowns,resids):
-		# make all input variables local for ease
-		# C = [params['C1'], params['C2'], params['C3'], params['C4'], params['C5']]
+		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
 	
-		# print AC.
+		# Modify instance of aircraft - This is where analysis would happen
+		AC.wing.b_wing = params['b_wing']
 
-		# print(params['mass'])
-		AC.wing.b_wing = params['span']
-
-
+		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC
-
-		# # unknowns['SM'] = 0.0
-		# unknowns['N'] = 0
-		# unknowns['score'] = 0.0
-		# unknowns['tot_time'] = 300
-		# unknowns['NP'] = MAC/4.0
-
-
-
-
-		# print('\n')
-		# print('============== output =================')
-		# print('N: ' + str(unknowns['N']))	
-		# print('SM: ' + str(unknowns['SM']))
-		# print('Score: ' + str( unknowns['score']))
-		# print('\n')
-
-			# print('==============================================')
-
-
