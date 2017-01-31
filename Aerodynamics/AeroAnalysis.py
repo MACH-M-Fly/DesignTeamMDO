@@ -28,9 +28,7 @@ import matplotlib.pyplot as plt
 
 from time import localtime, strftime, time
 
-
-from xfoil.xfoil_lib import xfoil_alt, getData_xfoil
-from lib_aero import get_aeroCoef, num_laps
+import pyAVL
 
 
 
@@ -81,76 +79,79 @@ class exampleComponent(Component):
 		print('\n')
 
 
-def get_aeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
-		'''
-        Summary:
-
-       
-        Inputs
-        ----------
-        geo_filename : String
-            File name of the AVL geometry file for the aircraft
-
-        mass_filename : String
-            File name of the AVL geometry file for the aircraft
-
-        Outputs
-        ----------
-        CL,CD, CD : Functions
-            Functions that will return the value for the coeffiecent 
-            for a given angle of attack 
-            example: CL(10*np.pi/180)  <- note the use of radians
-
-        NP : float
-           X location of NP in AVL coordinate system
-
-    
-        # Examples
-        # --------
-        # >>> # Take unique square in x-z plane and and 10 along z-direction (spanWise)
-        # >>> # and the along x-direction (chordWise)
-        # >>> leList = [[0, 0, 0], [0, 0, 1]]
-        # >>> teList = [[1, 0, 0], [0, 0, 1]]
-        # >>> DVCon.addThicknessConstraints2D(leList, teList, 10, 3, 
-        #                         lower=1.0, scaled=True)
-        # '''
+def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
+	'''
+	Summary:
 
 
-	avl_run(filename, 0, 12 )
-	
-	alphas, CLs, CDs, CMs = getData_AVL(filename +'_data.dat')[0:4]
-	NP = getNP_AVL('stab.txt')
+	Inputs
+	----------
+	geo_filename : String
+	    File name of the AVL geometry file for the aircraft
+
+	mass_filename : String
+	    File name of the AVL geometry file for the aircraft
+
+	Outputs
+	----------
+	CL,CD, CD : Functions
+	    Functions that will return the value for the coeffiecent 
+	    for a given angle of attack 
+	    example: CL(10*np.pi/180)  <- note the use of radians
+
+	NP : float
+	   X location of NP in AVL coordinate system
+	'''
+
+	case = pyAVL.avlAnalysis(geo_file=geo_filename , mass_file =mass_filename )
 
 
-	alphas = [x * np.pi/180 for x in alphas]
-	
+	# stead level flight contraints
+	case.addConstraint('elevator', 0.00)
+	case.addConstraint('rudder', 0.00)
+
+	case.alphaSweep(-8, 15)
+	# case.calcNP()
+
+
+	# print '----------------- alpha sweep ----------------'
+	# print 'Angle      Cl         Cd         Cm'
+	# for i in xrange(len(case.alpha)):
+	#     print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
+
+
+
+	# return
+
+	# case.alpha = [x * np.pi/180 for x in case.alpha]
+
 	# get func for aero coeificent
-	CL = np.poly1d(np.polyfit(alphas,CLs, 1))
-	CD = np.poly1d(np.polyfit(alphas,CDs, 2))
-	CM = np.poly1d(np.polyfit(alphas,CMs, 2))
+	CL = np.poly1d(np.polyfit(case.alpha,case.CL, 1))
+	CD = np.poly1d(np.polyfit(case.alpha,case.CD, 2))
+	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
 
+	NP = case.calcNP
 
 	# ----------------- Plot Outputs --------------------------
 	# plt.figure(3)
 	# plt.subplot(311)
 	# plt.ylabel('CL')
 	# plt.xlabel('Alpha')
-	# plt.plot(alphas, CLs, 'b')
+	# plt.plot(case.alpha, case.CL, 'b')
 
 	# plt.subplot(312)
-	# plt.ylabel('CD')
-	# plt.xlabel('Alpha')
-	# plt.plot(alphas, CDs, 'b')
+	# plt.xlabel('CD')
+	# plt.ylabel('CL')
+	# plt.plot( case.CD, case.CL, 'b')
 
 
 	# plt.subplot(313)
 	# plt.ylabel('CM')
 	# plt.xlabel('Alpha')
-	# plt.plot(alphas, CMs, 'b')
+	# plt.plot(case.alpha, case.CM, 'b')
+	# plt.show()
 
-	# convert to radians
 
-	
 	return (CL, CD, CM, NP)
 
 
