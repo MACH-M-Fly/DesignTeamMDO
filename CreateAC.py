@@ -53,7 +53,7 @@ class createAC(Component):
 		self.add_param('b_vtail',val = 0.0, desc = 'Vert. tail span')
 
 		# Output instance of aircaft - after modification
-		self.add_output('aircraft', val=AC,desc='score ')
+		self.add_output('aircraft', val=AC ,desc='score ')
 
 
 	def solve_nonlinear(self,params,unknowns,resids):
