@@ -31,13 +31,10 @@ from time import localtime, strftime, time
 import pyAVL
 
 
-
-
-
 class aeroAnalysis(Component):
 	"""
-		exampleComponent: Uses the current iteration of the aircraft, performances
-		"input analysis name" analysis
+		aeroAnalysis: Uses the current iteration of the aircraft, performs
+		AVL aerodynamic analysis
 		Inputs:
 			- Aircraft_Class: Input aircraft instance
 			- Design variables: These will be modified based on new MDO iteration
@@ -52,30 +49,17 @@ class aeroAnalysis(Component):
 		self.add_param('def_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-
-		# # set up outputs
 		self.add_param('out_aircraft',val=AC, desc='Output Aircraft Class')
-
-		# self.add_output('SM', val = 0.0, desc = 'static margin')
-		# self.add_output('NP', val = 0.0, desc = 'Netual point')
-		# self.add_output('tot_time', val = 0.0, desc = 'time')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
 	
-		# Modify instance of aircraft - This is where analysis would happen
+		# Call aero analysis to get CL, CD, CM and NP - Add to class
 		AC.Aero.CL, AC.Aero.CD, AC.Aero.CM, AC.Aero.NP = getAeroCoef()
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
-
-		# print('\n')
-		# print('============== output =================')
-		# print('N: ' + str(unknowns['N']))	
-		# print('SM: ' + str(unknowns['SM']))
-		# print('Score: ' + str( unknowns['score']))
-		# print('\n')
 
 
 def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
