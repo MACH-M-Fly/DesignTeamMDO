@@ -1,19 +1,3 @@
-'''
- Aero.py
- - Obtain aerodynamic parameters for aircraft (cl, cd, L/D, etc.)
- - Run AVL for whole vehicle
- - Modify airfoils in AVL
-
-Inputs:
-- Aircraft_Class
- 
-Outputs:
-- Aero data (CL, CD, neutral point)
-- Loads data
-
-'''
-
-# LAP TIME
 from __future__ import division
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
