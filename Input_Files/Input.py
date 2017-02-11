@@ -149,11 +149,12 @@ AC.m_electronics = 1
 AC.m_fuselage = 1
 
 
-# Create object of type wing using surface 
+# Create an instance of AC for wing values
 AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
 	sweep, chord, \
 	Xo, Yo, Zo, dihedral ,Afiles=[], Ainc=np.array([]))
 
+# Create an instance of AC for tail values
 AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
 	htail_chord, b_vtail, vtail_chord, Xo, Yo, \
 	Zo, AC.boom_len)

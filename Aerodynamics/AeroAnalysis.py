@@ -1,19 +1,3 @@
-'''
- Aero.py
- - Obtain aerodynamic parameters for aircraft (cl, cd, L/D, etc.)
- - Run AVL for whole vehicle
- - Modify airfoils in AVL
-
-Inputs:
-- Aircraft_Class
- 
-Outputs:
-- Aero data (CL, CD, neutral point)
-- Loads data
-
-'''
-
-# LAP TIME
 from __future__ import division
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
@@ -29,16 +13,12 @@ import matplotlib.pyplot as plt
 from time import localtime, strftime, time
 
 import pyAVL
-from Input_Files.Input import AC
-
-
-
 
 
 class aeroAnalysis(Component):
 	"""
-		exampleComponent: Uses the current iteration of the aircraft, performances
-		"input analysis name" analysis
+		aeroAnalysis: Uses the current iteration of the aircraft, performs
+		AVL aerodynamic analysis
 		Inputs:
 			- Aircraft_Class: Input aircraft instance
 			- Design variables: These will be modified based on new MDO iteration
@@ -47,40 +27,26 @@ class aeroAnalysis(Component):
 	"""
 
 	def __init__(self ):
-		super(aeroAnalysis,self).__init__()
+		super(createAC,self).__init__()
 
 		# Input instance of aircraft - before modification
-		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
+		self.add_param('def_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-
-		# # set up outputs
 		self.add_param('out_aircraft',val=AC, desc='Output Aircraft Class')
-
-		# self.add_output('SM', val = 0.0, desc = 'static margin')
-		# self.add_output('NP', val = 0.0, desc = 'Netual point')
-		# self.add_output('tot_time', val = 0.0, desc = 'time')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
-		AC = params['in_aircraft']
+		AC = params['def_aircraft']
 	
-		# Modify instance of aircraft - This is where analysis would happen
+		# Call aero analysis to get CL, CD, CM and NP - Add to class
 		AC.Aero.CL, AC.Aero.CD, AC.Aero.CM, AC.Aero.NP = getAeroCoef()
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
 
-		# print('\n')
-		
-		# print('============== output =================')
-		# print('N: ' + str(unknowns['N']))	
-		# print('SM: ' + str(unknowns['SM']))
-		# print('Score: ' + str( unknowns['score']))
-		# print('\n')
 
-
-def getAeroCoef(geo_filename = 'Aerodynamics/aircraft.txt', mass_filename = 'Aerodynamics/aircraft.mass'):
+def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 	'''
 	Summary:
 
@@ -108,17 +74,17 @@ def getAeroCoef(geo_filename = 'Aerodynamics/aircraft.txt', mass_filename = 'Aer
 
 
 	# stead level flight contraints
-	# case.addConstraint('elevator', 0.00)
-	# case.addConstraint('rudder', 0.00)
+	case.addConstraint('elevator', 0.00)
+	case.addConstraint('rudder', 0.00)
 
 	case.alphaSweep(-8, 15)
 	# case.calcNP()
 
 
-	print '----------------- alpha sweep ----------------'
-	print 'Angle      Cl         Cd         Cm'
-	for i in xrange(len(case.alpha)):
-	    print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
+	# print '----------------- alpha sweep ----------------'
+	# print 'Angle      Cl         Cd         Cm'
+	# for i in xrange(len(case.alpha)):
+	#     print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
 
 
 
