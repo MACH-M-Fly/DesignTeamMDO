@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from time import localtime, strftime, time
 
 import pyAVL
+from Input_Files.Input import AC
 
 
 class aeroAnalysis(Component):
@@ -27,26 +28,26 @@ class aeroAnalysis(Component):
 	"""
 
 	def __init__(self ):
-		super(createAC,self).__init__()
+		super(aeroAnalysis,self).__init__()
 
 		# Input instance of aircraft - before modification
-		self.add_param('def_aircraft',val=AC, desc='Input Aircraft Class')
+		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		self.add_param('out_aircraft',val=AC, desc='Output Aircraft Class')
+		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
-		AC = params['def_aircraft']
+		AC = params['in_aircraft']
 	
 		# Call aero analysis to get CL, CD, CM and NP - Add to class
-		AC.Aero.CL, AC.Aero.CD, AC.Aero.CM, AC.Aero.NP = getAeroCoef()
+		AC.CL, AC.CD, AC.CM, AC.NP = getAeroCoef()
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
 
 
-def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
+def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = './Aerodynamics/aircraft.mass'):
 	'''
 	Summary:
 
@@ -77,7 +78,7 @@ def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
-	case.alphaSweep(-8, 15)
+	case.alphaSweep(-8, 15, 1)
 	# case.calcNP()
 
 
@@ -99,23 +100,23 @@ def getAeroCoef(geo_filename = 'aircraft.txt', mass_filename = 'aircraft.mass'):
 	NP = case.calcNP
 
 	# ----------------- Plot Outputs --------------------------
-	plt.figure(3)
-	plt.subplot(311)
-	plt.ylabel('CL')
-	plt.xlabel('Alpha')
-	plt.plot(case.alpha, case.CL, 'b-o')
+	# plt.figure(3)
+	# plt.subplot(311)
+	# plt.ylabel('CL')
+	# plt.xlabel('Alpha')
+	# plt.plot(case.alpha, case.CL, 'b-o')
 
-	plt.subplot(312)
-	plt.xlabel('CD')
-	plt.ylabel('CL')
-	plt.plot( case.CD, case.CL, 'b-o')
+	# plt.subplot(312)
+	# plt.xlabel('CD')
+	# plt.ylabel('CL')
+	# plt.plot( case.CD, case.CL, 'b-o')
 
 
-	plt.subplot(313)
-	plt.ylabel('CM')
-	plt.xlabel('Alpha')
-	plt.plot(case.alpha, case.CM, 'b-o')
-	plt.show()
+	# plt.subplot(313)
+	# plt.ylabel('CM')
+	# plt.xlabel('Alpha')
+	# plt.plot(case.alpha, case.CM, 'b-o')
+	# plt.show()
 
 
 	return (CL, CD, CM, NP)
