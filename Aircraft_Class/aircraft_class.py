@@ -10,7 +10,7 @@ import scipy.special as special
 #    - Fuselage (body volume)
 
 
-class Aircraft():
+class Aircraft(object):
 # Aircraft class deals with all full aircraft parameters 
 #   -  Convert units
 #   -  Calculate aircraft mass
@@ -25,9 +25,9 @@ class Aircraft():
 		# self.Tail_Horz = Tail_Horz                
 		# self.Tail_Vert = Tail_Vert
 
-	def  convertUints(self):
-		pass
-		return
+	# def  convertUints(self):
+	# 	pass
+	# 	return
 
 	def calcMass(self):
 		pass
@@ -41,7 +41,7 @@ class Aircraft():
 
 
 
-class Wing():
+class Wing(object):
 # Wing class fully defines wing surface(s).
 	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, Afiles=[], Ainc=np.array([])):
 
@@ -111,10 +111,12 @@ class Wing():
 	# Function: Calculate chord at sectional chord locations
 	def getChord(self):
 		self.chord_vals = np.zeros(self.num_Sections)
-		for i in range(self.num_Sections):
-			span = (i+1)*self.sec_span
-			self.chord_vals[i] =  self.chord[0]*span**3 + self.chord[0]*span**2 + \
-			self.chord[2]*span + self.chord[3] 
+		# for i in range(self.num_Sections):
+		# 	span = (i+1)*self.sec_span
+		# 	self.chord_vals[i] =  self.chord[0]*span**3 + self.chord[0]*span**2 + \
+		# 	self.chord[2]*span + self.chord[3] 
+		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.chord_vals = self.chord[0]*spans**2 + self.chord[1]*spans**2 + self.chord[2]*spans + self.chord[3]
 		return self.chord_vals
 
 	# Calculate wing leading edge coordinates
@@ -169,6 +171,9 @@ class Wing():
 
 	def updateAircraft(self):
 		self.getChord()
+
+
+
 
 class Tail():
 # Tail class fully deines tail surface(s).

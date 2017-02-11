@@ -137,18 +137,18 @@ def getAeroCoef(geo_filename = 'Aerodynamics/aircraft.txt', mass_filename = 'Aer
 	plt.subplot(311)
 	plt.ylabel('CL')
 	plt.xlabel('Alpha')
-	plt.plot(case.alpha, case.CL, 'b')
+	plt.plot(case.alpha, case.CL, 'b-o')
 
 	plt.subplot(312)
 	plt.xlabel('CD')
 	plt.ylabel('CL')
-	plt.plot( case.CD, case.CL, 'b')
+	plt.plot( case.CD, case.CL, 'b-o')
 
 
 	plt.subplot(313)
 	plt.ylabel('CM')
 	plt.xlabel('Alpha')
-	plt.plot(case.alpha, case.CM, 'b')
+	plt.plot(case.alpha, case.CM, 'b-o')
 	plt.show()
 
 
