@@ -14,7 +14,8 @@ from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
 # Import self-created components
 from CreateAC import createAC
-from Aerodynamics.AeroAnalysis import aeroAnalysis 
+from Aerodynamics.aeroAnalysis import aeroAnalysis 
+# from Performance.objPerformance import objPerformance
 
 
 class constrainedMDO(Group):
@@ -60,6 +61,7 @@ class constrainedMDO(Group):
 		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
 		self.connect('createAC.aircraft', 'aeroAnalysis.aircraft')
+		# self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
 
@@ -114,10 +116,12 @@ prob.root = constrainedMDO()
 root = Group()
 root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
 root.add('my_comp', createAC())
-root.add('Aero_Analysis', aeroAnalysis())
+root.add('aero_Analysis', aeroAnalysis())
+# root.add('objPerformance', objPerformance())
 
 root.connect('indep_var.chord', 'my_comp.chord')
-root.connect('my_comp.aircraft','Aero_Analysis.in_aircraft')
+root.connect('my_comp.aircraft','aero_Analysis.in_aircraft')
+# root.connect('aero_Analysis.out_aircraft','objPerformance.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
@@ -127,6 +131,12 @@ out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
 print('\n')
 print(out_ac.wing.chord_vals)
+print("CL", out_ac.CL)
+print("CD", out_ac.CD)
+print("CM", out_ac.CM)
+print("NP", out_ac.NP)
+print('########    Performance Metrics  #######')
+print("Number of Laps", AC.N)
 # count = prob.root.my_comp.counter
 # print(result)
 # print(count)

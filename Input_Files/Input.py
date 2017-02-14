@@ -163,6 +163,14 @@ AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
 	Zo, AC.boom_len)
 
 
+print('=============== Initial vehicle Parameters =============')
+print('Weight (lbs)', AC.weight)
+print('CDp', AC.CD_p)
+print('Tailboom Length', AC.boom_len)
+print('Iyy', AC.Iyy)
+print('Mission', AC.mission)
+print('CG (x position)', AC.x_cg)
+
 
 print('=============== Initial wing Parameters =============')
 print('AC.wing.num_Sections: ', AC.wing.num_Sections)
@@ -178,6 +186,7 @@ print('AC.wing.dihedral: ', AC.wing.dihedral)
 print('AC.wing.Afiles: ', AC.wing.Afiles)
 print('AC.wing.Ainc: ', AC.wing.Ainc)
 print('AC.wing.sec_span: ', AC.wing.sec_span)
+print('AC.wing.MAC', AC.wing.MAC)
 print('AC.camber: ', AC.wing.camber)
 print('Camber Values at Section', AC.wing.camber_vals)
 print('AC.max_camber: ', AC.wing.max_camber)

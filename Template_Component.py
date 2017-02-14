@@ -33,21 +33,21 @@ class exampleComponent(Component):
 		super(createAC,self).__init__()
 
 		# Input instance of aircraft - before modification
-		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
+		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		self.add_output('output_data', val=0.0,desc='Example of Output Data')
+		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
-		AC = params['def_aircraft']
+		AC = params['in_aircraft']
 	
-		# Modify instance of aircraft - This is where analysis would happen
-		AC.wing.b_wing = params['b_wing']
+		# Add attributes to AC
+		AC.CL, AC.CD, AC.CM, AC.NP = getAeroCoef()
 
 		# Set output to updated instance of aircraft
-		unknowns['output_data'] = 2*AC.wing.b_wing
+		unknowns['out_aircraft'] = AC
 
 
 

@@ -19,15 +19,14 @@ class Aircraft(object):
 
 										 # Wing= defult_wing, Tail_Horz=defult_tail_horz, Tail_Vert=defult_tail_vert,\
 										 # X_cg=0.0, Y_cg=0.0, Z_cg=0.0, CD_p=0.0):
-		self.CD_p = 0.0
 
-		# self.Wing = Wing
-		# self.Tail_Horz = Tail_Horz                
-		# self.Tail_Vert = Tail_Vert
 
-	# def  convertUints(self):
-	# 	pass
-	# 	return
+		self.CD_p = 0.0					# Parasitic drag coefficient
+		self.weight = 15.0				# Weight in pounds
+		self.x_cg = 5.0					# Cg, ft. behind root LE of wing
+
+		self.Iyy = self.calcI()
+
 
 	def calcMass(self):
 		pass
@@ -35,8 +34,8 @@ class Aircraft(object):
 		return
 
 	def calcI(self):
-		pass
-		return
+		self.Iyy = 5.0
+		return self.Iyy
 
 
 
