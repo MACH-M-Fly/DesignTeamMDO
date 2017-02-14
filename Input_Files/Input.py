@@ -16,6 +16,9 @@ AC.H_tails = 1
 AC.V_tails = 1
 AC.booms = 1
 
+# Select Mission (1 for M-Fly max payload, 2 for MACH lap-time)
+AC.mission = 2
+
 # Number of wing sections (per half-span for wing and tail)
 num_Sections_wing = 5
 num_Sections_tail = 5
@@ -58,21 +61,21 @@ AC.boom_len = 4
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 1; c_b = 1; c_c = 1; c_d = 1
-AC.camber = np.array([c_a,c_b,c_c,c_d])
-AC.camber_max = 0.15
-AC.camber_min = 0.1
+camber = np.array([c_a,c_b,c_c,c_d])
+camber_max = 0.15
+camber_min = 0.1
 # Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)
 mc_a = 1; mc_b = 1; mc_c = 1; mc_d = 1;
-AC.max_camber = np.array([mc_a,mc_b,mc_c, mc_d])
+max_camber = np.array([mc_a,mc_b,mc_c, mc_d])
 
 # Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)
 t_a = 1; t_b = 1; t_c = 1; t_d = 1;
-AC.thickness = np.array([t_a,t_b,t_c, t_d])
-AC.thickness_max = 0.15
-AC.thickness_min = 0.1
+thickness = np.array([t_a,t_b,t_c, t_d])
+thickness_max = 0.15
+thickness_min = 0.1
 # Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
 mt_a = 1; mt_b = 1; mt_c = 1; mt_d = 1;
-AC.max_thickness = np.array([mt_a,mt_b,mt_c,mt_d])
+max_thickness = np.array([mt_a,mt_b,mt_c,mt_d])
 
 # Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
 ang_a = 1; ang_b = 1; ang_c = 1; ang_d = 1;
@@ -152,7 +155,7 @@ AC.m_fuselage = 1
 # Create an instance of AC for wing values
 AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
 	sweep, chord, \
-	Xo, Yo, Zo, dihedral ,Afiles=[], Ainc=np.array([]))
+	Xo, Yo, Zo, dihedral, camber, max_camber, thickness, max_thickness ,Afiles=[], Ainc=np.array([]))
 
 # Create an instance of AC for tail values
 AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
@@ -167,6 +170,7 @@ print('AC.wing.is_linear: ', AC.wing.is_linear)
 print('AC.wing.b_wing: ', AC.wing.b_wing)
 print('AC.wing.sweep: ', AC.wing.sweep)
 print('AC.wing.chord: ', AC.wing.chord)
+print('Chord Values at Section" ', AC.wing.chord_vals)
 print('AC.wing.Xo: ', AC.wing.Xo)
 print('AC.wing.Yo: ', AC.wing.Yo)
 print('AC.wing.Zo: ', AC.wing.Zo)
@@ -174,6 +178,14 @@ print('AC.wing.dihedral: ', AC.wing.dihedral)
 print('AC.wing.Afiles: ', AC.wing.Afiles)
 print('AC.wing.Ainc: ', AC.wing.Ainc)
 print('AC.wing.sec_span: ', AC.wing.sec_span)
+print('AC.camber: ', AC.wing.camber)
+print('Camber Values at Section', AC.wing.camber_vals)
+print('AC.max_camber: ', AC.wing.max_camber)
+print('Max Camber Position at Section', AC.wing.max_camber_vals)
+print('AC.thickness: ', AC.wing.thickness)
+print('Thickness Values at Section', AC.wing.thickness_vals)
+print('AC.max_thickness: ', AC.wing.max_thickness)
+print('Max Thickness Values at Section', AC.wing.max_thickness_vals)
 
 print('\n')
 print('=============== Initial tail Parameters =============')

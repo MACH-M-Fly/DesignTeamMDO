@@ -43,7 +43,8 @@ class Aircraft(object):
 
 class Wing(object):
 # Wing class fully defines wing surface(s).
-	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, Afiles=[], Ainc=np.array([])):
+	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
+	 Afiles=[], Ainc=np.array([])):
 
 		# Assign Inputs to aircraft object
 		self.num_Sections = num_Sections 		# Number of sections per half-wing
@@ -55,6 +56,10 @@ class Wing(object):
 		self.Yo = Yo							# Root chord, leading edge, X position
 		self.Zo = Zo 							# Root chord, leading edge, X position
 		self.dihedral = dihedral				# Wing dihedral angle (degrees)
+		self.camber = camber 					# Camber as a cubic function of span
+		self.max_camber = max_camber 			# Max camber position as a cubic function of span
+		self.thickness = thickness 				# Thickness as a cubic function of span
+		self.max_thickness = max_thickness		# Max thickness position as a cubic function of span
 		# self.boom_len = boom_len				# Tailboom length
 		self.Afiles = Afiles					# File for initial airfoil input
 		self.Ainc = Ainc						# Angle of incidence as a function of half-span (b_wing/2)
@@ -99,6 +104,18 @@ class Wing(object):
 		# Calculate the CG of the aircraft
 		self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
 
+		# Get cmaber values at spanwise locations
+		self.camber_vals = self.getCamber()
+
+		# Get cmaber values at spanwise locations
+		self.max_camber_vals = self.getMaxCamber()
+
+		# Get cmaber values at spanwise locations
+		self.thickness_vals = self.getThickness()
+
+		# Get cmaber values at spanwise locations
+		self.max_thickness_vals = self.getMaxThickness()
+
 	# Function: Calculate sweep values at sectional chord locations
 	def getSweep(self, sweep):
 		self.sweep_vals = np.zeros(self.num_Sections)
@@ -108,7 +125,7 @@ class Wing(object):
 			sweep[2]*span + sweep[3] 
 		return self.sweep_vals
 
-	# Function: Calculate chord at sectional chord locations
+	# Function: Calculate chord at spanwise locations
 	def getChord(self):
 		self.chord_vals = np.zeros(self.num_Sections)
 		# for i in range(self.num_Sections):
@@ -118,6 +135,34 @@ class Wing(object):
 		spans = np.arange(1,self.num_Sections+1)*self.sec_span
 		self.chord_vals = self.chord[0]*spans**2 + self.chord[1]*spans**2 + self.chord[2]*spans + self.chord[3]
 		return self.chord_vals
+
+	# Function: Calculate camber at spanwise locations
+	def getCamber(self):
+		self.camber_vals = np.zeros(self.num_Sections)
+		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.camber_vals = self.camber[0]*spans**2 + self.camber[1]*spans**2 + self.camber[2]*spans + self.camber[3]
+		return self.camber_vals
+
+	# Function: Calculate max camber position at spanwise locations
+	def getMaxCamber(self):
+		self.max_camber_vals = np.zeros(self.num_Sections)
+		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.max_camber_vals = self.max_camber[0]*spans**2 + self.max_camber[1]*spans**2 + self.max_camber[2]*spans + self.max_camber[3]
+		return self.max_camber_vals
+
+	# Function: Calculate thickness at spanwise locations
+	def getThickness(self):
+		self.thickness_vals = np.zeros(self.num_Sections)
+		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.thickness_vals = self.thickness[0]*spans**2 + self.thickness[1]*spans**2 + self.thickness[2]*spans + self.thickness[3]
+		return self.thickness_vals
+
+	# Function: Calculate max thickness at spanwise locations
+	def getMaxThickness(self):
+		self.max_thickness_vals = np.zeros(self.num_Sections)
+		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.max_thickness_vals = self.max_thickness[0]*spans**2 + self.max_thickness[1]*spans**2 + self.max_thickness[2]*spans + self.max_thickness[3]
+		return self.max_thickness_vals
 
 	# Calculate wing leading edge coordinates
 	def calcLeading_Edge(self):
