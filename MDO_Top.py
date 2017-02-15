@@ -135,9 +135,7 @@ print("CL", out_ac.CL)
 print("CD", out_ac.CD)
 print("CM", out_ac.CM)
 print("NP", out_ac.NP)
-print('########    Performance Metrics  #######')
-print("Number of Laps", AC.N)
-# count = prob.root.my_comp.counter
-# print(result)
-# print(count)
+# print('########    Performance Metrics  #######')
+# print("Number of Laps", AC.N)
+
 

@@ -46,14 +46,11 @@ class structAnalysis(Component):
 		AC = params['in_aircraft']
 	
 		# Modify instance of aircraft - This is where analysis would happen
-		sig_max, y_max = run_structAnalysis(AC);
-
-		# AC.wing.b_wing = params['b_wing']
+		AC.sig_max, AC.y_max = run_structAnalysis(AC);
 
 		# Set output to updated instance of aircraft
-		# unknowns['output_data'] = 2*AC.wing.b_wing
+		unknowns['out_aircraft'] = AC
 
-# Insert component analysis functions here
 
 # Calculate area moment of inertia for input spar
 def calcI(shape, dim):

@@ -30,9 +30,9 @@ class Aircraft(object):
 
 	def calcMass(self):
 		pass
-
 		return
 
+	# Calculate aircraft Iyy, NOT the spar or tailboom I
 	def calcI(self):
 		self.Iyy = 5.0
 		return self.Iyy
