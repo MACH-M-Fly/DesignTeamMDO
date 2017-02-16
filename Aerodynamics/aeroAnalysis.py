@@ -97,7 +97,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	CD = np.poly1d(np.polyfit(case.alpha,case.CD, 2))
 	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
 
-	NP = case.calcNP
+	NP = case.calcNP()
 
 	# ----------------- Plot Outputs --------------------------
 	# plt.figure(3)
