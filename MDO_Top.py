@@ -15,6 +15,7 @@ from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 # Import self-created components
 from CreateAC import createAC
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
+from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
 from Post_Process.lib_plot import Plot 
 
@@ -62,6 +63,7 @@ class constrainedMDO(Group):
 		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
 		self.connect('createAC.aircraft', 'aeroAnalysis.aircraft')
+		self.connect('aeroAnalysis.aircraft','structAnalysis.aircraft')
 		self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
 		self.connect('objPerformance.aircraft','Plot.aircraft')
 
@@ -118,14 +120,17 @@ prob.root = constrainedMDO()
 root = Group()
 root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
 root.add('my_comp', createAC())
-root.add('aero_Analysis', aeroAnalysis())
+root.add('aeroAnalysis', aeroAnalysis())
+root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
-root.add('Plot', Plot())
+# root.add('Plot', Plot())
+
 
 root.connect('indep_var.chord', 'my_comp.chord')
-root.connect('my_comp.aircraft','aero_Analysis.in_aircraft')
-root.connect('aero_Analysis.out_aircraft','objPerformance.in_aircraft')
-root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
+root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
+root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
+root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
@@ -142,4 +147,9 @@ print("NP", out_ac.NP)
 print('########    Performance Metrics  #######')
 print("Number of Laps", out_ac.N)
 
+
+print('########    Structural Analysis  #######')
+print('Gross Lift', out_ac.gross_F)
+print('Max Stress ', out_ac.sig_max)
+print("Max Deflection %.7f"% out_ac.y_max)
 

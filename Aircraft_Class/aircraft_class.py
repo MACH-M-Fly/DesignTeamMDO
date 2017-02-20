@@ -22,7 +22,7 @@ class Aircraft(object):
 
 
 		self.CD_p = 0.0					# Parasitic drag coefficient
-		self.weight = 15.0				# Weight in pounds
+		self.weight = 35.0				# Weight in pounds
 		self.x_cg = 5.0					# Cg, ft. behind root LE of wing
 
 		self.Iyy = self.calcI()
@@ -246,9 +246,16 @@ class Tail():
 			self.vtail_chord[1] = 0
 			self.vtail_chord[2] = 0
 
+
+
+
 		# Calculate horiz. tail chord values at each section
 		self.htail_chord_vals = self.getHTailChord(self.htail_chord, self.sec_span_htail)
 		# print("Htail Chord Vals",self.htail_chord_vals)
+
+		# Calulate wing surface reference area
+		self.Sref = self.calcSrefTail()
+		# print("Tail Sref", self.Sref)
 
 		# Calculate vert. tail chord values at each section
 		self.vtail_chord_vals = self.getVTailChord(self.vtail_chord, self.sec_span_vtail)
@@ -257,6 +264,14 @@ class Tail():
 		# Calculate leading edge coordinates
 		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge()
 		# print("Tail Leading Edge: X, Y, Z", self.Xle_ht, self.Yle_ht, self.Zle_ht)
+
+	# Sref = integral (chord) dy (from 0 to bwing/2)
+	def calcSrefTail(self):
+		self.Sref = 0
+		self.Sref = integrate.quad(lambda y: (self.htail_chord_vals[0]*y**3 + self.htail_chord_vals[0]*y**2 + \
+			self.htail_chord_vals[2]*y + self.htail_chord_vals[3] ), 0, self.b_htail/2)
+		self.Sref = self.Sref[0]*2
+		return self.Sref
 
 	# Function: Calculate horiz. tail chord at sectional chord locations
 	def getHTailChord(self, htail_chord, sec_span_htail):
