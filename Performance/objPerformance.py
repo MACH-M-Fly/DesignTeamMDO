@@ -17,7 +17,7 @@ sys.path.insert(0, '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/')
 from time import localtime, strftime, time
 from xfoil_lib import xfoil_alt, getData_xfoil
 
-from Input_Files.Input import AC
+from Input import AC
 
 
 
@@ -112,7 +112,6 @@ class objPerformance(Component):
 		# static margin (SM), and objective value to instance of AC
 		AC.N = N
 		AC.tot_time = tot_time
-		AC.NP = NP
 		AC.SM = SM
 		AC.score = score
 

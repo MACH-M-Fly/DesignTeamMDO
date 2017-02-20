@@ -22,6 +22,8 @@ import string
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
+from Input import AC
+
 
 
 # Class for plotting each iteration and a final geometry plotter

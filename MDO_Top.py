@@ -15,7 +15,8 @@ from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 # Import self-created components
 from CreateAC import createAC
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
-# from Performance.objPerformance import objPerformance
+from Performance.objPerformance import objPerformance
+from Post_Process.lib_plot import Plot 
 
 
 class constrainedMDO(Group):
@@ -61,7 +62,8 @@ class constrainedMDO(Group):
 		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
 		self.connect('createAC.aircraft', 'aeroAnalysis.aircraft')
-		# self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
+		self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
+		self.connect('objPerformance.aircraft','Plot.aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
 
@@ -117,11 +119,13 @@ root = Group()
 root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
 root.add('my_comp', createAC())
 root.add('aero_Analysis', aeroAnalysis())
-# root.add('objPerformance', objPerformance())
+root.add('objPerformance', objPerformance())
+root.add('Plot', Plot())
 
 root.connect('indep_var.chord', 'my_comp.chord')
 root.connect('my_comp.aircraft','aero_Analysis.in_aircraft')
-# root.connect('aero_Analysis.out_aircraft','objPerformance.in_aircraft')
+root.connect('aero_Analysis.out_aircraft','objPerformance.in_aircraft')
+root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
@@ -135,7 +139,7 @@ print("CL", out_ac.CL)
 print("CD", out_ac.CD)
 print("CM", out_ac.CM)
 print("NP", out_ac.NP)
-# print('########    Performance Metrics  #######')
-# print("Number of Laps", AC.N)
+print('########    Performance Metrics  #######')
+print("Number of Laps", out_ac.N)
 
 

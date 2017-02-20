@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from time import localtime, strftime, time
 
 import pyAVL
-from Input_Files.Input import AC
+from Input import AC
 
 
 class aeroAnalysis(Component):
@@ -78,7 +78,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
-	case.alphaSweep(-8, 15, 1)
+	case.alphaSweep(-8, 15, 5)
 	# case.calcNP()
 
 
@@ -97,14 +97,15 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	CD = np.poly1d(np.polyfit(case.alpha,case.CD, 2))
 	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
 
-	NP = case.calcNP()
+	case.calcNP()
+	NP = case.NP
 
-	# ----------------- Plot Outputs --------------------------
+	# # ----------------- Plot Outputs --------------------------
 	# plt.figure(3)
 	# plt.subplot(311)
 	# plt.ylabel('CL')
 	# plt.xlabel('Alpha')
-	# plt.plot(case.alpha, case.CL, 'b-o')
+	# plt.plot( case.alpha, case.CL, 'b-o')
 
 	# plt.subplot(312)
 	# plt.xlabel('CD')
