@@ -18,6 +18,7 @@ from sympy import Symbol, nsolve
 # Import self-created components
 from Input_Files.Input import AC
 
+# Change the name of your componenet here
 class exampleComponent(Component):
 	"""
 		exampleComponent: Uses the current iteration of the aircraft, performances
@@ -42,7 +43,8 @@ class exampleComponent(Component):
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
 		AC = params['in_aircraft']
-	
+
+		# Insert component analysis functions here - This is an example from the aeroAnalysis component
 		# Add attributes to AC
 		AC.CL, AC.CD, AC.CM, AC.NP = getAeroCoef()
 
@@ -51,4 +53,3 @@ class exampleComponent(Component):
 
 
 
-# Insert component analysis functions here
