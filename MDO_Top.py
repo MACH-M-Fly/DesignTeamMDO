@@ -17,8 +17,14 @@ from CreateAC import createAC
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
-from Post_Process.lib_plot import Plot 
+from Post_Process.postProcess import postProcess
+from Post_Process.lib_plot import *
 
+
+# Animation Setup
+FFMpegWriter = animation.writers['ffmpeg']
+metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
+writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
 	"""
@@ -69,9 +75,32 @@ class constrainedMDO(Group):
 
 # ==================================== Initailize plots for animation ===================================== #
 
+fig = plt.figure(figsize=[12,8])
+
+geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
+geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
+geo1.set_xlim([-2, 2])
+geo1.set_ylim([-0.5, 2])
+geo2.set_xlim([-2, 2])
+geo2.set_ylim([-0.5,0.5])
+
+A = []
+A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
+A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
+A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
+A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
+A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
+for i in range(0,5):
+	A[i].set_xlim([0, 0.7])
+	A[i].set_ylim([-0.1, 0.2])
+
+plt.tight_layout()
+
 # ============================================== Create Problem ============================================ #
 prob = Problem()
 prob.root = constrainedMDO()
+
+
 
 # # ================================================ Add Driver ============================================== #
 # prob.driver = pyOptSparseDriver()
@@ -123,18 +152,23 @@ root.add('my_comp', createAC())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
-# root.add('Plot', Plot())
+root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
 root.connect('indep_var.chord', 'my_comp.chord')
 root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
+root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
 prob.run()
+
+with writer.saving(fig, "OPT_#.mp4", 100):
+	prob.run()
+
+lib_plot(prob)
 
 out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
