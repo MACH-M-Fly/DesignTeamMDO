@@ -14,6 +14,7 @@ from scipy.optimize import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+plt.rcParams['animation.ffmpeg_path'] = './.local/lib/python2.7/site-packages'
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
 import numpy as np

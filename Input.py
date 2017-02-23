@@ -38,10 +38,10 @@ Zo = 0
 # Initial Conditions for Optimizer
 #=========================================================================
 # Wingspan (feet)
-b_wing = 6
+b_wing = 6.0
 
 # Wing dihedral angle (degrees)
-dihedral = 5
+dihedral = 5.0
 
 
 # Quarter Chord Sweep in degrees (cubic)
@@ -157,6 +157,20 @@ AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
 	sweep, chord, \
 	Xo, Yo, Zo, dihedral, camber, max_camber, thickness, max_thickness ,Afiles=[], Ainc=np.array([]))
 
+# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
+AC.wing.dist_type = 'elliptical'
+
+# Add wing structural parameters ('C', R', 'I')
+AC.wing.spar_type = 'C'
+
+# Add spar dimensions (m)
+outer_radius = 0.1 
+inner_radius = 0.09
+AC.wing.spar_dim = [outer_radius, inner_radius]
+
+# Spar Young's Modulus
+AC.wing.spar_E = 1.0e6
+
 # Create an instance of AC for tail values
 AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
 	htail_chord, b_vtail, vtail_chord, Xo, Yo, \
@@ -177,6 +191,7 @@ print('AC.wing.num_Sections: ', AC.wing.num_Sections)
 print('AC.wing.is_linear: ', AC.wing.is_linear)
 print('AC.wing.b_wing: ', AC.wing.b_wing)
 print('AC.wing.sweep: ', AC.wing.sweep)
+print('AC.wing.Sref', AC.wing.Sref)
 print('AC.wing.chord: ', AC.wing.chord)
 print('Chord Values at Section" ', AC.wing.chord_vals)
 print('AC.wing.Xo: ', AC.wing.Xo)
@@ -204,6 +219,7 @@ print('=============== Initial tail Parameters =============')
 print('AC.tail.num_Sections: ', AC.tail.num_Sections)
 print('AC.tail.is_linear: ', AC.tail.is_linear)
 print('AC.tail.b_htail: ', AC.tail.b_htail)
+print('AC.tail.Sref', AC.tail.Sref)
 print('AC.tail.htail_chord: ', AC.tail.htail_chord)
 print('Horiz. Tail Chord Values at Section" ', AC.tail.htail_chord_vals)
 print('AC.tail.b_vtail: ', AC.tail.b_vtail)

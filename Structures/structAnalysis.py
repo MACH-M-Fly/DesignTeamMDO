@@ -8,6 +8,8 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from scipy.integrate import cumtrapz
 
+import matplotlib.pyplot as plt
+
 #open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
@@ -17,8 +19,7 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 
 # Import self-created components
-from Input_Files.Input import AC
-from aircraft_structure.py import *
+from Input import AC
 
 class structAnalysis(Component):
 	"""
@@ -108,10 +109,10 @@ def calcI(shape, dim):
 	return c, I
 
 # Calculate distributed forces
-def distLoad(x, mag, dist_type):
+def distLoad(x, gross_F, dist_type):
 	# elliptically distributed load
 	if dist_type == 'elliptical':
-		A = x[-1]; B = mag;
+		A = x[-1]; B = 4*gross_F/(np.pi*A);
 		w = B*np.sqrt(1 - (x/A)**2);
 
 	# uniformly distributed load
@@ -179,9 +180,16 @@ def calcDistribution(x, w, I, E, c):
 
 # Runs main structure analysis
 def run_structAnalysis(AC):
-	x = np.linspace(0, AC.Wing.b_wing/2.0, 1001)
-	w = distLoad(x, AC.mag, AC.Wing.spar.dist_type)
-	c, I = calcI(AC.Wing.spar.type, AC.Wing.spar.dim)
-	V, M, Theta, y, sigma = calcDistribution(x, w, I, AC.Wing.spar.E, c)
+	x = np.linspace(0, AC.wing.b_wing/2.0, 1001)
+	w = distLoad(x, AC.gross_F/2.0, AC.wing.dist_type)
+	c, I = calcI(AC.wing.spar_type, AC.wing.spar_dim)
+	V, M, Theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
 
-	return max(sigma), max(y)
+
+
+	plt.figure(1)
+	plt.plot(x, w, label='dis. load'); plt.legend()
+	plt.show()
+
+
+	return max(abs(sigma)), max(abs(y))
