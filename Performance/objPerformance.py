@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 # Add xfoil library to python path
 import sys
-sys.path.insert(0, '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/')
+# sys.path.insert(0, '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/')
+sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from time import localtime, strftime, time
 from xfoil_lib import xfoil_alt, getData_xfoil
@@ -127,7 +128,8 @@ mu_k = 0.005
 
 inced_ang = -5.0 *np.pi/180.0
 
-xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+# xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
 
 alphas_tail, CLs_tail_flap = getData_xfoil(xfoil_path+ '_flap.dat')[0:2]

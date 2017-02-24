@@ -14,7 +14,7 @@ from scipy.optimize import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-plt.rcParams['animation.ffmpeg_path'] = './.local/lib/python2.7/site-packages'
+# plt.rcParams['animation.ffmpeg_path'] = './.local/lib/python2.7/site-packages'
 from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
 import numpy as np
@@ -138,8 +138,6 @@ def plot_geo_final(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]
 
-	print(wing_edge)
-
 	tail_edge = Xle_ht + [sum(x) for x in zip(Xle_ht, C_t)][::-1] + [sum(x) for x in zip(Xle_ht, C_t)] + [1*x for x in Xle_ht[::-1]]
 	tail_pos = Yle_ht + Yle_ht[::-1] + [-1*x for x in Yle_ht] + [-1*x for x in Yle_ht[::-1]]
 	tail_zpos = [0.0*abs(x) for x in tail_pos]
@@ -164,7 +162,7 @@ def plot_geo_final(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 	geo1.plot( [Yle[2], Yle[2]] , [Xle[2] ,Xle[2] + C[2]] ,  'm--')
 	geo1.plot( [Yle[3], Yle[3]] , [Xle[3] ,Xle[3] + C[3]] ,  'm--')
 	geo1.plot( [Yle[4], Yle[4]] , [Xle[4] ,Xle[4] + C[4]] ,  'm--')
-	geo1.plot(0, x_cg, 'ko', 0, NP, 'co')
+	geo1.plot(0, x_cg, 'ko', 0, NP, 'cd')
 	# Automatic axis scaling
 	geo1.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
 	geo1.set_ylim([-1, max(Xle_ht)*2.0])
@@ -205,3 +203,4 @@ def plot_geo_final(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 
 
 	plt.tight_layout()
+	plt.show()

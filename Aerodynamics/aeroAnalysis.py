@@ -138,7 +138,8 @@ mu_k = 0.005
 
 inced_ang = -5.0 *np.pi/180.0
 
-xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+# xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
 
 alphas_tail, CLs_tail_flap = getData_xfoil(xfoil_path+ '_flap.dat')[0:2]

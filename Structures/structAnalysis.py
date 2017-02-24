@@ -187,9 +187,9 @@ def run_structAnalysis(AC):
 
 
 
-	plt.figure(1)
-	plt.plot(x, w, label='dis. load'); plt.legend()
-	plt.show()
+	# plt.figure(1)
+	# plt.plot(x, w, label='dis. load'); plt.legend()
+	# plt.show()
 
 
 	return max(abs(sigma)), max(abs(y))

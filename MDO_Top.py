@@ -17,14 +17,14 @@ from CreateAC import createAC
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
-from Post_Process.postProcess import postProcess
+# from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
 
 
 # Animation Setup
-FFMpegWriter = animation.writers['ffmpeg']
-metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
-writer = FFMpegWriter(fps=15, metadata=metadata)
+# FFMpegWriter = animation.writers['ffmpeg']
+# metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
+# writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
 	"""
@@ -75,30 +75,30 @@ class constrainedMDO(Group):
 
 # ==================================== Initailize plots for animation ===================================== #
 
-fig = plt.figure(figsize=[12,8])
+# fig = plt.figure(figsize=[12,8])
 
-geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
-geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
-geo1.set_xlim([-2, 2])
-geo1.set_ylim([-0.5, 2])
-geo2.set_xlim([-2, 2])
-geo2.set_ylim([-0.5,0.5])
+# geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
+# geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
+# geo1.set_xlim([-2, 2])
+# geo1.set_ylim([-0.5, 2])
+# geo2.set_xlim([-2, 2])
+# geo2.set_ylim([-0.5,0.5])
 
-A = []
-A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
-for i in range(0,5):
-	A[i].set_xlim([0, 0.7])
-	A[i].set_ylim([-0.1, 0.2])
+# A = []
+# A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
+# A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
+# A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
+# A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
+# A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
+# for i in range(0,5):
+# 	A[i].set_xlim([0, 0.7])
+# 	A[i].set_ylim([-0.1, 0.2])
 
-plt.tight_layout()
+# plt.tight_layout()
 
-# ============================================== Create Problem ============================================ #
-prob = Problem()
-prob.root = constrainedMDO()
+# # ============================================== Create Problem ============================================ #
+# prob = Problem()
+# prob.root = constrainedMDO()
 
 
 
@@ -152,23 +152,23 @@ root.add('my_comp', createAC())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
-root.add('Plot', Plot(geo1, geo2, A, writer, fig))
+# root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
 root.connect('indep_var.chord', 'my_comp.chord')
 root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
+# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
 prob.run()
 
-with writer.saving(fig, "OPT_#.mp4", 100):
-	prob.run()
+# with writer.saving(fig, "OPT_#.mp4", 100):
+# 	prob.run()
 
-lib_plot(prob)
+# lib_plot(prob)
 
 out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
@@ -187,3 +187,18 @@ print('Gross Lift', out_ac.gross_F)
 print('Max Stress ', out_ac.sig_max)
 print("Max Deflection %.7f"% out_ac.y_max)
 
+# Ooutput final geometry of aircraft
+plot_geo_final(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
+				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
+				out_ac.x_cg, out_ac.NP, 5.)
+
+# Inputs:
+#     	Xle: Wing leading edge at each section (x coord.)
+#		Yle: Wing leading edge at each section (y coord.)
+#  		C: Chord at each section
+#   	Xle_ht: Tail leading edge at each section (x coord.)       
+#   	Yle_ht: Tail leading edge at each section (y coord.)  
+#  		C_t: Tail chord at each section  
+#		x_cg: CG position
+#		NP: Neutral point position
+#		Score: Objective function score  

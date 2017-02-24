@@ -50,7 +50,7 @@ s_a = 0; s_b = 0; s_c = 0; s_d = 10;
 sweep = np.array([s_a, s_b, s_c, s_d])
 		
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = -.03; ch_b = -2; ch_c = -0.5; ch_d = 3;
+ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 1.;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between CG and landing gear (feet)
@@ -87,7 +87,7 @@ Ainc = np.array([ang_a,ang_b, ang_c, ang_d])
 # Initial Conditions for Optimizer
 #=========================================================================
 # Horizontal tail span (feet)
-b_htail = 3.0
+b_htail = 1.0
 
 # Vertical tail span (feet)
 b_vtail = 1.0
