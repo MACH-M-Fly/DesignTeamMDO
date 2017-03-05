@@ -39,7 +39,7 @@ class constrainedMDO(Group):
 		# self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 1.5])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('chord',IndepVarComp('chord',np.array([-0.3, -2, -0.5, 3])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
 		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -51,18 +51,12 @@ class constrainedMDO(Group):
 		# self.add('c_r_vt',IndepVarComp('c_r_vt',np.array([0.0 , 0.0, 0.0,1.0])))
 		# self.add('b_htail',IndepVarComp('b_htail',3.0))
 		# self.add('b_vtail',IndepVarComp('b_vtail',1.0))
-
-		self.add('my_comp', createAC())
-		# self.add('calcWeight', calcWeight())
-		self.add('aeroAnalysis', aeroAnalysis())
-		self.add('structAnalysis',structAnalysis())
-		self.add('objPerformance', objPerformance())
 		
 # ====================================== Connections ============================================ # 
 		# self.connect('b_wing.b_wing',['createAC.b_wing'])
 		# self.connect('dihedral.dihedral',['createAC.dihedral'])
 		# self.connect('sweep.sweep',['createAC.sweep'])
-		# self.connect('chord.chord',['createAC.chord'])
+		self.connect('chord.chord',['createAC.chord'])
 		# self.connect('dist_LG.dist_LG',['createAC.dist_LG'])
 		# self.connect('boom_len.boom_len',['createAC.boom_len'])
 		# self.connect('camber.camber',['createAC.camber'])
@@ -75,13 +69,10 @@ class constrainedMDO(Group):
 		# self.connect('b_htail.b_htail',['createAC.b_htail'])
 		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
-		self.connect('chord.chord', 'my_comp.chord')
-		# self.connect('my_comp.aircraft','calcWeight.in_aircraft')
-		# self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-		self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
-		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
-		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-		# self.connect('objPerformance.out_aircraft','Plot.in_aircraft')
+		self.connect('createAC.aircraft', 'aeroAnalysis.aircraft')
+		self.connect('aeroAnalysis.aircraft','structAnalysis.aircraft')
+		self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
+		self.connect('objPerformance.aircraft','Plot.aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
 
@@ -106,23 +97,23 @@ class constrainedMDO(Group):
 
 # plt.tight_layout()
 
-# ============================================== Create Problem ============================================ #
-prob = Problem()
-prob.root = constrainedMDO()
+# # ============================================== Create Problem ============================================ #
+# prob = Problem()
+# prob.root = constrainedMDO()
 
 
 
-# ================================================ Add Driver ============================================== #
-prob.driver = pyOptSparseDriver()
-prob.driver.options['optimizer'] = 'ALPSO'
-prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
-				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
+# # ================================================ Add Driver ============================================== #
+# prob.driver = pyOptSparseDriver()
+# prob.driver.options['optimizer'] = 'ALPSO'
+# prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
+# 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
 # prob.driver = ScipyOptimizer()
 # prob.driver.options['optimizer'] = 'SLSQP'
 # prob.root.fd_options['force_fd'] = True	
 # prob.root.fd_options['form'] = 'forward'
-# prob.root.fd_options['step_size'] = 1.0e-8
+# prob.root.fd_options['step_size'] = 1e-3,
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
@@ -130,8 +121,8 @@ prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0, 0.0]),\
-													  	upper = np.array([0.0, 0.0, 1.0, 10.0]) )
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0, 0.0, 0.0 ]),\
+# 													  	upper = np.array([15.0, 15.0, 15.0, 15.0, 15.0 ]) )
 # prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t4.t4',			  				lower = 0.6,  upper = 1.0)
@@ -155,32 +146,26 @@ prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0,
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
 
 
-# ======================================== Add Objective Function ============================================== 
-prob.driver.add_objective('objPerformance.score')
+# ======================================== Post-Processing ============================================== #
+root = Group()
+root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
+root.add('my_comp', createAC())
+# root.add('calcWeight', calcWeight())
+root.add('aeroAnalysis', aeroAnalysis())
+root.add('structAnalysis',structAnalysis())
+root.add('objPerformance', objPerformance())
+# root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
-# # ======================================== Post-Processing ============================================== #
-# root = Group()
-# root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
-# root.add('my_comp', createAC())
-# # root.add('calcWeight', calcWeight())
-# root.add('aeroAnalysis', aeroAnalysis())
-# root.add('structAnalysis',structAnalysis())
-# root.add('objPerformance', objPerformance())
-# # root.add('Plot', Plot(geo1, geo2, A, writer, fig))
+root.connect('indep_var.chord', 'my_comp.chord')
+# root.connect('my_comp.aircraft','calcWeight.in_aircraft')
+# root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
+root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
+root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
-
-# root.connect('indep_var.chord', 'my_comp.chord')
-# # root.connect('my_comp.aircraft','calcWeight.in_aircraft')
-# # root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-# root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
-# root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
-# root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-# # root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
-
-# prob = Problem(root)
-
-
+prob = Problem(root)
 prob.setup()
 prob.run()
 
@@ -199,7 +184,6 @@ print("CM", out_ac.CM)
 print("NP", out_ac.NP)
 print('########    Performance Metrics  #######')
 print("Number of Laps", out_ac.N)
-print("Score", out_ac.score)
 
 
 print('########    Structural Analysis  #######')

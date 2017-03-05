@@ -47,7 +47,7 @@ class objPerformance(Component):
 		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+		# self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
 		# Set up outputs
 		self.add_output('score', val= 0.0,desc='score ')
@@ -114,10 +114,14 @@ class objPerformance(Component):
 		AC.N = N
 		AC.tot_time = tot_time
 		AC.SM = SM
+		# print(AC.score)
+
 		AC.score = score
 
+
 		# Set output to updated instance of aircraft
-		unknowns['out_aircraft'] = AC
+		# unknowns['out_aircraft'] = AC
+		unknowns['score'] = score
 
 # Declare Constants
 
@@ -474,9 +478,9 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	# 	print('Can not Climb/Cruise is slow' + ' V_climb: ' + str(climb_vel) + ' Vel_Cruise: ' + str(cruise_vel))
 	# 	return 0, 0.0
 
-	if climb_vel <= 0.5 or cruise_vel < 7.0 :
-		print('Can not Climb' + ' V_climb: ' + str(climb_vel) + '  cruise_vel=' + str(cruise_vel))
-		return 0, 0.0
+	# if climb_vel <= 0.5 or cruise_vel < 7.0 :
+	# 	print('Can not Climb' + ' V_climb: ' + str(climb_vel) + '  cruise_vel=' + str(cruise_vel))
+	# 	return 0, 0.0
 
 	# print('cruise_vel =' + str(cruise_vel)+  ' cruise_Ang: ' + str(cruise_Ang) + 'climb_vel = ' + str(climb_vel) + ' climb_hvel =' + str(climb_hvel))
 

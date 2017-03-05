@@ -177,6 +177,9 @@ AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
 	Zo, AC.boom_len)
 
 
+AC.score = 0
+
+
 print('=============== Initial vehicle Parameters =============')
 print('Weight (lbs)', AC.weight)
 print('CDp', AC.CD_p)
