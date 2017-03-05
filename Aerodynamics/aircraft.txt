@@ -11,7 +11,7 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-6.0  1.0  6.0
+3.0  1.0  3.0
 #Xref    Yref    Zref
 0.25 0.0 0.0
 # CDp
@@ -41,22 +41,22 @@ AFILE
 airfoils/A_1.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.105796188425    0.6    0       1.5     0      5      3
+0.0528980942125    0.3    0       1.5     0      5      3
 AFILE
 airfoils/A_2.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.21159237685    1.2    0       1.5     0      5      3
+0.105796188425    0.6    0       1.5     0      5      3
 AFILE
 airfoils/A_3.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.317388565275    1.8    0       1.5     0      5      3
+0.158694282638    0.9    0       1.5     0      5      3
 AFILE
 airfoils/A_4.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.4231847537    2.4    0       1.5     0      5      3
+0.21159237685    1.2    0       1.5     0      5      3
 AFILE
 airfoils/A_5.dat
 

@@ -38,7 +38,7 @@ Zo = 0
 # Initial Conditions for Optimizer
 #=========================================================================
 # Wingspan (feet)
-b_wing = 6.0
+b_wing = 3.0
 
 # Wing dihedral angle (degrees)
 dihedral = 5.0

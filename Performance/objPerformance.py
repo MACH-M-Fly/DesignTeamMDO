@@ -79,16 +79,16 @@ class objPerformance(Component):
 
 			SM = (AC.NP-AC.CG[0])/AC.wing.MAC
 			print("Static Margin", SM)
-			if (SM >= 0.12 and SM <= 0.20):
-				N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
+			# if (SM >= 0.12 and SM <= 0.20):
+			N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
-				score = -1*(N*10- tot_time/100.0)
+			score = -1*(N*10- tot_time/100.0)
 
-			else:
-				print('BAD SM: ' + str(SM))
-				N = 0
-				tot_time= 0.0
-				score = abs(0.16 - SM)
+			# else:
+			# 	print('BAD SM: ' + str(SM))
+			# 	N = 0
+			# 	tot_time= 0.0
+			# 	score = abs(0.16 - SM)
 					
 			# Print output
 			print('Score: ' + str(score))
