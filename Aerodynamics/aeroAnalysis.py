@@ -80,34 +80,32 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	   X location of NP in AVL coordinate system
 	'''
 
-	case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file =mass_filename  )
+	case = pyAVL.avlAnalysis(geo_file=geo_filename  )
 
-	# , mass_file =mass_filename 
+
 	# stead level flight contraints
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
+
+
+	case.executeRun()
+
+	#print '----------------- Neutral Point ----------------'
+	case.calcNP()
+	NP = case.NP
+	
+	case.clearVals()
+
 
 	case.alphaSweep(-8, 15, 5)
 	# case.calcNP()
 
 
-	# print '----------------- alpha sweep ----------------'
-	# print 'Angle      Cl         Cd         Cm'
-	# for i in xrange(len(case.alpha)):
-	#     print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
-
-
-
-
-	# case.alpha = [x * np.pi/180 for x in case.alpha]
 
 	# get func for aero coeificent
 	CL = np.poly1d(np.polyfit(case.alpha,case.CL, 1))
 	CD = np.poly1d(np.polyfit(case.alpha,case.CD, 2))
 	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
-
-	case.calcNP()
-	NP = case.NP
 
 	# # ----------------- Plot Outputs --------------------------
 	# plt.figure(3)
