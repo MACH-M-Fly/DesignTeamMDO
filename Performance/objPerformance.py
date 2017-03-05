@@ -77,7 +77,7 @@ class objPerformance(Component):
 		# Run MACH lap-time objective
 		elif AC.mission == 2:
 
-			SM = (AC.NP-AC.x_cg)/AC.wing.MAC
+			SM = (AC.NP-AC.CG[0])/AC.wing.MAC
 			print("Static Margin", SM)
 			if (SM >= 0.12 and SM <= 0.20):
 				N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
@@ -180,7 +180,7 @@ def calc_velcruise(CL, CD, weight, Sref_wing, Sref_tail):
 		# print(F)
 		return F
 
- 	Z = fsolve(sum_forces,np.array([40, -10*np.pi/180]))
+ 	Z = fsolve(sum_forces,np.array([800, -10*np.pi/180]))
 
  	ang = Z[1]
  	vel =  Z[0]

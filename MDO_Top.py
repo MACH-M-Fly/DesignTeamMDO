@@ -190,7 +190,7 @@ print("Max Deflection %.7f"% out_ac.y_max)
 # Ooutput final geometry of aircraft
 plot_geo_final(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.x_cg, out_ac.NP, 5.)
+				out_ac.CG[0], out_ac.NP, 5.)
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)
