@@ -80,9 +80,9 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	   X location of NP in AVL coordinate system
 	'''
 
-	case = pyAVL.avlAnalysis(geo_file=geo_filename , mass_file =mass_filename )
+	case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file =mass_filename  )
 
-
+	# , mass_file =mass_filename 
 	# stead level flight contraints
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)

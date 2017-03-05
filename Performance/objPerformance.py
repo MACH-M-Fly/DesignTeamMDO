@@ -78,7 +78,7 @@ class objPerformance(Component):
 		elif AC.mission == 2:
 
 			SM = (AC.NP-AC.x_cg)/AC.wing.MAC
-
+			print("Static Margin", SM)
 			if (SM >= 0.12 and SM <= 0.20):
 				N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 

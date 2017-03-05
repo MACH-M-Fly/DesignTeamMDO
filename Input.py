@@ -183,7 +183,7 @@ print('CDp', AC.CD_p)
 print('Tailboom Length', AC.boom_len)
 print('Iyy', AC.Iyy)
 print('Mission', AC.mission)
-print('CG (x position)', AC.x_cg)
+print('CG (x,y,z)', AC.CG)
 
 
 print('=============== Initial wing Parameters =============')

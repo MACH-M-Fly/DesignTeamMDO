@@ -84,6 +84,7 @@ class createAC(Component):
 
 		# Create AVL geometry file
 		gen_geo(AC)
+		gen_mass(AC)
 
 		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC
