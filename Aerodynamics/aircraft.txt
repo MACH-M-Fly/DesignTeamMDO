@@ -36,27 +36,27 @@ ANGLE
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.0    0       1.5     0      5      3
+0.0    0.0    0       5.60884672041e-15     0      5      3
 AFILE
 airfoils/A_1.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0528980942125    0.3    0       1.5     0      5      3
+0.0528980942125    0.3    0       9.91207116385e-15     0      5      3
 AFILE
 airfoils/A_2.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.105796188425    0.6    0       1.5     0      5      3
+0.105796188425    0.6    0       1.55742085894e-14     0      5      3
 AFILE
 airfoils/A_3.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.158694282638    0.9    0       1.5     0      5      3
+0.158694282638    0.9    0       2.25952589972e-14     0      5      3
 AFILE
 airfoils/A_4.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.21159237685    1.2    0       1.5     0      5      3
+0.21159237685    1.2    0       3.0975222387e-14     0      5      3
 AFILE
 airfoils/A_5.dat
 

@@ -112,17 +112,17 @@ prob.root = constrainedMDO()
 
 
 
-# ================================================ Add Driver ============================================== #
-prob.driver = pyOptSparseDriver()
-prob.driver.options['optimizer'] = 'ALPSO'
-prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
-				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
+# # ================================================ Add Driver ============================================== #
+# prob.driver = pyOptSparseDriver()
+# prob.driver.options['optimizer'] = 'ALPSO'
+# prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
+# 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
-# prob.driver = ScipyOptimizer()
-# prob.driver.options['optimizer'] = 'SLSQP'
-# prob.root.fd_options['force_fd'] = True	
-# prob.root.fd_options['form'] = 'forward'
-# prob.root.fd_options['step_size'] = 1.0e-8
+prob.driver = ScipyOptimizer()
+prob.driver.options['optimizer'] = 'SLSQP'
+prob.root.fd_options['force_fd'] = True	
+prob.root.fd_options['form'] = 'central'
+prob.root.fd_options['step_size'] = 1.0e-2
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
