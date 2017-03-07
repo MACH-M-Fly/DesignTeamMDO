@@ -164,8 +164,9 @@ def plot_geo_final(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 	geo1.plot( [Yle[4], Yle[4]] , [Xle[4] ,Xle[4] + C[4]] ,  'm--')
 	geo1.plot(0, x_cg, 'ko', 0, NP, 'cd')
 	# Automatic axis scaling
-	geo1.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
-	geo1.set_ylim([-1, max(Xle_ht)*2.0])
+	# geo1.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
+	geo1.axis('equal')
+	geo1.set_ylim([-1, (max(Xle_ht)+max(C_t))*1.2])
 
 
 	at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
