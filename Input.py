@@ -58,7 +58,7 @@ chord = np.array([ch_a, ch_b, ch_c, ch_d])
 AC.dist_LG = 1
 
 # Length of tailboom (m)
-AC.boom_len = 4
+AC.boom_len = 1.5
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 1; c_b = 1; c_c = 1; c_d = 1

@@ -111,6 +111,7 @@ class objPerformance(Component):
 			print('###################################################')
 
 
+
 		# Assign number of laps(N), total flight time (tot_time), neutral point(NP), 
 		# static margin (SM), and objective value to instance of AC
 		AC.N = N
@@ -332,18 +333,18 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	ang = [0.0]
 	ang_vel = [0.0]
 
-	# accel = [acceleration(vel[i], ang[i ])]
-	# ang_accel = [ ang_acceleration(vel[i], ang[i], ang_vel[i]) ]
+	accel = [acceleration(vel[i], ang[i ])]
+	ang_accel = [ ang_acceleration(vel[i], ang[i], ang_vel[i]) ]
 
 
 	v_stall = np.sqrt(2*weight/(Rho*Sref_wing*1.7))
 
 
 	time = [0.0]
-	dt = 0.2
+	dt = 0.05
 	time_elap = 0
 
-	# DT =[dt]
+	DT =[dt]
 
 	sum_y =  gross_lift(vel[i],ang[i], Sref_wing, Sref_tail, Flapped, CL) - weight
 
@@ -375,8 +376,8 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 		vel.append(vel[i] + 1.0/6*(k1_vel + 2*k2_vel + 2*k3_vel + k4_vel))
 		ang.append(ang[i] + 1.0/6*(k1_ang + 2*k2_ang + 2*k3_ang + k4_ang)) 
 		ang_vel.append(ang_vel[i] + 1.0/6*(k1_ang_vel + 2*k2_ang_vel + 2*k3_ang_vel + k4_ang_vel))
-		# accel.append(acceleration(vel[i + 1], ang[i + 1]))
-		# ang_accel.append(ang_acceleration(vel[i + 1], ang[i+ 1], ang_vel[i+1]))
+		accel.append(acceleration(vel[i + 1], ang[i + 1]))
+		ang_accel.append(ang_acceleration(vel[i + 1], ang[i+ 1], ang_vel[i+1]))
 
 
 		i = i + 1
@@ -391,10 +392,10 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 
 		# Change time step as pilot deflect elevator, safe bet to just use the small timestep
 		if (vel[i] < 0.92*(v_stall+2.0)) or (abs(ang_vel[i]) == 0.0 and (ang[i] < 10**-10 or ang[i] >=max_rot_ang)) :
-			dt = 0.2
+			dt = 0.05
 		else:
 			dt = 0.05
-		# DT.append(dt)
+		DT.append(dt)
 		
 		time.append(time[i -1] + dt)
 		time_elap = time[i]
@@ -418,52 +419,53 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 
 	# ============== Ploting ===============
 
-	# plt.figure(1)
-	# plt.subplot(711)
-	# plt.ylabel('Angle)')
-	# plt.xlabel('time')
-	# plt.plot(time, ang, 'b')
+	plt.figure(1)
+	plt.subplot(711)
+	plt.ylabel('Angle)')
+	plt.xlabel('time')
+	plt.plot(time, ang, 'b')
 
-	# plt.subplot(712)
-	# plt.ylabel('ang velocity')
-	# plt.xlabel('time')
-	# plt.plot(time, ang_vel, 'b')
+	plt.subplot(712)
+	plt.ylabel('ang velocity')
+	plt.xlabel('time')
+	plt.plot(time, ang_vel, 'b')
 
-	# # plt.subplot(713)
-	# # plt.ylabel('ang acceleration')
-	# # plt.xlabel('time')
-	# # plt.plot(time, ang_accel, 'b')
+	plt.subplot(713)
+	plt.ylabel('ang acceleration')
+	plt.xlabel('time')
+	plt.plot(time, ang_accel, 'b')
 
-	# plt.subplot(714)
-	# plt.ylabel('distance')
-	# plt.xlabel('time')
-	# plt.plot(time, dist, 'b')
+	plt.subplot(714)
+	plt.ylabel('distance')
+	plt.xlabel('time')
+	plt.plot(time, dist, 'b')
 
-	# plt.subplot(715)
-	# plt.ylabel('Velocity')
-	# plt.xlabel('time')
-	# plt.plot(time, vel, 'b')
+	plt.subplot(715)
+	plt.ylabel('Velocity')
+	plt.xlabel('time')
+	plt.plot(time, vel, 'b')
 
-	# # plt.subplot(716)
-	# # plt.ylabel('Acceleration')
-	# # plt.xlabel('time')
-	# # plt.plot(time, accel, 'b')
+	plt.subplot(716)
+	plt.ylabel('Acceleration')
+	plt.xlabel('time')
+	plt.plot(time, accel, 'b')
 
-	# # plt.subplot(717)
-	# # plt.ylabel('dt')
-	# # plt.xlabel('time')
-	# # plt.plot(time, DT, 'b')
-	# plt.show()
+	plt.subplot(717)
+	plt.ylabel('dt')
+	plt.xlabel('time')
+	plt.plot(time, DT, 'b')
 
-	
-	# print('Takeoff:' + str(takeoff))
-	# print('Distance: ' + str(dist[i]))
-	# print('vel: ' + str(vel[i]))
-	# print('ang: ' + str(ang[i]*180.0/np.pi) + ' max_rot_ang: ' + str(max_rot_ang*180.0/np.pi))
-	# print('ang_vel: ' + str(ang_vel[i]))
-	# print('time: ' + str(time[i]))
-	# print('steps: ' + str(len(time)))
-	# print('\n')
+	print('weight: ' + str(weight))
+	print('Sum Y:' + str(sum_y))
+	print('Distance: ' + str(dist[i]))
+	print('vel: ' + str(vel[i]))
+	print('ang: ' + str(ang[i]*180.0/np.pi) + ' max_rot_ang: ' + str(max_rot_ang*180.0/np.pi))
+	print('ang_vel: ' + str(ang_vel[i]))
+	print('time: ' + str(time[i]))
+	print('steps: ' + str(len(time)))
+	print('\n')
+
+	plt.show()
 
 	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 

@@ -97,7 +97,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case.clearVals()
 
 
-	case.alphaSweep(-8, 15, 5)
+	case.alphaSweep(-15, 30, 2)
 	# case.calcNP()
 
 
@@ -108,23 +108,32 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
 
 	# # ----------------- Plot Outputs --------------------------
-	# plt.figure(3)
-	# plt.subplot(311)
-	# plt.ylabel('CL')
-	# plt.xlabel('Alpha')
-	# plt.plot( case.alpha, case.CL, 'b-o')
+	plt.figure(4)
+	plt.subplot(411)
+	plt.ylabel('CL')
+	plt.xlabel('Alpha')
+	plt.plot( np.degrees(case.alpha), case.CL, 'b-o')
 
-	# plt.subplot(312)
-	# plt.xlabel('CD')
-	# plt.ylabel('CL')
-	# plt.plot( case.CD, case.CL, 'b-o')
+	plt.subplot(412)
+	plt.xlabel('CD')
+	plt.ylabel('CL')
+	plt.plot( case.CD, case.CL, 'b-o')
 
 
-	# plt.subplot(313)
-	# plt.ylabel('CM')
-	# plt.xlabel('Alpha')
-	# plt.plot(case.alpha, case.CM, 'b-o')
-	# plt.show()
+	plt.subplot(413)
+	plt.ylabel('CM')
+	plt.xlabel('Alpha')
+	plt.plot(np.degrees(case.alpha), case.CM, 'b-o')
+
+
+	plt.subplot(414)
+	plt.ylabel('Elvator Deflection')
+	plt.xlabel('Alpha')
+	plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
+
+
+
+	plt.show()
 
 	return (CL, CD, CM, NP)
 # Declare Constants
