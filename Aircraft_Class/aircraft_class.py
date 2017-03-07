@@ -22,8 +22,8 @@ class Aircraft(object):
 
 
 		self.CD_p = 0.0					# Parasitic drag coefficient
-		self.weight = 5.0				# Weight in pounds
-		self.CG = ([0.9, 0.0, 0.0])					# Cg, ft. behind root LE of wing
+		self.weight = 50.0				# Weight in N
+		self.CG = ([0.2, 0.0, 0.0])					# Cg, m. behind root LE of wing
 		self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0])
 
 		self.Iyy = self.calcI()

@@ -51,6 +51,7 @@ class objPerformance(Component):
 
 		# Set up outputs
 		self.add_output('score', val= 0.0,desc='score ')
+		self.add_output('sum_y', val=0.0, desc = 'Net Lift at End of Runway')
 		self.add_output('N', val = 0.0, desc = 'number of laps')
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
@@ -82,7 +83,7 @@ class objPerformance(Component):
 
 
 			# if (SM >= 0.12 and SM <= 0.20):
-			N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
+			N,tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
 			score = -1*(N*10- tot_time/100.0)
 
@@ -123,6 +124,7 @@ class objPerformance(Component):
 		# Set output to updated instance of aircraft
 		# unknowns['out_aircraft'] = AC
 		unknowns['score'] = score
+		unknowns['sum_y'] = sum_y
 
 # Declare Constants
 
@@ -404,13 +406,15 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 			Flapped = 1
 		
 
+	# 400 ft runway length in meters
+	runway_len = 137.8
 
-	# runway_len = 200 #meters
 
-	if (sum_y > 0.0 and dist[i] <= 200.0):
-		takeoff = 1
-	else:
-		takeoff = 0
+
+	# if (sum_y > 0.0 and dist[i] <= runway_len):
+	# 	takeoff = 1
+	# else:
+	# 	takeoff = sum_y
 
 	# ============== Ploting ===============
 
@@ -461,7 +465,7 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	# print('steps: ' + str(len(time)))
 	# print('\n')
 
-	return (takeoff, dist[i], vel[i], ang[i], ang_vel[i], time[i])
+	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 
 def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
 
@@ -487,13 +491,13 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 
 	# ==========================  beign takeoff ===========================
 	#find time to takeoff
-	takeoff,dist, vel, ang, ang_vel, time =  runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
+	sum_y, dist, vel, ang, ang_vel, time =  runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
 	
 
 
-	if takeoff == 0:
+	if sum_y < 0:
 		print('Failed to Takeoff')
-		return 0, 999
+		# return 0, 999
 
 
 	alt_cruise = 15.5
@@ -502,29 +506,29 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 
 	time_to_alt = alt_cruise/climb_vel
 
-	time = time + time_to_alt
-	dist = dist + climb_hvel*time_to_alt
+	time += time_to_alt
+	dist += climb_hvel*time_to_alt
 
 	if dist < leg_len:
-		time = time + cruise(leg_len - dist, cruise_vel)
+		time += cruise(leg_len - dist, cruise_vel)
 
-	time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-	time = time + cruise(leg_len, cruise_vel)
-	time = time + turn(40, cruise_vel, Sref_wing, weight, 360)
-	time = time + cruise(leg_len, cruise_vel)
-	time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-	time = time + cruise(leg_len, cruise_vel)
+	time += turn(35, cruise_vel, Sref_wing, weight, 180)
+	time += cruise(leg_len, cruise_vel)
+	time += turn(40, cruise_vel, Sref_wing, weight, 360)
+	time += cruise(leg_len, cruise_vel)
+	time += turn(35, cruise_vel, Sref_wing, weight, 180)
+	time += cruise(leg_len, cruise_vel)
 
 	while time < max_time:
 		N = N + 1
 
-		time = time + cruise(leg_len , cruise_vel)
-		time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-		time = time + cruise(leg_len, cruise_vel)
-		time = time + turn(40, cruise_vel, Sref_wing, weight, 360)
-		time = time + cruise(leg_len, cruise_vel)
-		time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-		time = time + cruise(leg_len, cruise_vel)
+		time += cruise(leg_len , cruise_vel)
+		time += turn(35, cruise_vel, Sref_wing, weight, 180)
+		time += cruise(leg_len, cruise_vel)
+		time += turn(40, cruise_vel, Sref_wing, weight, 360)
+		time += cruise(leg_len, cruise_vel)
+		time += turn(35, cruise_vel, Sref_wing, weight, 180)
+		time += cruise(leg_len, cruise_vel)
 	
 		# print(N)
-	return (N,time)
+	return (N,time,sum_y)

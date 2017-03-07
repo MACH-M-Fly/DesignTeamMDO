@@ -1,6 +1,7 @@
 from Aircraft_Class.aircraft_class import *
 
 # Create an object of type aircraft called the aircraft name, M6
+# SI Units only: kg, m, s
 
 AC = Aircraft()
 
@@ -37,7 +38,7 @@ Zo = 0
 # Wing Parameters (Design Variables)
 # Initial Conditions for Optimizer
 #=========================================================================
-# Wingspan (feet)
+# Wingspan (m)
 b_wing = 3.0
 
 # Wing dihedral angle (degrees)
@@ -53,10 +54,10 @@ sweep = np.array([s_a, s_b, s_c, s_d])
 ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 1.;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
-# Distance between CG and landing gear (feet)
+# Distance between CG and landing gear (m)
 AC.dist_LG = 1
 
-# Length of tailboom (feet)
+# Length of tailboom (m)
 AC.boom_len = 4
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -86,10 +87,10 @@ Ainc = np.array([ang_a,ang_b, ang_c, ang_d])
 # Tail Parameters (Design Variables)
 # Initial Conditions for Optimizer
 #=========================================================================
-# Horizontal tail span (feet)
+# Horizontal tail span (m)
 b_htail = 1.0
 
-# Vertical tail span (feet)
+# Vertical tail span (m)
 b_vtail = 1.0
 
 # Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
@@ -109,42 +110,42 @@ vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 #       =========================================================================
 #		Propulsion
 #       =========================================================================
-# Thrust (quadratic thrust curve: Thrust (lbs) = a*u^2 + b*u + c, u = velocity)
+# Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
 a = 1; b = 1; c = 1;
 AC.thrust = {a,b,c}
-# Lap perimiter (feet)
+# Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
-# Runway length (feet)
+# Runway length (m)
 AC.runway_length = 200
-# Desired climb rate (for carpet plot, ft/s)
-AC.climb_rate = 5
+# Desired climb rate (for carpet plot, m/s)
+AC.climb_rate = 0.4
 # Desired bank angle (sustained load factor turn, steady level, degrees)
 AC.bank_angle = 20
 
 #       =========================================================================
 #		Weights
 #       =========================================================================
-# Spar density (lbs/ft)
+# Spar density (kg/m)
 AC.spar_lindens = 5
-# Leading Edge (LE) density (lbs/ft)
+# Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5
-# Trailing Edge (TE) density (lbs/ft)
+# Trailing Edge (TE) density (kg/m)
 AC.TE_lindens = 5
-# Rib chordwise density (lbs/ft)
+# Rib chordwise density (kg/m)
 AC.k_ribs = 1;
-# Rib spanwise desnity (# of ribs per ft)
+# Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 2
-# Tail Rib chordwise density (lbs/ft)
+# Tail Rib chordwise density (kg/m)
 AC.k_ribs_t = 1;
-# Tail Rib spanwise desnity (# of ribs per ft)
+# Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 2 
-# Motor mass (lbs)
+# Motor mass (kg)
 AC.m_motor = 2
-# Battery mass (lbs)
+# Battery mass (kg)
 AC.m_battery = 1
-# Propeller mass (lbs)
+# Propeller mass (kg)
 AC.m_propeller = 1
 # Electronics mass
 AC.m_electronics = 1
@@ -238,6 +239,3 @@ print('AC.tail.boom_len: ', AC.tail.boom_len)
 print('AC.tail.sec_span_htail: ', AC.tail.sec_span_htail)
 print('AC.tail.sec_span_vtail: ', AC.tail.sec_span_vtail)
 print('\n')
-
-# print 
-# exit()
