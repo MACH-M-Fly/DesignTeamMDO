@@ -39,7 +39,7 @@ class constrainedMDO(Group):
 		# self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 1.5])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.1])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
 		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -130,8 +130,8 @@ prob.root.fd_options['step_size'] = 1.0e-2
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0, 0.5]),\
-													  	upper = np.array([0.0, 0.0, 0.0, 10.0]) )
+prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, -0.1, -0.1, 0.01]),\
+													  	upper = np.array([0.0, 0.0, 0.0, 1.0]) )
 # prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t4.t4',			  				lower = 0.6,  upper = 1.0)
@@ -195,9 +195,13 @@ out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
 print('\n')
 print(out_ac.wing.chord_vals)
-print("CL", out_ac.CL)
-print("CD", out_ac.CD)
-print("CM", out_ac.CM)
+print("chord terms", out_ac.wing.chord)
+
+# print("CL", out_ac.CL)
+# print("CD", out_ac.CD)
+# print("CD", out_ac.wing.chord)
+
+# print("CM", out_ac.CM)
 print("NP", out_ac.NP)
 print('########    Performance Metrics  #######')
 print("Number of Laps", out_ac.N)
