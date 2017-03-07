@@ -84,46 +84,6 @@ class avlAnalysis():
 
             pass
 
-
-            # for A in [a for a in dir(obj) if not a.startswith('__')]
-                # if type(plane.A) is Surface:
-                    # pass
-
-            # avl.avl()   
- 
-            # avl.CASE_R.SREF = aircraft.Sref
-            # avl.CASE_R.CREF = aircraft.Cref
-            # avl.CASE_R.BREF = aircraft.Bref
-
-
-            # # avl.MASS_R.RMASS0 = aircraft.mass
-            # # avl.MASS_R.XYZMASS0 = (aircraft.X_cg, aircraft.Y_cg, aircraft.Z_cg)
-            # # avl.MASS_R.RINER0 = (aircraft.I)
-
-            # # avl.MASS_R.AMASS(3,3) = aircraft.mass
-            # # avl.MASS_R.AINER0(3,3) = (aircraft.I)
-
-
-
-            # avl.CASE_L.CDREF = aircraft.CD_p
-
-            # avl. = aircraft.Chord
-
-            # avl. = aircraft.Xle
-            # avl. = aircraft.Yle
-            # avl. = aircraft.Zle
-
-            # avl. = aircraft.Ainc
-
-            # avl. = aircraft.Tail_Horz_Sref 
-            # avl. = aircraft.Tail_Horz_Chord
-            # avl. = aircraft.Tail_Horz_Bref 
-            # avl. = aircraft.Tail_Horz_Ainc
-
-
-            # avl. = aircraft.Tail_Vert_Sref 
-            # avl. = aircraft.Tail_Vert_Chord
-            # avl. = aircraft.Tail_Vert_Bref 
         else:
             print 'ERROR:  neither a geometry file or aircraft object was given'
             sys.exit(1)
