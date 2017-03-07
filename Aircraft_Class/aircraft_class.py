@@ -63,7 +63,7 @@ class Wing(object):
 		# self.boom_len = boom_len				# Tailboom length
 		self.Afiles = Afiles					# File for initial airfoil input
 		self.Ainc = Ainc						# Angle of incidence as a function of half-span (b_wing/2)
-		self.sec_span = self.b_wing/2.0/self.num_Sections 			# Span of each section of wing
+		self.sec_span = self.b_wing/2.0/(self.num_Sections-1) 			# Span of each section of wing
 		
 		# Check for linearly varying input
 		if self.is_linear == 1:

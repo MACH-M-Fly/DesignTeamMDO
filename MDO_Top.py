@@ -130,7 +130,7 @@ prob.root.fd_options['step_size'] = 1.0e-2
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0, 1.5.0]),\
+prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, 0.0, 1.5]),\
 													  	upper = np.array([0.0, 0.0, 1.0, 10.0]) )
 # prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)

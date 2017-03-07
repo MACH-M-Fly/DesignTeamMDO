@@ -61,6 +61,7 @@ class createAC(Component):
 		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
 	
+		print AC.wing.b_wing
 		# Modify instance of aircraft - This is where analysis would happen
 		# AC.wing.b_wing = params['b_wing']
 		# AC.wing.dihedral = params['dihedral']

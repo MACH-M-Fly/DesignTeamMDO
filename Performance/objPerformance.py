@@ -67,7 +67,10 @@ class objPerformance(Component):
 		print('Thickness: '+ str(AC.wing.thickness_vals))
 		print('Max thickness position: '+ str(AC.wing.max_thickness_vals))
 
-		
+	
+		SM = (AC.NP-AC.CG[0])/AC.wing.MAC
+		print("Static Margin", SM)
+
 		# Run M-Fly maximum payload mission
 		if AC.mission == 1:
 			# Not yet filled in
@@ -77,8 +80,7 @@ class objPerformance(Component):
 		# Run MACH lap-time objective
 		elif AC.mission == 2:
 
-			SM = (AC.NP-AC.CG[0])/AC.wing.MAC
-			print("Static Margin", SM)
+
 			# if (SM >= 0.12 and SM <= 0.20):
 			N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
@@ -91,15 +93,14 @@ class objPerformance(Component):
 			# 	score = abs(0.16 - SM)
 					
 			# Print output
-			print('Score: ' + str(score))
-			print('Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time))
+			print('Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time) + ' SM: ' + str(SM))
 			print('\n')
-			print('\n')
-			print('============== output =================')
-			print('N: ' + str(N))	
-			print('SM: ' + str(SM))
-			print('Score: ' + str(score))
-			print('\n')
+			# print('\n')
+			# print('============== output =================')
+			# print('N: ' + str(N))	
+			# print(
+			# print('Score: ' + str(score))
+			# print('\n')
 
 
 		# Faulty mision input

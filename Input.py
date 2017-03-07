@@ -238,3 +238,6 @@ print('AC.tail.boom_len: ', AC.tail.boom_len)
 print('AC.tail.sec_span_htail: ', AC.tail.sec_span_htail)
 print('AC.tail.sec_span_vtail: ', AC.tail.sec_span_vtail)
 print('\n')
+
+# print 
+# exit()
