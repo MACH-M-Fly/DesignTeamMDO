@@ -14,7 +14,7 @@ from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
 # Import self-created components
 from CreateAC import createAC
-# from Weights.calcWeight import calcWeight
+from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
@@ -39,7 +39,7 @@ class constrainedMDO(Group):
 		# self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([-0.3, -2, -0.5, 3])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.1])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
 		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -148,9 +148,9 @@ class constrainedMDO(Group):
 
 # ======================================== Post-Processing ============================================== #
 root = Group()
-root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
+root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.15])))
 root.add('my_comp', createAC())
-# root.add('calcWeight', calcWeight())
+root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
@@ -158,9 +158,9 @@ root.add('objPerformance', objPerformance())
 
 
 root.connect('indep_var.chord', 'my_comp.chord')
-# root.connect('my_comp.aircraft','calcWeight.in_aircraft')
-# root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
+root.connect('my_comp.aircraft','calcWeight.in_aircraft')
+root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+# root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 # root.connect('objPerformance.out_aircraft','Plot.in_aircraft')

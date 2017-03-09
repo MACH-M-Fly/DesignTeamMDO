@@ -131,7 +131,7 @@ class calcWeight(Component):
         wet_area_w = 2*(sref_Wing)
         wet_area_t = 2*(b_htail+b_vtail)*C_t
         m_wing = m_wing + wet_area_w*ultrakote_Density
-        m_tail = m_wing + wet_area_t*ultrakote_Density
+        m_tail = m_tail + wet_area_t*ultrakote_Density
         # mass boom
         m_boom = boom_len * linden_boom 
         
@@ -178,6 +178,7 @@ class calcWeight(Component):
         x_cg = x_CG_loc(mount_len)
         LHS = SM * MAC + NP - x_cg
         print("This is LHS", LHS)
+        print("mass check", m_tail)
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
         for i in range(1, 100):
                 
@@ -192,6 +193,9 @@ class calcWeight(Component):
                 if max_payloadnum > i:
                     m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(max_payloadnum) + fuselage_mass
                     x_cg_fuselage = (payload_depth*(i) * (mass_fuselage_payload) + m_payload*(max_payloadnum)) / m_total
+                    print("m_total", m_total)
+                    print("x_cg_fuselage", x_cg_fuselage)
+                    print("LHS", LHS)
                     if x_cg_fuselage >= LHS: 
                         break
                 elif x_cg_fuselage >= LHS: 
