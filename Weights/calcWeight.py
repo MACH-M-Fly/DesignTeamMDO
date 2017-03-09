@@ -128,8 +128,9 @@ class calcWeight(Component):
         m_spar_t = linden_spar_t * (b_htail + b_vtail)
         ultrakote_Density = .1318 #kg/m^2
         m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t
+
         wet_area_w = 2*(sref_Wing)
-        wet_area_t = 2*(b_htail+b_vtail)*C_t
+        wet_area_t = 2*(b_htail+b_vtail)*C_t[0]
         m_wing = m_wing + wet_area_w*ultrakote_Density
         m_tail = m_tail + wet_area_t*ultrakote_Density
         # mass boom
@@ -177,8 +178,6 @@ class calcWeight(Component):
 
         x_cg = x_CG_loc(mount_len)
         LHS = SM * MAC + NP - x_cg
-        print("This is LHS", LHS)
-        print("mass check", m_tail)
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
         for i in range(1, 100):
                 
@@ -193,9 +192,6 @@ class calcWeight(Component):
                 if max_payloadnum > i:
                     m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(max_payloadnum) + fuselage_mass
                     x_cg_fuselage = (payload_depth*(i) * (mass_fuselage_payload) + m_payload*(max_payloadnum)) / m_total
-                    print("m_total", m_total)
-                    print("x_cg_fuselage", x_cg_fuselage)
-                    print("LHS", LHS)
                     if x_cg_fuselage >= LHS: 
                         break
                 elif x_cg_fuselage >= LHS: 
@@ -217,6 +213,7 @@ class calcWeight(Component):
         AC.x_cg = x_cg
         AC.z_cg = z_cg
         AC.mass= m_total
+        AC.weight = m_total*9.81
         AC.CG = ([AC.x_cg, 0.0, AC.z_cg])
 
         
@@ -240,18 +237,21 @@ class calcWeight(Component):
 #         print('Total Mass: ' +str(m_total))
 #         print('Total Payload Mass: ' +str(total_payload_mass))
               
-        gen_mass(m_total, [x_cg, 0, z_cg], [Ixx, Iyy, Izz, 0, 0, 0])
-        gen_geo(sref_Wing, MAC, b_wing, [x_cg, 0, z_cg], CDp, Xle, Yle, C, Xle_t, Yle_t, C_t)
+        # Create AVL geometry file
+        gen_mass(AC)
+        gen_geo(AC)
         
         
-        # ========================== PLOT ===============================
-        wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1 * x for x in Xle[::-1]]
-        wing_pos = Yle + Yle[::-1] + [-1 * x for x in Yle] + [-1 * x for x in Yle[::-1]]
+        # # ========================== PLOT ===============================
+        # wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1 * x for x in Xle[::-1]]
+        # wing_pos = Yle + Yle[::-1] + [-1 * x for x in Yle] + [-1 * x for x in Yle[::-1]]
         
-        tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
-        tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
+        # tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
+        # tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
         
-        
+        print("calcWeight Mass", m_total)
+        print("Wing Mass", m_wing)
+        print("Tail Mass", m_tail)
         
         unknowns['out_aircraft'] = AC
         # -- END OF FILE --        

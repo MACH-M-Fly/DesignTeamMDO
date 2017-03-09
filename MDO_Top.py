@@ -14,7 +14,7 @@ from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
 # Import self-created components
 from CreateAC import createAC
-# from Weights.calcWeight import calcWeight
+from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
@@ -53,7 +53,7 @@ class constrainedMDO(Group):
 		# self.add('b_vtail',IndepVarComp('b_vtail',1.0))
 
 		self.add('my_comp', createAC())
-		# self.add('calcWeight', calcWeight())
+		self.add('calcWeight', calcWeight())
 		self.add('aeroAnalysis', aeroAnalysis())
 		self.add('structAnalysis',structAnalysis())
 		self.add('objPerformance', objPerformance())
@@ -76,9 +76,9 @@ class constrainedMDO(Group):
 		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
 		
 		self.connect('chord.chord', 'my_comp.chord')
-		# self.connect('my_comp.aircraft','calcWeight.in_aircraft')
-		# self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-		self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
+		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
+		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 		# self.connect('objPerformance.out_aircraft','Plot.in_aircraft')
@@ -130,7 +130,7 @@ prob.root.fd_options['step_size'] = 1.0e-2
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, -0.1, 0.01]),\
+prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, -0.10, 0.01]),\
 													  	upper = np.array([0.0, 0.0, 0.0, 0.6]) )
 # prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)

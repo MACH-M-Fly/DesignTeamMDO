@@ -83,9 +83,9 @@ class createAC(Component):
 		# Update aircraft before analysis
 		AC.wing.updateAircraft()
 
-		# Create AVL geometry file
-		gen_geo(AC)
-		gen_mass(AC)
+		# # Create AVL geometry file
+		# gen_geo(AC)
+		# gen_mass(AC)
 
 		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC

@@ -127,29 +127,29 @@ AC.bank_angle = 20
 #		Weights
 #       =========================================================================
 # Spar density (kg/m)
-AC.spar_lindens = 5
+AC.spar_lindens = 5*0.453592*0.3048
 # Leading Edge (LE) density (kg/m)
-AC.LE_lindens = 5
+AC.LE_lindens = 5*0.453592*0.3048
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5
+AC.TE_lindens = 5*0.453592*0.3048
 # Rib chordwise density (kg/m)
-AC.k_ribs = 1;
+AC.k_ribs = 1*0.453592*0.3048
 # Rib spanwise desnity (# of ribs per m)
-AC.rib_lindens = 2
+AC.rib_lindens = 4
 # Tail Rib chordwise density (kg/m)
-AC.k_ribs_t = 1;
+AC.k_ribs_t = 1*0.453592*0.3048
 # Tail Rib spanwise desnity (# of ribs per m)
-AC.rib_lindens_t = 2 
+AC.rib_lindens_t = 4
 # Motor mass (kg)
-AC.m_motor = 2
+AC.m_motor = 2*0.453592
 # Battery mass (kg)
-AC.m_battery = 1
+AC.m_battery = 1*0.453592
 # Propeller mass (kg)
-AC.m_propeller = 1
-# Electronics mass
-AC.m_electronics = 1
-# Fuselage mass
-AC.m_fuselage = 1
+AC.m_propeller = 1*0.453592
+# Electronics mass (kg)
+AC.m_electronics = 1*0.453592
+# Fuselage mass (kg)
+AC.m_fuselage = 1*0.453592
 
 
 # Create an instance of AC for wing values
@@ -181,12 +181,12 @@ AC.score = 0
 
 
 print('=============== Initial vehicle Parameters =============')
-print('Weight (lbs)', AC.weight)
+# print('Weight (lbs)', AC.weight)
 print('CDp', AC.CD_p)
 print('Tailboom Length', AC.boom_len)
 print('Iyy', AC.Iyy)
 print('Mission', AC.mission)
-print('CG (x,y,z)', AC.CG)
+# print('CG (x,y,z)', AC.CG)
 
 
 print('=============== Initial wing Parameters =============')

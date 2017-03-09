@@ -125,6 +125,7 @@ class objPerformance(Component):
 		# Set output to updated instance of aircraft
 		# unknowns['out_aircraft'] = AC
 		unknowns['score'] = score
+		print("Net Lift", sum_y)
 		unknowns['sum_y'] = sum_y
 
 # Declare Constants
