@@ -249,9 +249,9 @@ class calcWeight(Component):
         # tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
         # tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
         
-        print("calcWeight Mass", m_total)
-        print("Wing Mass", m_wing)
-        print("Tail Mass", m_tail)
+        # print("calcWeight Mass", m_total)
+        # print("Wing Mass", m_wing)
+        # print("Tail Mass", m_tail)
         
         unknowns['out_aircraft'] = AC
         # -- END OF FILE --        

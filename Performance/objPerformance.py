@@ -56,6 +56,7 @@ class objPerformance(Component):
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
 		self.add_output('tot_time', val = 0.0, desc = 'time')
+		self.add_output('chord_vals', val = np.zeros((AC.wing.num_Sections,1)), desc = 'number of sections')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
@@ -127,6 +128,7 @@ class objPerformance(Component):
 		unknowns['score'] = score
 		print("Net Lift", sum_y)
 		unknowns['sum_y'] = sum_y
+		unknowns['chord_vals'] = AC.wing.chord_vals
 
 # Declare Constants
 

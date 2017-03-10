@@ -46,7 +46,7 @@ dihedral = 5.0
 
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
-s_a = 0; s_b = 0; s_c = 0; s_d = 10;
+s_a = 0; s_b = 0; s_c = 0; s_d = 0.0;
 sweep = np.array([s_a, s_b, s_c, s_d])
 		
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
