@@ -39,7 +39,7 @@ class constrainedMDO(Group):
 		# self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.1])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.2])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
 		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -121,8 +121,13 @@ prob.root = constrainedMDO()
 prob.driver = ScipyOptimizer()
 prob.driver.options['optimizer'] = 'SLSQP'
 prob.root.fd_options['force_fd'] = True	
+<<<<<<< HEAD
+prob.root.fd_options['form'] = 'central'
+prob.root.fd_options['step_size'] = 1.0e-4
+=======
 prob.root.fd_options['form'] = 'forward'
 prob.root.fd_options['step_size'] = 1.0e-2
+>>>>>>> b6d115ad9e62e957f4b2f01833f320e8df0bf2b5
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
@@ -130,8 +135,13 @@ prob.root.fd_options['step_size'] = 1.0e-2
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+<<<<<<< HEAD
+prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
+													  	upper = np.array([0.01, 0.00, 0, 1.0]) )
+=======
 prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, -0.10, 0.01]),\
 													  	upper = np.array([0.0, 0.0, 0.0, 0.6]) )
+>>>>>>> b6d115ad9e62e957f4b2f01833f320e8df0bf2b5
 # prob.driver.add_desvar('t2.t2',           				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t3.t3', 		  				lower = 0.6,  upper = 1.0)
 # prob.driver.add_desvar('t4.t4',			  				lower = 0.6,  upper = 1.0)
@@ -155,10 +165,11 @@ prob.driver.add_desvar('chord.chord',        			lower = np.array([0.0, 0.0, -0.1
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
 
 
-
+num_sections = 5
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
 
 
 # # ======================================== Post-Processing ============================================== #
@@ -216,7 +227,7 @@ print("Max Deflection %.7f"% out_ac.y_max)
 # Ooutput final geometry of aircraft
 plot_geo_final(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.CG[0], out_ac.NP, 5.)
+				out_ac.CG[0], out_ac.NP, out_ac.score)
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)
