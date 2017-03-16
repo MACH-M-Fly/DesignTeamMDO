@@ -50,7 +50,7 @@ class aeroAnalysis(Component):
 
 		# Get gross lift
 		flapped = False
-		AC.gross_F = gross_lift(AC.vel, AC.ang, AC.wing.Sref, AC.tail.Sref, flapped, AC.CL)
+		AC.gross_F, AC.wing_f, AC.tail_f = gross_lift(AC.vel, AC.ang, AC.wing.Sref, AC.tail.Sref, flapped, AC.CL)
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -176,11 +176,14 @@ def tail_CL(ang, flapped):
 		return CL_tail_noflap(ang + inced_ang)
 
 def gross_lift(vel, ang, Sref_wing, Sref_tail, flapped, CL):
-	l_net = 0.5*Rho*vel**2*(CL(ang)*Sref_wing + tail_CL(ang, flapped)*Sref_tail)
+
+	wing_f = 0.5*Rho*vel**2*(CL(ang)*Sref_wing)
+	tail_f = 0.5*Rho*vel**2*(tail_CL(ang, flapped)*Sref_tail)
+	l_net = wing_f + tail_f
 
 	gross_F = l_net + thrust(vel,ang)[1]
 
-	return gross_F
+	return gross_F, wing_f, tail_f
 
 
 
