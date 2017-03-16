@@ -80,52 +80,59 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	   X location of NP in AVL coordinate system
 	'''
 
-	case = pyAVL.avlAnalysis(geo_file=geo_filename , mass_file =mass_filename )
+	case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file = mass_filename)
 
 
 	# stead level flight contraints
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
-	case.alphaSweep(-8, 15, 5)
+
+	case.executeRun()
+
+	#print '----------------- Neutral Point ----------------'
+	case.calcNP()
+	NP = case.NP
+	
+	case.clearVals()
+
+
+	case.alphaSweep(-15, 30, 2)
 	# case.calcNP()
 
 
-	# print '----------------- alpha sweep ----------------'
-	# print 'Angle      Cl         Cd         Cm'
-	# for i in xrange(len(case.alpha)):
-	#     print '%8f   %8f   %8f   %8f   '%(case.alpha[i]*(180/np.pi),case.CL[i],case.CD[i],case.CM[i])
-
-
-
-
-	# case.alpha = [x * np.pi/180 for x in case.alpha]
 
 	# get func for aero coeificent
 	CL = np.poly1d(np.polyfit(case.alpha,case.CL, 1))
 	CD = np.poly1d(np.polyfit(case.alpha,case.CD, 2))
 	CM = np.poly1d(np.polyfit(case.alpha,case.CM, 2))
 
-	case.calcNP()
-	NP = case.NP
-
 	# # ----------------- Plot Outputs --------------------------
-	# plt.figure(3)
-	# plt.subplot(311)
+	# plt.figure(4)
+	# plt.subplot(411)
 	# plt.ylabel('CL')
 	# plt.xlabel('Alpha')
-	# plt.plot( case.alpha, case.CL, 'b-o')
+	# plt.plot( np.degrees(case.alpha), case.CL, 'b-o')
 
-	# plt.subplot(312)
+	# plt.subplot(412)
 	# plt.xlabel('CD')
 	# plt.ylabel('CL')
 	# plt.plot( case.CD, case.CL, 'b-o')
 
 
-	# plt.subplot(313)
+	# plt.subplot(413)
 	# plt.ylabel('CM')
 	# plt.xlabel('Alpha')
-	# plt.plot(case.alpha, case.CM, 'b-o')
+	# plt.plot(np.degrees(case.alpha), case.CM, 'b-o')
+
+
+	# plt.subplot(414)
+	# plt.ylabel('Elvator Deflection')
+	# plt.xlabel('Alpha')
+	# plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
+
+
+
 	# plt.show()
 
 	return (CL, CD, CM, NP)
@@ -138,7 +145,8 @@ mu_k = 0.005
 
 inced_ang = -5.0 *np.pi/180.0
 
-xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+# xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
 
 alphas_tail, CLs_tail_flap = getData_xfoil(xfoil_path+ '_flap.dat')[0:2]

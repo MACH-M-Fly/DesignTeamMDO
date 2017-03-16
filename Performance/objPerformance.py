@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 
 # Add xfoil library to python path
 import sys
-sys.path.insert(0, '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/')
+# sys.path.insert(0, '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/')
+sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from time import localtime, strftime, time
 from xfoil_lib import xfoil_alt, getData_xfoil
@@ -46,14 +47,16 @@ class objPerformance(Component):
 		self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+		# self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
 		# Set up outputs
 		self.add_output('score', val= 0.0,desc='score ')
+		self.add_output('sum_y', val=0.0, desc = 'Net Lift at End of Runway')
 		self.add_output('N', val = 0.0, desc = 'number of laps')
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
 		self.add_output('tot_time', val = 0.0, desc = 'time')
+		self.add_output('chord_vals', val = np.zeros((AC.wing.num_Sections,1)), desc = 'number of sections')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
@@ -66,7 +69,12 @@ class objPerformance(Component):
 		print('Thickness: '+ str(AC.wing.thickness_vals))
 		print('Max thickness position: '+ str(AC.wing.max_thickness_vals))
 
-		
+	
+		SM = (AC.NP-AC.CG[0])/AC.wing.MAC
+		print("Static Margin", SM)
+		print("Neutral Point", AC.NP)
+		print("Center of Gravity", AC.CG[0])
+
 		# Run M-Fly maximum payload mission
 		if AC.mission == 1:
 			# Not yet filled in
@@ -76,29 +84,27 @@ class objPerformance(Component):
 		# Run MACH lap-time objective
 		elif AC.mission == 2:
 
-			SM = (AC.NP-AC.x_cg)/AC.wing.MAC
 
-			if (SM >= 0.12 and SM <= 0.20):
-				N,tot_time = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
+			# if (SM >= 0.12 and SM <= 0.20):
+			N,tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
-				score = -1*(N*10- tot_time/100.0)
+			score = -1*(N*10- tot_time/100.0)
 
-			else:
-				print('BAD SM: ' + str(SM))
-				N = 0
-				tot_time= 0.0
-				score = abs(0.16 - SM)
+			# else:
+			# 	print('BAD SM: ' + str(SM))
+			# 	N = 0
+			# 	tot_time= 0.0
+			# 	score = abs(0.16 - SM)
 					
 			# Print output
-			print('Score: ' + str(score))
-			print('Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time))
+			print('Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time) + ' SM: ' + str(SM))
 			print('\n')
-			print('\n')
-			print('============== output =================')
-			print('N: ' + str(N))	
-			print('SM: ' + str(SM))
-			print('Score: ' + str(score))
-			print('\n')
+			# print('\n')
+			# print('============== output =================')
+			# print('N: ' + str(N))	
+			# print(
+			# print('Score: ' + str(score))
+			# print('\n')
 
 
 		# Faulty mision input
@@ -108,15 +114,25 @@ class objPerformance(Component):
 			print('###################################################')
 
 
+
 		# Assign number of laps(N), total flight time (tot_time), neutral point(NP), 
 		# static margin (SM), and objective value to instance of AC
 		AC.N = N
 		AC.tot_time = tot_time
 		AC.SM = SM
+		# print(AC.score)
+
 		AC.score = score
+		AC.tot_time = tot_time
+
 
 		# Set output to updated instance of aircraft
-		unknowns['out_aircraft'] = AC
+		# unknowns['out_aircraft'] = AC
+		unknowns['score'] = score
+		print("Net Lift", sum_y)
+		unknowns['sum_y'] = sum_y
+		unknowns['chord_vals'] = AC.wing.chord_vals
+		unknowns['SM'] = AC.SM
 
 # Declare Constants
 
@@ -127,7 +143,8 @@ mu_k = 0.005
 
 inced_ang = -5.0 *np.pi/180.0
 
-xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+# xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
 
 alphas_tail, CLs_tail_flap = getData_xfoil(xfoil_path+ '_flap.dat')[0:2]
@@ -178,7 +195,7 @@ def calc_velcruise(CL, CD, weight, Sref_wing, Sref_tail):
 		# print(F)
 		return F
 
- 	Z = fsolve(sum_forces,np.array([40, -10*np.pi/180]))
+ 	Z = fsolve(sum_forces,np.array([800, -10*np.pi/180]))
 
  	ang = Z[1]
  	vel =  Z[0]
@@ -323,18 +340,18 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	ang = [0.0]
 	ang_vel = [0.0]
 
-	# accel = [acceleration(vel[i], ang[i ])]
-	# ang_accel = [ ang_acceleration(vel[i], ang[i], ang_vel[i]) ]
+	accel = [acceleration(vel[i], ang[i ])]
+	ang_accel = [ ang_acceleration(vel[i], ang[i], ang_vel[i]) ]
 
 
 	v_stall = np.sqrt(2*weight/(Rho*Sref_wing*1.7))
 
 
 	time = [0.0]
-	dt = 0.2
+	dt = 0.05
 	time_elap = 0
 
-	# DT =[dt]
+	DT =[dt]
 
 	sum_y =  gross_lift(vel[i],ang[i], Sref_wing, Sref_tail, Flapped, CL) - weight
 
@@ -366,8 +383,8 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 		vel.append(vel[i] + 1.0/6*(k1_vel + 2*k2_vel + 2*k3_vel + k4_vel))
 		ang.append(ang[i] + 1.0/6*(k1_ang + 2*k2_ang + 2*k3_ang + k4_ang)) 
 		ang_vel.append(ang_vel[i] + 1.0/6*(k1_ang_vel + 2*k2_ang_vel + 2*k3_ang_vel + k4_ang_vel))
-		# accel.append(acceleration(vel[i + 1], ang[i + 1]))
-		# ang_accel.append(ang_acceleration(vel[i + 1], ang[i+ 1], ang_vel[i+1]))
+		accel.append(acceleration(vel[i + 1], ang[i + 1]))
+		ang_accel.append(ang_acceleration(vel[i + 1], ang[i+ 1], ang_vel[i+1]))
 
 
 		i = i + 1
@@ -382,10 +399,10 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 
 		# Change time step as pilot deflect elevator, safe bet to just use the small timestep
 		if (vel[i] < 0.92*(v_stall+2.0)) or (abs(ang_vel[i]) == 0.0 and (ang[i] < 10**-10 or ang[i] >=max_rot_ang)) :
-			dt = 0.2
+			dt = 0.05
 		else:
 			dt = 0.05
-		# DT.append(dt)
+		DT.append(dt)
 		
 		time.append(time[i -1] + dt)
 		time_elap = time[i]
@@ -397,13 +414,15 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 			Flapped = 1
 		
 
+	# 400 ft runway length in meters
+	runway_len = 137.8
 
-	# runway_len = 200 #meters
 
-	if (sum_y > 0.0 and dist[i] <= 200.0):
-		takeoff = 1
-	else:
-		takeoff = 0
+
+	# if (sum_y > 0.0 and dist[i] <= runway_len):
+	# 	takeoff = 1
+	# else:
+	# 	takeoff = sum_y
 
 	# ============== Ploting ===============
 
@@ -418,10 +437,10 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	# plt.xlabel('time')
 	# plt.plot(time, ang_vel, 'b')
 
-	# # plt.subplot(713)
-	# # plt.ylabel('ang acceleration')
-	# # plt.xlabel('time')
-	# # plt.plot(time, ang_accel, 'b')
+	# plt.subplot(713)
+	# plt.ylabel('ang acceleration')
+	# plt.xlabel('time')
+	# plt.plot(time, ang_accel, 'b')
 
 	# plt.subplot(714)
 	# plt.ylabel('distance')
@@ -433,19 +452,18 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	# plt.xlabel('time')
 	# plt.plot(time, vel, 'b')
 
-	# # plt.subplot(716)
-	# # plt.ylabel('Acceleration')
-	# # plt.xlabel('time')
-	# # plt.plot(time, accel, 'b')
+	# plt.subplot(716)
+	# plt.ylabel('Acceleration')
+	# plt.xlabel('time')
+	# plt.plot(time, accel, 'b')
 
-	# # plt.subplot(717)
-	# # plt.ylabel('dt')
-	# # plt.xlabel('time')
-	# # plt.plot(time, DT, 'b')
-	# plt.show()
+	# plt.subplot(717)
+	# plt.ylabel('dt')
+	# plt.xlabel('time')
+	# plt.plot(time, DT, 'b')
 
-	
-	# print('Takeoff:' + str(takeoff))
+	# print('weight: ' + str(weight))
+	# print('Sum Y:' + str(sum_y))
 	# print('Distance: ' + str(dist[i]))
 	# print('vel: ' + str(vel[i]))
 	# print('ang: ' + str(ang[i]*180.0/np.pi) + ' max_rot_ang: ' + str(max_rot_ang*180.0/np.pi))
@@ -454,14 +472,16 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	# print('steps: ' + str(len(time)))
 	# print('\n')
 
-	return (takeoff, dist[i], vel[i], ang[i], ang_vel[i], time[i])
+	# plt.show()
+
+	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 
 def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
 
 	max_time = 4*60.0
 	N = 0
 
-	leg_len = 500*0.3048
+	leg_len = 400*0.3048
 	Flapped = 0
 
 	cruise_vel, cruise_Ang = calc_velcruise(CL, CD, weight, Sref_wing, Sref_tail)
@@ -472,21 +492,25 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	# 	print('Can not Climb/Cruise is slow' + ' V_climb: ' + str(climb_vel) + ' Vel_Cruise: ' + str(cruise_vel))
 	# 	return 0, 0.0
 
-	if climb_vel <= 0.5 or cruise_vel < 7.0 :
-		print('Can not Climb' + ' V_climb: ' + str(climb_vel) + '  cruise_vel=' + str(cruise_vel))
-		return 0, 0.0
+	# if climb_vel <= 0.5 or cruise_vel < 7.0 :
+	# 	print('Can not Climb' + ' V_climb: ' + str(climb_vel) + '  cruise_vel=' + str(cruise_vel))
+	# 	return 0, 0.0
 
 	# print('cruise_vel =' + str(cruise_vel)+  ' cruise_Ang: ' + str(cruise_Ang) + 'climb_vel = ' + str(climb_vel) + ' climb_hvel =' + str(climb_hvel))
 
 	# ==========================  beign takeoff ===========================
 	#find time to takeoff
-	takeoff,dist, vel, ang, ang_vel, time =  runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
+	sum_y, dist, vel, ang, ang_vel, time =  runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
 	
 
 
-	if takeoff == 0:
+	# If taakeoff not achieved, return a factor of N
+	if sum_y < 0:
 		print('Failed to Takeoff')
-		return 0, 999
+		print('Takeoff Distance', dist)
+		return -dist/leg_len, -dist/leg_len, sum_y
+		
+		# return 0, 999
 
 
 	alt_cruise = 15.5
@@ -495,29 +519,29 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 
 	time_to_alt = alt_cruise/climb_vel
 
-	time = time + time_to_alt
-	dist = dist + climb_hvel*time_to_alt
+	time += time_to_alt
+	dist += climb_hvel*time_to_alt
 
 	if dist < leg_len:
-		time = time + cruise(leg_len - dist, cruise_vel)
+		time += cruise(leg_len - dist, cruise_vel)
 
-	time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-	time = time + cruise(leg_len, cruise_vel)
-	time = time + turn(40, cruise_vel, Sref_wing, weight, 360)
-	time = time + cruise(leg_len, cruise_vel)
-	time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-	time = time + cruise(leg_len, cruise_vel)
+	time += turn(35, cruise_vel, Sref_wing, weight, 180)
+	time += cruise(leg_len, cruise_vel)
+	time += turn(40, cruise_vel, Sref_wing, weight, 360)
+	time += cruise(leg_len, cruise_vel)
+	time += turn(35, cruise_vel, Sref_wing, weight, 180)
+	time += cruise(leg_len, cruise_vel)
 
 	while time < max_time:
 		N = N + 1
 
-		time = time + cruise(leg_len , cruise_vel)
-		time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-		time = time + cruise(leg_len, cruise_vel)
-		time = time + turn(40, cruise_vel, Sref_wing, weight, 360)
-		time = time + cruise(leg_len, cruise_vel)
-		time = time + turn(35, cruise_vel, Sref_wing, weight, 180)
-		time = time + cruise(leg_len, cruise_vel)
+		time += cruise(leg_len , cruise_vel)
+		time += turn(35, cruise_vel, Sref_wing, weight, 180)
+		time += cruise(leg_len, cruise_vel)
+		time += turn(40, cruise_vel, Sref_wing, weight, 360)
+		time += cruise(leg_len, cruise_vel)
+		time += turn(35, cruise_vel, Sref_wing, weight, 180)
+		time += cruise(leg_len, cruise_vel)
 	
 		# print(N)
-	return (N,time)
+	return (N,time,sum_y)

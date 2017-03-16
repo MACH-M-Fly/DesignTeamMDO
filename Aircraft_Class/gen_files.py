@@ -3,7 +3,7 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
-def gen_mass( m_total, cg, I, filename = 'aircraft.mass'):
+def gen_mass(AC, filename = 'aircraft.mass'):
 	"""
 	gen_mass: Generates AVL mass file
 	Inputs:
@@ -33,7 +33,7 @@ def gen_mass( m_total, cg, I, filename = 'aircraft.mass'):
 	out('# (kg) (m) (m) (m)     (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2)')
 	out('*   1.    1.    1.    1.    1.     1.    1.    1.    1.    1.')
 	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.') 
-	out( str(m_total) + ' ' + str(cg[0]) + ' ' + str(cg[1]) + ' ' + str(cg[2]) + ' ' + str(I[0]) + ' ' + str(I[1])  + ' ' + str(I[2]) + ' ' + str(I[3]) + ' ' + str(I[4]) + ' ' + str(I[5]) +	' !	Aircraft')
+	out( str(AC.weight) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
 
 def gen_geo(AC):
 	"""

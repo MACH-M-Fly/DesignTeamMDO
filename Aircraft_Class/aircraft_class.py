@@ -22,8 +22,9 @@ class Aircraft(object):
 
 
 		self.CD_p = 0.0					# Parasitic drag coefficient
-		self.weight = 35.0				# Weight in pounds
-		self.x_cg = 5.0					# Cg, ft. behind root LE of wing
+		# self.weight = 55.0				# Weight in N
+		# self.CG = ([0.2, 0.0, 0.0])					# Cg, m. behind root LE of wing
+		self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0])
 
 		self.Iyy = self.calcI()
 
@@ -62,7 +63,7 @@ class Wing(object):
 		# self.boom_len = boom_len				# Tailboom length
 		self.Afiles = Afiles					# File for initial airfoil input
 		self.Ainc = Ainc						# Angle of incidence as a function of half-span (b_wing/2)
-		self.sec_span = self.b_wing/2.0/self.num_Sections 			# Span of each section of wing
+		self.sec_span = self.b_wing/2.0/(self.num_Sections-1) 			# Span of each section of wing
 		
 		# Check for linearly varying input
 		if self.is_linear == 1:
@@ -214,7 +215,42 @@ class Wing(object):
 		pass
 
 	def updateAircraft(self):
+		self.b_wing = 5.0
+		# Calculate wing chord values at each section
+		
 		self.getChord()
+		# print("Chord Vals",self.chord_vals)
+
+		# Calculate sweep values at each section
+		self.getSweep(self.sweep)
+		# print("Sweep Vals", self.sweep_vals)
+
+		# Calculate leading edge coordinates
+		self.calcLeading_Edge()
+		# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
+
+		# Calulate wing surface reference area
+		self.calcSrefWing()
+		# print("Wing Sref", self.Sref)
+
+		# Calculate the mean aerodynamic chord
+		self.calcMAC()
+		# print("Wing MAC", self.MAC)
+
+		# Calculate the CG of the aircraft
+		self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
+
+		# Get cmaber values at spanwise locations
+		self.getCamber()
+
+		# Get cmaber values at spanwise locations
+		self.getMaxCamber()
+
+		# Get cmaber values at spanwise locations
+		self.getThickness()
+
+		# Get cmaber values at spanwise locations
+		self.getMaxThickness()
 
 
 
