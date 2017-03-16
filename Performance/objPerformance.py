@@ -72,6 +72,8 @@ class objPerformance(Component):
 	
 		SM = (AC.NP-AC.CG[0])/AC.wing.MAC
 		print("Static Margin", SM)
+		print("Neutral Point", AC.NP)
+		print("Center of Gravity", AC.CG[0])
 
 		# Run M-Fly maximum payload mission
 		if AC.mission == 1:
@@ -121,6 +123,7 @@ class objPerformance(Component):
 		# print(AC.score)
 
 		AC.score = score
+		AC.tot_time = tot_time
 
 
 		# Set output to updated instance of aircraft
@@ -129,6 +132,7 @@ class objPerformance(Component):
 		print("Net Lift", sum_y)
 		unknowns['sum_y'] = sum_y
 		unknowns['chord_vals'] = AC.wing.chord_vals
+		unknowns['SM'] = AC.SM
 
 # Declare Constants
 
@@ -477,7 +481,7 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	max_time = 4*60.0
 	N = 0
 
-	leg_len = 500*0.3048
+	leg_len = 400*0.3048
 	Flapped = 0
 
 	cruise_vel, cruise_Ang = calc_velcruise(CL, CD, weight, Sref_wing, Sref_tail)
@@ -500,8 +504,12 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	
 
 
+	# If taakeoff not achieved, return a factor of N
 	if sum_y < 0:
 		print('Failed to Takeoff')
+		print('Takeoff Distance', dist)
+		return -dist/leg_len, -dist/leg_len, sum_y
+		
 		# return 0, 999
 
 

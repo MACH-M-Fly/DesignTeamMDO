@@ -27,19 +27,19 @@ num_Sections_tail = 5
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-is_linear = 0
+AC.is_linear = 0
 
 # Specify origin for aicraft build (root chord leading edge position)
-Xo = 0
-Yo = 0
-Zo = 0
+AC.Xo = 0
+AC.Yo = 0
+AC.Zo = 0
 
 #=========================================================================
 # Wing Parameters (Design Variables)
 # Initial Conditions for Optimizer
 #=========================================================================
 # Wingspan (m)
-b_wing = 1.5
+b_wing = 1.8
 # Wing dihedral angle (degrees)
 dihedral = 5.0
 
@@ -50,7 +50,7 @@ s_a = 0; s_b = 0; s_c = 0; s_d = 0.0;
 sweep = np.array([s_a, s_b, s_c, s_d])
 		
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.25;
+ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.35;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between CG and landing gear (m)
@@ -73,6 +73,7 @@ t_a = 1; t_b = 1; t_c = 1; t_d = 1;
 thickness = np.array([t_a,t_b,t_c, t_d])
 thickness_max = 0.15
 thickness_min = 0.1
+
 # Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
 mt_a = 1; mt_b = 1; mt_c = 1; mt_d = 1;
 max_thickness = np.array([mt_a,mt_b,mt_c,mt_d])
@@ -151,33 +152,50 @@ AC.m_electronics = 1*0.453592
 # Fuselage mass (kg)
 AC.m_fuselage = 1*0.453592
 
-
 # Create an instance of AC for wing values
-AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
-	sweep, chord, \
-	Xo, Yo, Zo, dihedral, camber, max_camber, thickness, max_thickness ,Afiles=[], Ainc=np.array([]))
-
-# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
-AC.wing.dist_type = 'elliptical'
-
-# Add wing structural parameters ('C', R', 'I')
-AC.wing.spar_type = 'C'
-
-# Add spar dimensions (m)
-outer_radius = 0.1 
-inner_radius = 0.09
-AC.wing.spar_dim = [outer_radius, inner_radius]
-
-# Spar Young's Modulus
-AC.wing.spar_E = 1.0e6
+AC.wing = Wing(num_Sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
+		AC.Yo, AC.Zo, dihedral, camber,max_camber, thickness, max_thickness)
 
 # Create an instance of AC for tail values
-AC.tail = Tail(num_Sections_tail, is_linear, b_htail, \
-	htail_chord, b_vtail, vtail_chord, Xo, Yo, \
-	Zo, AC.boom_len)
+AC.tail = Tail(num_Sections_tail, AC.is_linear, b_htail, \
+		htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo, \
+		AC.Zo, AC.boom_len)
 
 
-AC.score = 0
+def updateAircraft(cur_AC):
+	
+	# Create an instance of AC for wing values
+	AC.wing = Wing(cur_AC.wing.num_Sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, cur_AC.wing.chord, cur_AC.Xo, \
+		cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber,cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
+
+	
+	# AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
+	# 	sweep, chord, \
+	# 	Xo, Yo, Zo, dihedral, camber, max_camber, thickness, max_thickness ,Afiles=[], Ainc=np.array([]))
+
+	# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
+	AC.wing.dist_type = 'elliptical'
+
+	# Add wing structural parameters ('C', R', 'I')
+	AC.wing.spar_type = 'C'
+
+	# Add spar dimensions (m)
+	outer_radius = 0.1 
+	inner_radius = 0.09
+	AC.wing.spar_dim = [outer_radius, inner_radius]
+
+	# Spar Young's Modulus
+	AC.wing.spar_E = 1.0e6
+
+	# Create an instance of AC for tail values
+	AC.tail = Tail(cur_AC.tail.num_Sections, cur_AC.is_linear, cur_AC.tail.b_htail, \
+		cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo, \
+		cur_AC.Zo, AC.boom_len)
+
+
+	AC.score = 0
+
+updateAircraft(AC)
 
 
 print('=============== Initial vehicle Parameters =============')

@@ -215,7 +215,42 @@ class Wing(object):
 		pass
 
 	def updateAircraft(self):
+		self.b_wing = 5.0
+		# Calculate wing chord values at each section
+		
 		self.getChord()
+		# print("Chord Vals",self.chord_vals)
+
+		# Calculate sweep values at each section
+		self.getSweep(self.sweep)
+		# print("Sweep Vals", self.sweep_vals)
+
+		# Calculate leading edge coordinates
+		self.calcLeading_Edge()
+		# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
+
+		# Calulate wing surface reference area
+		self.calcSrefWing()
+		# print("Wing Sref", self.Sref)
+
+		# Calculate the mean aerodynamic chord
+		self.calcMAC()
+		# print("Wing MAC", self.MAC)
+
+		# Calculate the CG of the aircraft
+		self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
+
+		# Get cmaber values at spanwise locations
+		self.getCamber()
+
+		# Get cmaber values at spanwise locations
+		self.getMaxCamber()
+
+		# Get cmaber values at spanwise locations
+		self.getThickness()
+
+		# Get cmaber values at spanwise locations
+		self.getMaxThickness()
 
 
 

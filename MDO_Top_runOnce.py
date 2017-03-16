@@ -36,10 +36,10 @@ class constrainedMDO(Group):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
-		# self.add('b_wing',IndepVarComp('b_wing',2.5)) 							# Wingspan (feet) 
+		self.add('b_wing',IndepVarComp('b_wing',1.8)) 							# Wingspan (feet) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.1])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.2])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
 		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
@@ -53,7 +53,7 @@ class constrainedMDO(Group):
 		# self.add('b_vtail',IndepVarComp('b_vtail',1.0))
 		
 # ====================================== Connections ============================================ # 
-		# self.connect('b_wing.b_wing',['createAC.b_wing'])
+		self.connect('b_wing.b_wing',['createAC.b_wing'])
 		# self.connect('dihedral.dihedral',['createAC.dihedral'])
 		# self.connect('sweep.sweep',['createAC.sweep'])
 		self.connect('chord.chord',['createAC.chord'])
@@ -149,6 +149,7 @@ class constrainedMDO(Group):
 # ======================================== Post-Processing ============================================== #
 root = Group()
 root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.15])))
+root.add('indep_var2', IndepVarComp('b_wing', 2.0))
 root.add('my_comp', createAC())
 root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
@@ -158,6 +159,7 @@ root.add('objPerformance', objPerformance())
 
 
 root.connect('indep_var.chord', 'my_comp.chord')
+root.connect('indep_var2.b_wing', 'my_comp.b_wing')
 root.connect('my_comp.aircraft','calcWeight.in_aircraft')
 root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 # root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -178,6 +180,7 @@ out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
 print('\n')
 print(out_ac.wing.chord_vals)
+print('Wing Span', out_ac.wing.b_wing)
 print("CL", out_ac.CL)
 print("CD", out_ac.CD)
 print("CM", out_ac.CM)

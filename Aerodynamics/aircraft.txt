@@ -11,9 +11,9 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-0.375  0.25  1.5
+0.372167102127  0.203359758124  1.86327090678
 #Xref    Yref    Zref
-0.0625 0.0 0.0
+0.0557573688716 0.0 0.0
 # CDp
 0.0
 
@@ -36,27 +36,27 @@ ANGLE
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.0    0       0.226361868423     0      5      3
+0.0    0.0    0       0.223029475487     0      5      3
 AFILE
 airfoils/A_1.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.1875    0       0.203257272381     0      5      3
+2.91794600163e-18    0.232908863347    0       0.199738589152     0      5      3
 AFILE
 airfoils/A_2.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.375    0       0.174425773367     0      5      3
+5.67818008102e-18    0.465817726695    0       0.176447702817     0      5      3
 AFILE
 airfoils/A_3.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.5625    0       0.139867371383     0      5      3
+8.19452426503e-18    0.698726590042    0       0.153156816482     0      5      3
 AFILE
 airfoils/A_4.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.75    0       0.0995820664271     0      5      3
+1.03548697686e-17    0.931635453389    0       0.129865930148     0      5      3
 AFILE
 airfoils/A_5.dat
 
@@ -79,7 +79,7 @@ ANGLE
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-0.85  0.0   0.0  0.1  0.000
+1.41331609796  0.0   0.0  0.213316097962  0.000
 NACA
 0012
 CLAF
@@ -92,7 +92,7 @@ Elevator -1.00 0.5 0 1 0 1.00
 #--------------------TAIL Tip--------------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-0.85  0.075 0.000   0.1  0.000
+1.41331609796  0.075 0.000   0.205030642268  0.000
 NACA
 0012
 CLAF
@@ -126,7 +126,7 @@ INDEX
 #----------------------ROOT/RUDDER---------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-0.85 0.0   0 0.1   0.000
+1.41331609796 0.0   0 0.213316097962   0.000
 NACA
 0012
 CLAF
@@ -139,7 +139,7 @@ Rudder 1.00 0.5 0 0 1 -1.00
 #-----------------------TIP/RUDDER---------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-0.85 0.0   0.2  0.1   0.000
+1.41331609796 0.0   0.2  0.213316097962   0.000
 NACA
 0012
 CLAF
