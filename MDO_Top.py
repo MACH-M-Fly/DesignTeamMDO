@@ -216,6 +216,8 @@ print('########    Structural Analysis  #######')
 print('Gross Lift', out_ac.gross_F)
 print('Max Stress ', out_ac.sig_max)
 print("Max Deflection %.7f"% out_ac.y_max)
+print('Max Stress Tail', out_ac.sig_max_tail)
+print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 print("CG", out_ac.CG)
 
 # Ooutput final geometry of aircraft

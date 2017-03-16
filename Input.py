@@ -165,13 +165,10 @@ AC.tail = Tail(num_Sections_tail, AC.is_linear, b_htail, \
 def updateAircraft(cur_AC):
 	
 	# Create an instance of AC for wing values
-	AC.wing = Wing(cur_AC.wing.num_Sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, cur_AC.wing.chord, cur_AC.Xo, \
-		cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber,cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
+	AC.wing = Wing(cur_AC.wing.num_Sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
+		cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber, \
+		cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
 
-	
-	# AC.wing = Wing(num_Sections_wing, is_linear, b_wing, \
-	# 	sweep, chord, \
-	# 	Xo, Yo, Zo, dihedral, camber, max_camber, thickness, max_thickness ,Afiles=[], Ainc=np.array([]))
 
 	# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
 	AC.wing.dist_type = 'elliptical'

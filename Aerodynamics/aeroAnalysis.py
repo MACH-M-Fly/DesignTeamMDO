@@ -52,6 +52,9 @@ class aeroAnalysis(Component):
 		flapped = False
 		AC.gross_F, AC.wing_f, AC.tail_f = gross_lift(AC.vel, AC.ang, AC.wing.Sref, AC.tail.Sref, flapped, AC.CL)
 
+		print('Wing Lift = %f' % AC.wing_f)
+		print('Tail Lift = %f' % AC.tail_f)
+
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
 
@@ -193,12 +196,13 @@ def calc_velcruise(CL, CD, weight, Sref_wing, Sref_tail):
 		vel = A[0]
 		ang = A[1]
 
+		gross_F, wing_f, tail_f = gross_lift(vel, ang, Sref_wing, Sref_tail, 0, CL)
 
 		F = np.empty(2)
 
 		F[0] = thrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*Sref_wing
-		F[1] = gross_lift(vel, ang, Sref_wing, Sref_tail, 0, CL) - weight
-		# print(F)
+		F[1] = gross_F - weight
+		
 		return F
 
  	Z = fsolve(sum_forces,np.array([40, -10*np.pi/180]))

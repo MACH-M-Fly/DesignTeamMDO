@@ -47,7 +47,7 @@ class structAnalysis(Component):
 		AC = params['in_aircraft']
 	
 		# Modify instance of aircraft - This is where analysis would happen
-		AC.sig_max, AC.y_max = run_structAnalysis(AC);
+		AC.sig_max, AC.y_max, AC.sig_max_tail, AC.y_max_tail = run_structAnalysis(AC);
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -183,7 +183,7 @@ def calcPointLoad(x, L, P, I, E, c):
 
 	M = P*x
 
-	y = P*x**2/(6*E*I)*(3*L-x)
+	y = P/(6*E*I)*(-x**3 + 3*L**2*x - 2*L**3)
 	
 	sigma = -c*M/I;
 
@@ -192,19 +192,21 @@ def calcPointLoad(x, L, P, I, E, c):
 
 # Runs main structure analysis
 def run_structAnalysis(AC):
+	# structure analysis on wing
 	x = np.linspace(0, AC.wing.b_wing/2.0, 1001)
 	w = distLoad(x, AC.wing_f/2.0, AC.wing.dist_type)
 	c, I = calcI(AC.wing.spar_type, AC.wing.spar_dim)
 	V, M, Theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
 
+	# structure analysis on tail
 	x_Tail = np.linspace(0, AC.boom_len, 1001)
 	c_Tail, I_Tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
 	M_Tail, y_Tail, sigma_Tail = calcPointLoad(x_Tail, AC.boom_len, AC.tail_f, I_Tail, AC.tail.boom_E, c_Tail)
 
 
-	plt.figure(1)
-	plt.plot(x, w, label='dis. load'); plt.legend()
-	plt.show()
+	# plt.figure(1)
+	# plt.plot(x_Tail, y_Tail, label='deflection of tail'); plt.legend()
+	# plt.show()
 
 
-	return max(abs(sigma)), max(abs(y)), max(abs(y_Tail)), max(abs(sigma_Tail))
+	return max(abs(sigma)), max(abs(y)), max(abs(sigma_Tail)), max(abs(y_Tail))

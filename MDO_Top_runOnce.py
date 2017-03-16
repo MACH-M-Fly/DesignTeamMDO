@@ -36,12 +36,12 @@ class constrainedMDO(Group):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
-		self.add('b_wing',IndepVarComp('b_wing',1.8)) 							# Wingspan (feet) 
+		self.add('b_wing',IndepVarComp('b_wing',1.8)) 							# Wingspan (m) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
 		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.2])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (feet)
-		# self.add('boom_len',IndepVarComp('boom_len', 4.0))						# Length of tailboom (feet)
+		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (m)
+		self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
@@ -58,7 +58,7 @@ class constrainedMDO(Group):
 		# self.connect('sweep.sweep',['createAC.sweep'])
 		self.connect('chord.chord',['createAC.chord'])
 		# self.connect('dist_LG.dist_LG',['createAC.dist_LG'])
-		# self.connect('boom_len.boom_len',['createAC.boom_len'])
+		self.connect('boom_len.boom_len',['createAC.boom_len'])
 		# self.connect('camber.camber',['createAC.camber'])
 		# self.connect('max_camber.max_camber',['createAC.max_camber'])
 		# self.connect('thickness.thickness',['createAC.thickness'])
@@ -193,6 +193,8 @@ print('########    Structural Analysis  #######')
 print('Gross Lift', out_ac.gross_F)
 print('Max Stress ', out_ac.sig_max)
 print("Max Deflection %.7f"% out_ac.y_max)
+print('Max Stress Tail ', out_ac.sig_max_tail)
+print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 
 # Ooutput final geometry of aircraft
 plot_geo_final(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \

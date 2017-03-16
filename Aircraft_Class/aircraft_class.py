@@ -282,9 +282,6 @@ class Tail():
 			self.vtail_chord[1] = 0
 			self.vtail_chord[2] = 0
 
-
-
-
 		# Calculate horiz. tail chord values at each section
 		self.htail_chord_vals = self.getHTailChord(self.htail_chord, self.sec_span_htail)
 		# print("Htail Chord Vals",self.htail_chord_vals)
