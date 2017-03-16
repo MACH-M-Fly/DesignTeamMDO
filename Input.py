@@ -192,6 +192,16 @@ def updateAircraft(cur_AC):
 		cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo, \
 		cur_AC.Zo, AC.boom_len)
 
+	AC.tail.boom_Type = 'C'
+
+	outer_radius = 0.1
+	inner_radius = 0.09
+	AC.tail.boom_Dim = [outer_radius, inner_radius]
+
+	AC.tail.boom_E = 1.0e6
+	
+
+
 
 	AC.score = 0
 

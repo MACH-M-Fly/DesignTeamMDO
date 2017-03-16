@@ -193,13 +193,13 @@ def calcPointLoad(x, L, P, I, E, c):
 # Runs main structure analysis
 def run_structAnalysis(AC):
 	x = np.linspace(0, AC.wing.b_wing/2.0, 1001)
-	w = distLoad(x, AC.gross_F/2.0, AC.wing.dist_type)
+	w = distLoad(x, AC.wing_f/2.0, AC.wing.dist_type)
 	c, I = calcI(AC.wing.spar_type, AC.wing.spar_dim)
 	V, M, Theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
 
-	x_Tail = np.linspace(0, AC.tail.boom_Length, 1001)
+	x_Tail = np.linspace(0, AC.boom_len, 1001)
 	c_Tail, I_Tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
-	M_Tail, y_Tail, sigma_Tail = calcPointLoad(x_Tail, AC.tail.boom_Length AC.tail.boom_P, I_Tail, AC.tail.boom_E, c_Tail)
+	M_Tail, y_Tail, sigma_Tail = calcPointLoad(x_Tail, AC.boom_len, AC.tail_f, I_Tail, AC.tail.boom_E, c_Tail)
 
 
 	plt.figure(1)
