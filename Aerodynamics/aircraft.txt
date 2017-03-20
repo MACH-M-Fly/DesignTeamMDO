@@ -11,9 +11,9 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-0.3  0.15  2.0
+0.269535023693  0.137222570306  2.02637721498
 #Xref    Yref    Zref
-0.0375 0.0 0.0
+0.0382406249782 0.0 0.0
 # CDp
 0.0
 
@@ -36,27 +36,27 @@ ANGLE
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.0    0       0.15     0      5      3
+0.0    0.0    0       0.152962499913     0      5      3
 AFILE
 airfoils/A_1.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.25    0       0.15     0      5      3
+0.0    0.253297151872    0       0.12955756814     0      5      3
 AFILE
 airfoils/A_2.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.5    0       0.15     0      5      3
+0.0    0.506594303744    0       0.10743582531     0      5      3
 AFILE
 airfoils/A_3.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.75    0       0.15     0      5      3
+0.0    0.759891455616    0       0.0865972714231     0      5      3
 AFILE
 airfoils/A_4.dat
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    1.0    0       0.15     0      5      3
+0.0    1.01318860749    0       0.0670419064791     0      5      3
 AFILE
 airfoils/A_5.dat
 
@@ -79,7 +79,7 @@ ANGLE
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-1.1  0.0   0.0  0.1  0.000
+0.961189623616  0.0   0.0  0.161649447103  0.000
 NACA
 0012
 CLAF
@@ -92,7 +92,7 @@ Elevator -1.00 0.5 0 1 0 1.00
 #--------------------TAIL Tip--------------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-1.1  0.075 0.000   0.1  0.000
+0.961189623616  0.075 0.000   0.160859591422  0.000
 NACA
 0012
 CLAF
@@ -126,7 +126,7 @@ INDEX
 #----------------------ROOT/RUDDER---------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-1.1 0.0   0 0.1   0.000
+0.961189623616 0.0   0 0.161649447103   0.000
 NACA
 0012
 CLAF
@@ -139,7 +139,7 @@ Rudder 1.00 0.5 0 0 1 -1.00
 #-----------------------TIP/RUDDER---------------------
 SECTION
 #Xle   Yle     Zle     Chord   Ainc
-1.1 0.0   0.2  0.1   0.000
+0.961189623616 0.0   0.2  0.161649447103   0.000
 NACA
 0012
 CLAF

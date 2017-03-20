@@ -54,7 +54,7 @@ ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.35;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between CG and landing gear (m)
-AC.dist_LG = 0.1
+AC.dist_LG = 0.01
 
 # Length of tailboom (m)
 AC.boom_len = 0.75

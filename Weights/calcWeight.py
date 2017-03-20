@@ -96,7 +96,8 @@ class calcWeight(Component):
         k_ribs_t = 0.003            # kg | mass of ribs in the tail
         static_margin = 0.15        # Static margin 
         payload_max_dimension = 0.07  # m | masimum dimension of payload, width depth height, that fuselage will build around 
-        linden_boom = 0.107         # kg/m
+        # linden_boom = 0.107         # kg/m
+        linden_boom = 0.1         # kg/m
         m_motor = AC.m_motor         # kg
         m_battery = AC.m_battery        # kg
         m_prop = AC.m_propeller               # kg 
@@ -121,7 +122,7 @@ class calcWeight(Component):
         
         m_wing = m_ribs + m_LE + m_TE + m_spar
         # calc mass of the tail
-        num_ribs_t = math.ceil((b_htail + b_vtail) * rib_dens_t) 
+        num_ribs_t = math.ceil(b_htail* rib_dens_t) + math.ceil(b_vtail* rib_dens_t) 
         m_ribs_t = k_ribs_t * num_ribs_t
         m_LE_t = linden_LE * (b_htail + b_vtail)
         m_TE_t = linden_TE * (b_htail + b_vtail)
@@ -148,7 +149,7 @@ class calcWeight(Component):
             
             cg = (m_x + mount_len * m_motor + mount_len / 2 * m_battery) / m_total
         
-            return (cg - MAC / 4)
+            return (cg - MAC / 4.0)
         
         # adjust the motor mount length until the CG is at c/4
         mount_len = fsolve(x_CG_loc, np.array([1]))[0]
@@ -176,7 +177,8 @@ class calcWeight(Component):
         payload_num = 0
         payload_counter = 0
 
-        x_cg = x_CG_loc(mount_len)
+        # x_cg = x_CG_loc(mount_len)
+        x_cg = MAC / 4.0
         LHS = SM * MAC + NP - x_cg
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
         for i in range(1, 100):
@@ -249,6 +251,7 @@ class calcWeight(Component):
         # tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
         # tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
         
+        # print('Tail Chords', AC.tail.htail_chord_vals)
         # print("calcWeight Mass", m_total)
         # print("Wing Mass", m_wing)
         # print("Tail Mass", m_tail)

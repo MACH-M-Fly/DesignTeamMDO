@@ -52,8 +52,8 @@ class aeroAnalysis(Component):
 		flapped = False
 		AC.gross_F, AC.wing_f, AC.tail_f = gross_lift(AC.vel, AC.ang, AC.wing.Sref, AC.tail.Sref, flapped, AC.CL)
 
-		print('Wing Lift = %f' % AC.wing_f)
-		print('Tail Lift = %f' % AC.tail_f)
+		# print('Wing Lift = %f' % AC.wing_f)
+		# print('Tail Lift = %f' % AC.tail_f)
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -101,6 +101,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 
 
 	case.alphaSweep(-15, 30, 2)
+	case.alphaSweep(-15, 15, 4)
 	# case.calcNP()
 
 

@@ -60,7 +60,7 @@ def gen_geo(AC):
 	Yle_t = AC.tail.Yle_ht
 	C_t = AC.tail.htail_chord_vals
 
-	print("Chords", C)
+	# print("Chords", C)
 	incAng = [0,   0,    0,  0,   0  ]
 
 	try:

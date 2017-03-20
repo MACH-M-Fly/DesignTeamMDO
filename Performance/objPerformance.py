@@ -56,7 +56,8 @@ class objPerformance(Component):
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
 		self.add_output('tot_time', val = 0.0, desc = 'time')
-		self.add_output('chord_vals', val = np.zeros((AC.wing.num_Sections,1)), desc = 'number of sections')
+		self.add_output('chord_vals', val = np.zeros((AC.wing.num_Sections,1)), desc = 'chord values')
+		self.add_output('htail_chord_vals', val = np.zeros((AC.tail.num_Sections,1)), desc = 'tail chord values')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
@@ -64,16 +65,16 @@ class objPerformance(Component):
 
 
 		# Specifically using the values of camber/thickness at each spanwise split
-		print('Camber: '+ str(AC.wing.camber_vals))
-		print('Max camber pos: '+ str(AC.wing.max_camber_vals))
-		print('Thickness: '+ str(AC.wing.thickness_vals))
-		print('Max thickness position: '+ str(AC.wing.max_thickness_vals))
+		# print('Camber: '+ str(AC.wing.camber_vals))
+		# print('Max camber pos: '+ str(AC.wing.max_camber_vals))
+		# print('Thickness: '+ str(AC.wing.thickness_vals))
+		# print('Max thickness position: '+ str(AC.wing.max_thickness_vals))
 
 	
 		SM = (AC.NP-AC.CG[0])/AC.wing.MAC
-		print("Static Margin", SM)
-		print("Neutral Point", AC.NP)
-		print("Center of Gravity", AC.CG[0])
+		# print("Static Margin", SM)
+		# print("Neutral Point", AC.NP)
+		# print("Center of Gravity", AC.CG[0])
 
 		# Run M-Fly maximum payload mission
 		if AC.mission == 1:
@@ -87,8 +88,9 @@ class objPerformance(Component):
 
 			# if (SM >= 0.12 and SM <= 0.20):
 			N,tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
+			# print 'N used for score', N
 
-			score = -1*(N*10- tot_time/100.0)
+			score = -1*(N*100 - tot_time/100.0)
 
 			# else:
 			# 	print('BAD SM: ' + str(SM))
@@ -97,8 +99,9 @@ class objPerformance(Component):
 			# 	score = abs(0.16 - SM)
 					
 			# Print output
-			print('Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time) + ' SM: ' + str(SM))
-			print('\n')
+			print("Net Lift ", sum_y ,' Score: ' + str(score) +' N: ' + str(N) +' Total Time: '+ str(tot_time) + ' SM: ' + str(SM))
+
+			# print('\n')
 			# print('\n')
 			# print('============== output =================')
 			# print('N: ' + str(N))	
@@ -129,10 +132,10 @@ class objPerformance(Component):
 		# Set output to updated instance of aircraft
 		# unknowns['out_aircraft'] = AC
 		unknowns['score'] = score
-		print("Net Lift", sum_y)
 		unknowns['sum_y'] = sum_y
 		unknowns['chord_vals'] = AC.wing.chord_vals
 		unknowns['SM'] = AC.SM
+		unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
 
 # Declare Constants
 
@@ -417,6 +420,7 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 	# 400 ft runway length in meters
 	runway_len = 137.8
 
+	# print('from sim', sum_y)
 
 
 	# if (sum_y > 0.0 and dist[i] <= runway_len):
@@ -474,6 +478,7 @@ def runway_sim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG
 
 	# plt.show()
 
+
 	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 
 def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
@@ -507,9 +512,12 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	# If taakeoff not achieved, return a factor of N
 	if sum_y < 0:
 		print('Failed to Takeoff')
-		print('Takeoff Distance', dist)
-		return -dist/leg_len, -dist/leg_len, sum_y
-		
+		# print('Takeoff Distance', dist)F
+		# print 'sum_y', sum_y
+
+		# return -dist/leg_len, -dist/leg_len, sum_y
+		return sum_y, 250, sum_y
+
 		# return 0, 999
 
 
