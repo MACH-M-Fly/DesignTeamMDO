@@ -18,7 +18,6 @@ from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
-# from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
 
 
@@ -117,17 +116,17 @@ prob.root = constrainedMDO()
 
 
 # # ================================================ Add Driver ============================================== #
-# prob.driver = pyOptSparseDriver()
-# prob.driver.options['optimizer'] = 'ALPSO'
-# prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
-# 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
+prob.driver = pyOptSparseDriver()
+prob.driver.options['optimizer'] = 'ALPSO'
+prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
+				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
-prob.driver = ScipyOptimizer()
-prob.driver.options['optimizer'] = 'SLSQP'
-prob.driver.options['tol'] = 1.0e-2
-prob.root.fd_options['force_fd'] = True	
-prob.root.fd_options['form'] = 'central'
-prob.root.fd_options['step_size'] = 1.0e-4
+# prob.driver = ScipyOptimizer()
+# prob.driver.options['optimizer'] = 'SLSQP'
+# prob.driver.options['tol'] = 1.0e-2
+# prob.root.fd_options['force_fd'] = True	
+# prob.root.fd_options['form'] = 'central'
+# prob.root.fd_options['step_size'] = 1.0e-4
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
