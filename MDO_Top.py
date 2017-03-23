@@ -18,6 +18,7 @@ from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
+# from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
 
 
@@ -116,10 +117,10 @@ prob.root = constrainedMDO()
 
 
 # # ================================================ Add Driver ============================================== #
-prob.driver = pyOptSparseDriver()
-prob.driver.options['optimizer'] = 'ALPSO'
-prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
-				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
+# prob.driver = pyOptSparseDriver()
+# prob.driver.options['optimizer'] = 'ALPSO'
+# prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
+# 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
 # prob.driver = ScipyOptimizer()
 # prob.driver.options['optimizer'] = 'SLSQP'
@@ -128,29 +129,62 @@ prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
 # prob.root.fd_options['form'] = 'central'
 # prob.root.fd_options['step_size'] = 1.0e-4
 
+prob.driver = ScipyOptimizer()
+prob.driver.options['optimizer'] = 'SNOPT'
+prob.driver.options['tol'] = 1.0e-2
+prob.root.fd_options['force_fd'] = True	
+prob.root.fd_options['form'] = 'central'
+prob.root.fd_options['step_size'] = 1.0e-4
+
+
+# # ===================================== Add design Varibles and Bounds ==================================== #
+# prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
+# # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
+# # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.0, 0.0, 0.0, -0.1, 0.0 ]),\
+# 													  	# upper = np.array([0.0, 0.0, 0.0, 0.0, 0.0 ]) )
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.00, -0.1, -0.1, 0.01]),\
+# 	# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
+# 													  	upper = np.array([0.01, 0.00, 0, 1.0]) )
+# # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
+# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.5,  upper = 1.2)
+# # prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# # 										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
+# # prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
+# # 														upper = np.array([0.50, 0.50, 0.50, 0.50, 0.50 ]))
+# # prob.driver.add_desvar('thickness.thickness',   		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# # 											    		upper = np.array([0.15, 0.15, 0.15, 0.15, 0.15 ]) )
+# # prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# # prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
+# prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
+# 													  	upper = np.array([0.01, 0.00, 0.0, 1.0]) )
+# # prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# # prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.6,  upper = 1.2)
+# # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
 
 # ===================================== Add design Varibles and Bounds ==================================== #
-prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
+prob.driver.add_desvar('b_wing.b_wing',   				lower = -1.0,    upper = 1.0 )
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([0.0, 0.0, 0.0, -0.1, 0.0 ]),\
 													  	# upper = np.array([0.0, 0.0, 0.0, 0.0, 0.0 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.00, -0.0, -0.1, 0.01]),\
-	# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
-													  	upper = np.array([0.01, 0.00, 0, 1.0]) )
-# prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
-prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.5,  upper = 1.2)
-# prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
-# 										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
-# prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
-# 														upper = np.array([0.50, 0.50, 0.50, 0.50, 0.50 ]))
-# prob.driver.add_desvar('thickness.thickness',   		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
-# 											    		upper = np.array([0.15, 0.15, 0.15, 0.15, 0.15 ]) )
-# prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-# 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-# prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
-prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
-													  	upper = np.array([0.01, 0.00, 0, 1.0]) )
-# prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.00, -0.1, -0.1, 0.01]),\
+# 	# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
+# 													  	upper = np.array([0.01, 0.00, 0, 1.0]) )
+# # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
+# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.5,  upper = 1.2)
+# # prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# # 										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
+# # prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
+# # 														upper = np.array([0.50, 0.50, 0.50, 0.50, 0.50 ]))
+# # prob.driver.add_desvar('thickness.thickness',   		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
+# # 											    		upper = np.array([0.15, 0.15, 0.15, 0.15, 0.15 ]) )
+# # prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+# # prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
+# prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
+# 													  	upper = np.array([0.01, 0.00, 0.0, 1.0]) )
+# # prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
 # prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.6,  upper = 1.2)
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.6,  upper = 1.2)
@@ -159,8 +193,8 @@ prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05,
 num_sections = 5
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
-prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
-prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
+# prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+# prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
 # prob.driver.add_constraint('objPerformance.SM', lower = 0.05, upper = 0.8)
 
 
@@ -224,7 +258,7 @@ print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 print("CG", out_ac.CG)
 
 # Ooutput final geometry of aircraft
-plot_geo_final(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
+plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
 				out_ac.CG[0], out_ac.NP, out_ac.score)
 

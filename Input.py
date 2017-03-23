@@ -12,17 +12,17 @@ AC = Aircraft()
 #=========================================================================
 
 AC.AC_name = "M6"
-AC.Wings = 1
-AC.H_tails = 1
-AC.V_tails = 1
+AC.wings = 1
+AC.h_tails = 1
+AC.v_tails = 1
 AC.booms = 1
 
 # Select Mission (1 for M-Fly max payload, 2 for MACH lap-time)
 AC.mission = 2
 
 # Number of wing sections (per half-span for wing and tail)
-num_Sections_wing = 5
-num_Sections_tail = 5
+num_sections_wing = 5
+num_sections_tail = 5
 
 
 # 0 = Non-Linear (cubic) varying wing values
@@ -80,7 +80,7 @@ max_thickness = np.array([mt_a,mt_b,mt_c,mt_d])
 
 # Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
 ang_a = 1; ang_b = 1; ang_c = 1; ang_d = 1;
-Ainc = np.array([ang_a,ang_b, ang_c, ang_d])
+ainc = np.array([ang_a,ang_b, ang_c, ang_d])
 
 
 #=========================================================================

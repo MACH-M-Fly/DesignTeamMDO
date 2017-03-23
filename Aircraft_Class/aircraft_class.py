@@ -43,11 +43,11 @@ class Aircraft(object):
 
 class Wing(object):
 # Wing class fully defines wing surface(s).
-	def __init__(self, num_Sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
-	 Afiles=[], Ainc=np.array([])):
+	def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
+	 Afiles=[], ainc=np.array([])):
 
 		# Assign Inputs to aircraft object
-		self.num_Sections = num_Sections 		# Number of sections per half-wing
+		self.num_sections = num_sections 		# Number of sections per half-wing
 		self.is_linear = is_linear				# 0 for non-linear cubic varying chord, 1 for linearly varying wing/tail values
 		self.b_wing = b_wing					# Wing span (not half-span)
 		self.sweep = sweep						# Wing sweep (quarter chord in degrees)
@@ -62,7 +62,7 @@ class Wing(object):
 		self.max_thickness = max_thickness		# Max thickness position as a cubic function of span
 		# self.boom_len = boom_len				# Tailboom length
 		self.Afiles = Afiles					# File for initial airfoil input
-		self.Ainc = Ainc						# Angle of incidence as a function of half-span (b_wing/2)
+		self.ainc = ainc						# Angle of incidence as a function of half-span (b_wing/2)
 		self.sec_span = self.b_wing/2.0/(self.num_Sections-1) 			# Span of each section of wing
 		
 		# Check for linearly varying input
@@ -77,9 +77,10 @@ class Wing(object):
 		# If no starting airfoil given, default airfoil to start is NACA2412
 		if Afiles == []:
 			self.Afiles = ['NACA2412']*self.num_Sections
+
 		# If no starting inclination angle given, default is zero
 		if not(Ainc.any()):
-			self.Ainc=np.zeros(self.num_Sections)
+			self.ainc=np.zeros(self.num_Sections)
 
 		# Calculate wing chord values at each section
 		self.chord_vals = self.getChord()
@@ -94,7 +95,7 @@ class Wing(object):
 		# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
 
 		# Calulate wing surface reference area
-		self.Sref = self.calcSrefWing()
+		self.sref = self.calcSrefWing()
 		# print("Wing Sref", self.Sref)
 
 		# Calculate the mean aerodynamic chord
@@ -188,11 +189,11 @@ class Wing(object):
 	# Function: Calculate reference area for surface
 	# Sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefWing(self):
-		self.Sref = 0
-		self.Sref = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
+		self.sref = 0
+		self.sref = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
 			self.chord[2]*y + self.chord[3] ), 0, self.b_wing/2)
-		self.Sref = self.Sref[0]*2
-		return self.Sref
+		self.sref = self.sref[0]*2
+		return self.sref
 
 	# Function: Calculate mean aerodynaic chord for surface
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
@@ -205,9 +206,9 @@ class Wing(object):
 
 	def addControlSurface(self, secStart, secEnd, hvec, name):
 
-		self.controlSurf = name
-		self.control_secStart = secStart
-		self.control_secEnd = secEnd
+		self.control_surf = name
+		self.control_secstart = secStart
+		self.control_secend = secEnd
 		self.control_hvec = hvec
 		return
 
@@ -257,10 +258,10 @@ class Wing(object):
 
 class Tail():
 # Tail class fully deines tail surface(s).
-	def __init__(self, num_Sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len):
+	def __init__(self, num_sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len):
 
 		# Assign Inputs to aircraft object
-		self.num_Sections = num_Sections 		# Number of sections per half-wing
+		self.num_sections = num_sections 		# Number of sections per half-wing
 		self.is_linear = is_linear				# 0 for non-linear cubic varying chord, 1 for linearly varying wing/tail values
 		self.b_htail = b_htail					# Span of horizontal tail
 		self.htail_chord = htail_chord			# Horizontail tail chord
@@ -287,7 +288,7 @@ class Tail():
 		# print("Htail Chord Vals",self.htail_chord_vals)
 
 		# Calulate wing surface reference area
-		self.Sref = self.calcSrefTail()
+		self.sref = self.calcSrefTail()
 		# print("Tail Sref", self.Sref)
 
 		# Calculate vert. tail chord values at each section
@@ -298,13 +299,13 @@ class Tail():
 		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge()
 		# print("Tail Leading Edge: X, Y, Z", self.Xle_ht, self.Yle_ht, self.Zle_ht)
 
-	# Sref = integral (chord) dy (from 0 to bwing/2)
+	# sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefTail(self):
-		self.Sref = 0
-		self.Sref = integrate.quad(lambda y: (self.htail_chord_vals[0]*y**3 + self.htail_chord_vals[0]*y**2 + \
+		self.sref = 0
+		self.sref = integrate.quad(lambda y: (self.htail_chord_vals[0]*y**3 + self.htail_chord_vals[0]*y**2 + \
 			self.htail_chord_vals[2]*y + self.htail_chord_vals[3] ), 0, self.b_htail/2)
-		self.Sref = self.Sref[0]*2
-		return self.Sref
+		self.sref = self.sref[0]*2
+		return self.sref
 
 	# Function: Calculate horiz. tail chord at sectional chord locations
 	def getHTailChord(self, htail_chord, sec_span_htail):

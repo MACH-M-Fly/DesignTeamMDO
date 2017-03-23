@@ -12,7 +12,7 @@ from time import localtime, strftime
 xfoilpath = '/home/josh/xfoil'
 
 
-def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
+def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
@@ -82,7 +82,7 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     ps.stdin.close()
     ps.wait()
 
-def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
+def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
@@ -166,7 +166,7 @@ def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
     ps.wait()
 
 
-def xfoil_run(name, Re, alpha_start, alpha_end ):
+def xfoilRun(name, Re, alpha_start, alpha_end ):
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
@@ -216,7 +216,7 @@ def xfoil_run(name, Re, alpha_start, alpha_end ):
     ps.stdin.close()
     ps.wait()
 
-def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
+def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
@@ -266,7 +266,7 @@ def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
 
 
 
-def getData_xfoil(filename):
+def getDataXfoil(filename):
     
     f = open(filename, 'r')
     flines = f.readlines()
