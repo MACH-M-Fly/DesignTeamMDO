@@ -14,7 +14,7 @@ import os
 
 import math
 
-from Aircraft_Class.gen_files import gen_mass, gen_geo
+from Aircraft_Class.gen_files import genMass, genGeo
 from Input import AC
 
 
@@ -76,10 +76,6 @@ class calcWeight(Component):
         C_t = AC.tail.htail_chord_vals
         
         CDp = 0.0116
-        
-        def shape_func(y, A, B):
-            # print('yes')
-            return (A ** 2 * y - A * (A - B) / (b_wing / 4) * y ** 2 + (A - B) ** 2 / (3 * (b_wing / 4) ** 2) * y ** 3)
         
         MAC = AC.wing.MAC
         
@@ -145,14 +141,14 @@ class calcWeight(Component):
         #########
         m_x = m_wing * 0.25 * MAC + m_landgear * dist_LG + m_tail * boom_len + m_boom * boom_len / 2
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics
-        def x_CG_loc(mount_len):
+        def xCGLoc(mount_len):
             
             cg = (m_x + mount_len * m_motor + mount_len / 2 * m_battery) / m_total
         
             return (cg - MAC / 4.0)
         
         # adjust the motor mount length until the CG is at c/4
-        mount_len = fsolve(x_CG_loc, np.array([1]))[0]
+        mount_len = fsolve(xCGLoc, np.array([1]))[0]
         
         
         Ixx = (m_motor + m_prop) * mount_len ** 2 + m_battery * (mount_len / 2) ** 2 + m_landgear * dist_LG ** 2 + m_tail * boom_len ** 2 + 1 / 3 * m_boom * boom_len ** 2
@@ -177,7 +173,7 @@ class calcWeight(Component):
         payload_num = 0
         payload_counter = 0
 
-        # x_cg = x_CG_loc(mount_len)
+        # x_cg = xCGLoc(mount_len)
         x_cg = MAC / 4.0
         LHS = SM * MAC + NP - x_cg
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
@@ -240,8 +236,8 @@ class calcWeight(Component):
 #         print('Total Payload Mass: ' +str(total_payload_mass))
               
         # Create AVL geometry file
-        gen_mass(AC)
-        gen_geo(AC)
+        genMass(AC)
+        genGeo(AC)
         
         
         # # ========================== PLOT ===============================

@@ -2,7 +2,7 @@
  lib_plot.py
  Created by Josh Anibal (JLA), modified by Chris Reynolds (CLR)
  - Plots aircraft:
-    - During each iteration and at the end (plot_geo_final)
+    - During each iteration and at the end (plotGeoFinal)
     - Plots wing (blue) and tail (red)
  	- Plots CG (black) and NP (light blue - cyan)
     - Includes configuration number (fig)
@@ -133,7 +133,7 @@ class Plot(Component):
 #		x_cg: CG position
 #		NP: Neutral point position
 #		Score: Objective function score                               
-def plot_geo_final(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
+def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 	wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]

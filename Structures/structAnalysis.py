@@ -47,7 +47,7 @@ class structAnalysis(Component):
 		AC = params['in_aircraft']
 	
 		# Modify instance of aircraft - This is where analysis would happen
-		AC.sig_max, AC.y_max, AC.sig_max_tail, AC.y_max_tail = run_structAnalysis(AC);
+		AC.sig_max, AC.y_max, AC.sig_max_tail, AC.y_max_tail = runStructAnalysis(AC);
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -147,7 +147,7 @@ def calcDistribution(x, w, I, E, c):
 	# 		  c - distance b/w neutral point and farthest point in the neutral plane
 	# Outputs:V - shear force distribution
 	#		  M - moment distribution
-	#		  Theta - distribution of slope of beam in degrees
+	#		  theta - distribution of slope of beam in degrees
 	# 		  y - beam deflection distribution
 	# 		  sigma - stress distribution
 
@@ -157,7 +157,7 @@ def calcDistribution(x, w, I, E, c):
 	# Set boundary conditions
 	C1 = w1[-1];				# V(L) = 0
 	C2 = w2[-1] - C1*x[-1];		# M(L) = 0
-	C3 = w3[0];					# Theta(0) = 0
+	C3 = w3[0];					# theta(0) = 0
 	C4 = w4[0];					# y(0) = 0
 
 	# Get shear distribution
@@ -167,8 +167,8 @@ def calcDistribution(x, w, I, E, c):
 	M = (C1*x + C2 - w2)*EI;
 
 	# Get slope distribution
-	Theta = 0.5*C1*x**2 + C2*x + C3 - w3;
-	Theta = np.degrees(Theta);
+	theta = 0.5*C1*x**2 + C2*x + C3 - w3;
+	theta = np.degrees(theta);
 
 	# Get deflection distribution
 	y = 1./6*C1*x**3 + 0.5*C2*x**2 + C3*x + C4 - w4;
@@ -176,7 +176,7 @@ def calcDistribution(x, w, I, E, c):
 	# Get stress distribution
 	sigma = -c*M/I;
 
-	return V, M, Theta, y, sigma
+	return V, M, theta, y, sigma
 
 
 def calcPointLoad(x, L, P, I, E, c):
@@ -191,22 +191,22 @@ def calcPointLoad(x, L, P, I, E, c):
 
 
 # Runs main structure analysis
-def run_structAnalysis(AC):
+def runStructAnalysis(AC):
 	# structure analysis on wing
 	x = np.linspace(0, AC.wing.b_wing/2.0, 1001)
 	w = distLoad(x, AC.wing_f/2.0, AC.wing.dist_type)
 	c, I = calcI(AC.wing.spar_type, AC.wing.spar_dim)
-	V, M, Theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
+	V, M, theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
 
 	# structure analysis on tail
-	x_Tail = np.linspace(0, AC.boom_len, 1001)
-	c_Tail, I_Tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
-	M_Tail, y_Tail, sigma_Tail = calcPointLoad(x_Tail, AC.boom_len, AC.tail_f, I_Tail, AC.tail.boom_E, c_Tail)
+	x_tail = np.linspace(0, AC.boom_len, 1001)
+	c_tail, I_tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
+	M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, AC.tail_f, I_tail, AC.tail.boom_E, c_tail)
 
 
 	# plt.figure(1)
-	# plt.plot(x_Tail, y_Tail, label='deflection of tail'); plt.legend()
+	# plt.plot(x_tail, y_tail, label='deflection of tail'); plt.legend()
 	# plt.show()
 
 
-	return max(abs(sigma)), max(abs(y)), max(abs(sigma_Tail)), max(abs(y_Tail))
+	return max(abs(sigma)), max(abs(y)), max(abs(sigma_tail)), max(abs(y_tail))

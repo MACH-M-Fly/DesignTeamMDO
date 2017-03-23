@@ -3,7 +3,7 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
-def gen_mass(AC, filename = 'aircraft.mass'):
+def genMass(AC, filename = 'aircraft.mass'):
 	"""
 	gen_mass: Generates AVL mass file
 	Inputs:
@@ -35,9 +35,9 @@ def gen_mass(AC, filename = 'aircraft.mass'):
 	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.') 
 	out( str(AC.weight) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
 
-def gen_geo(AC):
+def genGeo(AC):
 	"""
-	gen_geo: Generates AVL geometry file
+	genGeo: Generates AVL geometry file
 
 	Inputs:
 		AC: Airctaft with attributes: Sref, MAC, b_wing, cg, CDp, Xle, ...
@@ -47,7 +47,7 @@ def gen_geo(AC):
 		None, just "outs" the AVL geometry file
 	"""
 
-	# Assign gen_geo needs from the aircraft attribute
+	# Assign genGeo needs from the aircraft attribute
 	Sref = AC.wing.Sref
 	MAC = AC.wing.MAC
 	b_wing = AC.wing.b_wing
