@@ -5,22 +5,15 @@ import shutil
 import sys
 import string
 from time import localtime, strftime
+# 
+# xfoilpath = '/home/josh/Documents/Xfoil/bin/xfoil'
+#xfoilpath = r'D:\home\josh\Documents\Xfoil\bin\xfoil.exe'
 
-# xfoil_lib.py
-# - Executes Xfoil
-#   - xfoil_alt: Function to alter airfoil geometry and run it
-#   - xfoil_run_flap: Function to iterate flap alpha
-#   - xfoil_run:  Function to execute xfoil
-#   - xfoil_final:  Final xfoil airfoil altering
-#   - getdata_xfoil: Return lift and drag data from xfoil run
-
-print("Current Path", os.getcwd())
-xfoilpath = './Aerodynamics/xfoil'
-print("Xfoil Path", xfoilpath)
+xfoilpath = '/home/josh/xfoil'
 
 
-def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
-    # Alter, run, and save
+def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
+
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -39,8 +32,8 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd(' ')
 
 
-    Cmd('load ./airfoils/'+name+'.dat')
-    Cmd('load ./airfoils/E420.dat')
+    # Cmd('load ./airfoils/'+name+'.dat')
+    Cmd('load E420.dat')
 
     # alter geometry
     Cmd('GDES')
@@ -89,8 +82,8 @@ def xfoil_alt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     ps.stdin.close()
     ps.wait()
 
-def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
-    # Makes a flap, run
+def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
+
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -173,8 +166,8 @@ def xfoil_run_flap(name, Re, alpha_start, alpha_end ):
     ps.wait()
 
 
-def xfoil_run(name, Re, alpha_start, alpha_end ):
-    # Run xfoil without alterring airfoil
+def xfoilRun(name, Re, alpha_start, alpha_end ):
+
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -223,8 +216,8 @@ def xfoil_run(name, Re, alpha_start, alpha_end ):
     ps.stdin.close()
     ps.wait()
 
-def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
-    # Alter, run, save picture of xfoil
+def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
+
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -273,8 +266,8 @@ def xfoil_final(name, camber, max_camb_pos, thickness, max_thick_pos):
 
 
 
-def getData_xfoil(filename):
-    # Getting data
+def getDataXfoil(filename):
+    
     f = open(filename, 'r')
     flines = f.readlines()
 

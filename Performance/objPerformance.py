@@ -51,8 +51,7 @@ class objPerformance(Component):
 		# Set up outputs
 		self.add_output('score', val = 0.0, desc = 'score ')
 		self.add_output('sum_y', val = 0.0, desc = 'Net Lift at End of Runway')
-		self.add_output('N', val = 0.0, desc = 'number of laps')
-		self.add_output('SM', val = 0.0, desc = 'static margin')
+		self.add_output('N', val = 0.0, desc = 'number of laps')		
 		self.add_output('NP', val = 0.0, desc = 'Netual point')
 		self.add_output('tot_time', val = 0.0, desc = 'time')
 		self.add_output('chord_vals', val = np.zeros((AC.wing.num_sections, 1)), desc = 'chord values')
@@ -70,7 +69,7 @@ class objPerformance(Component):
 		# print('Max thickness position: '+ str(AC.wing.max_thickness_vals))
 
 	
-		SM = (AC.NP - AC.CG[0])/AC.wing.MAC
+		# SM = (AC.NP - AC.CG[0])/AC.wing.MAC
 		# print("Static Margin", SM)
 		# print("Neutral Point", AC.NP)
 		# print("Center of Gravity", AC.CG[0])
@@ -86,7 +85,7 @@ class objPerformance(Component):
 
 
 			# if (SM >= 0.12 and SM <= 0.20):
-			N, tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.Sref, AC.tail.Sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
+			N, tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
 			# print 'N used for score', N
 
 			score = -1*(N*100 - tot_time/100.0)
@@ -98,7 +97,8 @@ class objPerformance(Component):
 			# 	score = abs(0.16 - SM)
 					
 			# Print output
-			print("Net Lift ", sum_y , ' Score: ' + str(score) + ' N: ' + str(N) + ' Total Time: ' + str(tot_time) + ' SM: ' + str(SM))
+			print("Net Lift ", sum_y , ' Score: ' + str(score) + ' N: ' + str(N) + ' Total Time: ' + str(tot_time) + ' SM: ' + str(AC.SM))
+			print('\n')
 
 			# print('\n')
 			# print('\n')
@@ -121,7 +121,7 @@ class objPerformance(Component):
 		# static margin (SM), and objective value to instance of AC
 		AC.N = N
 		AC.tot_time = tot_time
-		AC.SM = SM
+		# AC.SM = SM
 		# print(AC.score)
 
 		AC.score = score
@@ -133,13 +133,12 @@ class objPerformance(Component):
 		unknowns['score'] = score
 		unknowns['sum_y'] = sum_y
 		unknowns['chord_vals'] = AC.wing.chord_vals
-		unknowns['SM'] = AC.SM
 		unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
 
 # Declare Constants
 
 Rho = 1.225 # make global
-# Sref_tail = 0.212
+# sref_tail = 0.212
 g = 9.81
 mu_k = 0.005
 
@@ -173,21 +172,21 @@ def tailCL(ang, flapped):
 	else:
 		return CL_tail_noflap(ang + inced_ang)
 
-def grossLift(vel, ang, Sref_wing, Sref_tail, flapped, CL):
-	l_net = 0.5*Rho*vel**2*(CL(ang)*Sref_wing + tailCL(ang, flapped)*Sref_tail)
+def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
+	l_net = 0.5*Rho*vel**2*(CL(ang)*sref_wing + tailCL(ang, flapped)*sref_tail)
 
 	gross_F = l_net + getThrust(vel,ang)[1]
 
 	return gross_F
 
-def calcCruise_vel(CL, CD, weight, Sref_wing, Sref_tail):	
+def calcCruise_vel(CL, CD, weight, sref_wing, sref_tail):	
 	def sumForces (A):
 		vel = A[0]
 		ang = A[1]
 
 		F = np.empty(2)
-		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*Sref_wing
-		F[1] = grossLift(vel, ang, Sref_wing, Sref_tail, 0, CL) - weight
+		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing
+		F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL) - weight
 		# print(F)
 		return F
 
@@ -198,7 +197,7 @@ def calcCruise_vel(CL, CD, weight, Sref_wing, Sref_tail):
 
  	return (vel, ang)
 
-def calcClimb(CL, CD, weight, Sref_wing, Sref_tail):
+def calcClimb(CL, CD, weight, sref_wing, sref_tail):
 	def sumForces (A):
 
 		vel = A[0]
@@ -207,8 +206,8 @@ def calcClimb(CL, CD, weight, Sref_wing, Sref_tail):
 		# print("gamma: " + str(gamma))
 
 		F = np.empty(2)
-		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*Sref_wing - weight*np.sin(gamma)
-		F[1] = grossLift(vel, ang, Sref_wing, Sref_tail, 0, CL) - weight*np.cos(gamma)
+		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing - weight*np.sin(gamma)
+		F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL) - weight*np.cos(gamma)
 		# print(F)
 		return F
 
@@ -273,7 +272,7 @@ def calcTurn_time(bank_angle, velocity, weight ,Sref_wing, turn_angle):
 
 	return time
 
-def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
 
 	Flapped = 0
 	max_rot_ang = 10*np.pi/180.0
@@ -286,10 +285,10 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 		return vel
 
 	def getAcceleration(vel, ang):
-		N =  weight - grossLift(vel, ang, Sref_wing, Sref_tail, Flapped, CL)
+		N =  weight - grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL)
 		if N < 0:
 			N = 0
-		accel = (g/weight)*(getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*Sref_wing - mu_k*N)
+		accel = (g/weight)*(getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing - mu_k*N)
 		return accel
 
 	def getVelocity_ang(a_vel, ang):
@@ -304,9 +303,9 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 
 	def getAcceleration_ang(vel, ang, v_ang):
 		q = 0.5*Rho*vel**2
-		moment_tail = - q*tailCL(ang, Flapped)*Sref_tail*(boom_len - dist_LG)
-		moment_wing = q*(CM(ang)*Sref_wing*MAC + CL(ang)*Sref_wing*dist_LG)
-		# damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*Sref_wing
+		moment_tail = - q*tailCL(ang, Flapped)*sref_tail*(boom_len - dist_LG)
+		moment_wing = q*(CM(ang)*sref_wing*MAC + CL(ang)*sref_wing*dist_LG)
+		# damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*sref_wing
 		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail) # +damping_moment)
 		
 		if (ang <= 0.0 and ang_accel < 0.0) :
@@ -334,7 +333,7 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 	ang_accel = [ getAcceleration_ang(vel[i], ang[i], ang_vel[i]) ]
 
 
-	v_stall = np.sqrt(2*weight/(Rho*Sref_wing*1.7))
+	v_stall = np.sqrt(2*weight/(Rho*sref_wing*1.7))
 
 
 	time = [0.0]
@@ -343,7 +342,7 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 
 	DT =[dt]
 
-	sum_y =  grossLift(vel[i], ang[i], Sref_wing, Sref_tail, Flapped, CL) - weight
+	sum_y =  grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL) - weight
 
 	while (sum_y <= 0.0 and time_elap < 20) :
 
@@ -397,7 +396,7 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 		time.append(time[i -1] + dt)
 		time_elap = time[i]
 
-		sum_y = grossLift(vel[i], ang[i], Sref_wing, Sref_tail, Flapped, CL) - weight
+		sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL) - weight
 
 
 		if vel[i] > v_stall+2.0:
@@ -468,7 +467,7 @@ def runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG,
 
 	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 
-def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
 
 	max_time = 4*60.0
 	N = 0
@@ -476,8 +475,8 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	leg_len = 400*0.3048
 	Flapped = 0
 
-	cruise_vel, cruise_Ang = calcCruise_vel(CL, CD, weight, Sref_wing, Sref_tail)
-	climb_vel, climb_hvel = calcClimb(CL, CD, weight, Sref_wing, Sref_tail)[1:3]
+	cruise_vel, cruise_Ang = calcCruise_vel(CL, CD, weight, sref_wing, sref_tail)
+	climb_vel, climb_hvel = calcClimb(CL, CD, weight, sref_wing, sref_tail)[1:3]
 
 	
 	# if climb_vel <= 0.5 or cruise_vel <= 6.0:
@@ -492,7 +491,7 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 
 	# ==========================  beign takeoff ===========================
 	#find time to takeoff
-	sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
+	sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
 	
 
 
@@ -519,22 +518,22 @@ def num_laps(CL, CD, CM, Sref_wing, Sref_tail, weight, boom_len, dist_LG, MAC, I
 	if dist < leg_len:
 		time += calcCruise_time(leg_len - dist, cruise_vel)
 
-	time += calcTurn_time(35, cruise_vel, Sref_wing, weight, 180)
+	time += calcTurn_time(35, cruise_vel, sref_wing, weight, 180)
 	time += calcCruise_time(leg_len, cruise_vel)
-	time += calcTurn_time(40, cruise_vel, Sref_wing, weight, 360)
+	time += calcTurn_time(40, cruise_vel, sref_wing, weight, 360)
 	time += calcCruise_time(leg_len, cruise_vel)
-	time += calcTurn_time(35, cruise_vel, Sref_wing, weight, 180)
+	time += calcTurn_time(35, cruise_vel, sref_wing, weight, 180)
 	time += calcCruise_time(leg_len, cruise_vel)
 
 	while time < max_time:
 		N = N + 1
 
 		time += calcCruise_time(leg_len , cruise_vel)
-		time += calcTurn_time(35, cruise_vel, Sref_wing, weight, 180)
+		time += calcTurn_time(35, cruise_vel, sref_wing, weight, 180)
 		time += calcCruise_time(leg_len, cruise_vel)
-		time += calcTurn_time(40, cruise_vel, Sref_wing, weight, 360)
+		time += calcTurn_time(40, cruise_vel, sref_wing, weight, 360)
 		time += calcCruise_time(leg_len, cruise_vel)
-		time += calcTurn_time(35, cruise_vel, Sref_wing, weight, 180)
+		time += calcTurn_time(35, cruise_vel, sref_wing, weight, 180)
 		time += calcCruise_time(leg_len, cruise_vel)
 	
 		# print(N)

@@ -17,7 +17,6 @@ from sympy import Symbol, nsolve
 
 # Import self-created components
 from Input import AC, updateAircraft
-from Aircraft_Class.gen_files import gen_mass, gen_geo
 from Aircraft_Class.aircraft_class import *
 
 
@@ -85,9 +84,6 @@ class createAC(Component):
 		# AC.wing = Wing(AC.wing.num_Sections, AC.wing.is_linear, AC.wing.b_wing, AC.wing.sweep, AC.wing.chord, AC.wing.Xo, AC.wing.Yo, AC.wing.Zo, AC.wing.dihedral, AC.wing.camber,AC.wing.max_camber, AC.wing.thickness, AC.wing.max_thickness)
 		updateAircraft(AC)
 
-		# # Create AVL geometry file
-		# gen_geo(AC)
-		# gen_mass(AC)
 
 		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC

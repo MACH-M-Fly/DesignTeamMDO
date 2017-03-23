@@ -48,7 +48,7 @@ def genGeo(AC):
 	"""
 
 	# Assign genGeo needs from the aircraft attribute
-	Sref = AC.wing.Sref
+	Sref = AC.wing.sref
 	MAC = AC.wing.MAC
 	b_wing = AC.wing.b_wing
 	cg = AC.wing.CG

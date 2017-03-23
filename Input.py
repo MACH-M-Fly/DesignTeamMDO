@@ -153,11 +153,11 @@ AC.m_electronics = 1*0.453592
 AC.m_fuselage = 1*0.453592
 
 # Create an instance of AC for wing values
-AC.wing = Wing(num_Sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
+AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
 		AC.Yo, AC.Zo, dihedral, camber,max_camber, thickness, max_thickness)
 
 # Create an instance of AC for tail values
-AC.tail = Tail(num_Sections_tail, AC.is_linear, b_htail, \
+AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail, \
 		htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo, \
 		AC.Zo, AC.boom_len)
 
@@ -165,7 +165,7 @@ AC.tail = Tail(num_Sections_tail, AC.is_linear, b_htail, \
 def updateAircraft(cur_AC):
 	
 	# Create an instance of AC for wing values
-	AC.wing = Wing(cur_AC.wing.num_Sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
+	AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
 		cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber, \
 		cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
 
@@ -177,25 +177,25 @@ def updateAircraft(cur_AC):
 	AC.wing.spar_type = 'C'
 
 	# Add spar dimensions (m)
-	outer_radius = 0.1 
-	inner_radius = 0.09
+	outer_radius = 0.0762
+	inner_radius = outer_radius*0.75
 	AC.wing.spar_dim = [outer_radius, inner_radius]
 
 	# Spar Young's Modulus
-	AC.wing.spar_E = 1.0e6
+	AC.wing.spar_E = 68.9e9
 
 	# Create an instance of AC for tail values
-	AC.tail = Tail(cur_AC.tail.num_Sections, cur_AC.is_linear, cur_AC.tail.b_htail, \
+	AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail, \
 		cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo, \
 		cur_AC.Zo, AC.boom_len)
 
 	AC.tail.boom_Type = 'C'
 
-	outer_radius = 0.1
-	inner_radius = 0.09
+	outer_radius = 0.0445
+	inner_radius = outer_radius*0.75
 	AC.tail.boom_Dim = [outer_radius, inner_radius]
 
-	AC.tail.boom_E = 1.0e6
+	AC.tail.boom_E = 68.9e9
 	
 
 
@@ -215,11 +215,11 @@ print('Mission', AC.mission)
 
 
 print('=============== Initial wing Parameters =============')
-print('AC.wing.num_Sections: ', AC.wing.num_Sections)
+print('AC.wing.num_Sections: ', AC.wing.num_sections)
 print('AC.wing.is_linear: ', AC.wing.is_linear)
 print('AC.wing.b_wing: ', AC.wing.b_wing)
 print('AC.wing.sweep: ', AC.wing.sweep)
-print('AC.wing.Sref', AC.wing.Sref)
+print('AC.wing.Sref', AC.wing.sref)
 print('AC.wing.chord: ', AC.wing.chord)
 print('Chord Values at Section" ', AC.wing.chord_vals)
 print('AC.wing.Xo: ', AC.wing.Xo)
@@ -230,7 +230,7 @@ print('AC.wing.Yle: ', AC.wing.Yle)
 print('AC.wing.Zle: ', AC.wing.Zle)
 print('AC.wing.dihedral: ', AC.wing.dihedral)
 print('AC.wing.Afiles: ', AC.wing.Afiles)
-print('AC.wing.Ainc: ', AC.wing.Ainc)
+print('AC.wing.Ainc: ', AC.wing.ainc)
 print('AC.wing.sec_span: ', AC.wing.sec_span)
 print('AC.wing.MAC', AC.wing.MAC)
 print('AC.camber: ', AC.wing.camber)
@@ -244,10 +244,10 @@ print('Max Thickness Values at Section', AC.wing.max_thickness_vals)
 
 print('\n')
 print('=============== Initial tail Parameters =============')
-print('AC.tail.num_Sections: ', AC.tail.num_Sections)
+print('AC.tail.num_Sections: ', AC.tail.num_sections)
 print('AC.tail.is_linear: ', AC.tail.is_linear)
 print('AC.tail.b_htail: ', AC.tail.b_htail)
-print('AC.tail.Sref', AC.tail.Sref)
+print('AC.tail.Sref', AC.tail.sref)
 print('AC.tail.htail_chord: ', AC.tail.htail_chord)
 print('Horiz. Tail Chord Values at Section" ', AC.tail.htail_chord_vals)
 print('AC.tail.b_vtail: ', AC.tail.b_vtail)

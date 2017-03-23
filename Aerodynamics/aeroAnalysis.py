@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from time import localtime, strftime, time
-from xfoil_lib import xfoil_alt, getDataXfoil
+from xfoil_lib import xfoilAlt, getDataXfoil
 
 from Input import AC
 import pyAVL
@@ -37,26 +37,43 @@ class aeroAnalysis(Component):
 
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+		self.add_output('SM', val = 0.0, desc = 'static margin')
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
 		AC = params['in_aircraft']
+
+		# print('================  Current Results ===================')
+		# print('\n')
+		# print("Chord Values", AC.wing.chord_vals)
+		# print("Chord Cubic Terms", AC.wing.chord)
+		# print("Wingspan", AC.wing.b_wing)
+		# print("Boom Length", AC.boom_len)
+		# print("Sweep Cubic Terms", AC.wing.sweep)
+		# print("Sweep Values", AC.wing.sweep_vals)
+		# print("Horiz. Tail Chord Values", AC.tail.htail_chord_vals)
+		# print("Horiz. Tail  Chord Cubic Terms", AC.tail.htail_chord)
 	
 		# Call aero analysis to get CL, CD, CM and NP - Add to class
 		AC.CL, AC.CD, AC.CM, AC.NP = getAeroCoef()
 
+		# Static Margine calculation
+		SM = (AC.NP - AC.CG[0])/AC.wing.MAC
+		AC.SM = SM
+
 		# Calculate cruise velocity
-		AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.Sref, AC.tail.Sref)
+		AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.sref, AC.tail.sref)
 
 		# Get gross lift
 		flapped = False
-		AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.Sref, AC.tail.Sref, flapped, AC.CL)
+		AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref, flapped, AC.CL)
 
 		# print('Wing Lift = %f' % AC.wing_f)
 		# print('Tail Lift = %f' % AC.tail_f)
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
+		unknowns['SM'] = AC.SM
 
 
 def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = './Aerodynamics/aircraft.mass'):
@@ -100,7 +117,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case.clearVals()
 
 
-	case.alphaSweep(-15, 30, 2)
+	# case.alphaSweep(-15, 30, 2)
 	case.alphaSweep(-15, 15, 4)
 	# case.calcNP()
 
@@ -179,10 +196,10 @@ def getTailCL(ang, flapped):
 	else:
 		return CL_tail_noflap(ang + inced_ang)
 
-def grossLift(vel, ang, Sref_wing, Sref_tail, flapped, CL):
+def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
 
-	wing_f = 0.5*Rho*vel**2*(CL(ang)*Sref_wing)
-	tail_f = 0.5*Rho*vel**2*(getTailCL(ang, flapped)*Sref_tail)
+	wing_f = 0.5*Rho*vel**2*(CL(ang)*sref_wing)
+	tail_f = 0.5*Rho*vel**2*(getTailCL(ang, flapped)*sref_tail)
 	l_net = wing_f + tail_f
 
 	gross_F = l_net + getThrust(vel,ang)[1]
@@ -192,16 +209,16 @@ def grossLift(vel, ang, Sref_wing, Sref_tail, flapped, CL):
 
 
 
-def calcVelCruise(CL, CD, weight, Sref_wing, Sref_tail):	
+def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):	
 	def sumForces (A):
 		vel = A[0]
 		ang = A[1]
 
-		gross_F, wing_f, tail_f = grossLift(vel, ang, Sref_wing, Sref_tail, 0, CL)
+		gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL)
 
 		F = np.empty(2)
 
-		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*Sref_wing
+		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing
 		F[1] = gross_F - weight
 		
 		return F

@@ -63,7 +63,7 @@ class Wing(object):
 		# self.boom_len = boom_len				# Tailboom length
 		self.Afiles = Afiles					# File for initial airfoil input
 		self.ainc = ainc						# Angle of incidence as a function of half-span (b_wing/2)
-		self.sec_span = self.b_wing/2.0/(self.num_Sections-1) 			# Span of each section of wing
+		self.sec_span = self.b_wing/2.0/(self.num_sections-1) 			# Span of each section of wing
 		
 		# Check for linearly varying input
 		if self.is_linear == 1:
@@ -76,11 +76,11 @@ class Wing(object):
 
 		# If no starting airfoil given, default airfoil to start is NACA2412
 		if Afiles == []:
-			self.Afiles = ['NACA2412']*self.num_Sections
+			self.Afiles = ['NACA2412']*self.num_sections
 
 		# If no starting inclination angle given, default is zero
-		if not(Ainc.any()):
-			self.ainc=np.zeros(self.num_Sections)
+		if not(ainc.any()):
+			self.ainc=np.zeros(self.num_sections)
 
 		# Calculate wing chord values at each section
 		self.chord_vals = self.getChord()
@@ -119,8 +119,8 @@ class Wing(object):
 
 	# Function: Calculate sweep values at sectional chord locations
 	def getSweep(self, sweep):
-		self.sweep_vals = np.zeros(self.num_Sections)
-		for i in range(self.num_Sections):
+		self.sweep_vals = np.zeros(self.num_sections)
+		for i in range(self.num_sections):
 			span = (i+1)*self.sec_span
 			self.sweep_vals[i] =  sweep[0]*span**3 + sweep[0]*span**2 + \
 			sweep[2]*span + sweep[3] 
@@ -128,55 +128,55 @@ class Wing(object):
 
 	# Function: Calculate chord at spanwise locations
 	def getChord(self):
-		self.chord_vals = np.zeros(self.num_Sections)
-		# for i in range(self.num_Sections):
+		self.chord_vals = np.zeros(self.num_sections)
+		# for i in range(self.num_sections):
 		# 	span = (i+1)*self.sec_span
 		# 	self.chord_vals[i] =  self.chord[0]*span**3 + self.chord[0]*span**2 + \
 		# 	self.chord[2]*span + self.chord[3] 
-		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.chord_vals = self.chord[0]*spans**2 + self.chord[1]*spans**2 + self.chord[2]*spans + self.chord[3]
 		return self.chord_vals
 
 	# Function: Calculate camber at spanwise locations
 	def getCamber(self):
-		self.camber_vals = np.zeros(self.num_Sections)
-		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.camber_vals = np.zeros(self.num_sections)
+		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.camber_vals = self.camber[0]*spans**2 + self.camber[1]*spans**2 + self.camber[2]*spans + self.camber[3]
 		return self.camber_vals
 
 	# Function: Calculate max camber position at spanwise locations
 	def getMaxCamber(self):
-		self.max_camber_vals = np.zeros(self.num_Sections)
-		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.max_camber_vals = np.zeros(self.num_sections)
+		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.max_camber_vals = self.max_camber[0]*spans**2 + self.max_camber[1]*spans**2 + self.max_camber[2]*spans + self.max_camber[3]
 		return self.max_camber_vals
 
 	# Function: Calculate thickness at spanwise locations
 	def getThickness(self):
-		self.thickness_vals = np.zeros(self.num_Sections)
-		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.thickness_vals = np.zeros(self.num_sections)
+		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.thickness_vals = self.thickness[0]*spans**2 + self.thickness[1]*spans**2 + self.thickness[2]*spans + self.thickness[3]
 		return self.thickness_vals
 
 	# Function: Calculate max thickness at spanwise locations
 	def getMaxThickness(self):
-		self.max_thickness_vals = np.zeros(self.num_Sections)
-		spans = np.arange(1,self.num_Sections+1)*self.sec_span
+		self.max_thickness_vals = np.zeros(self.num_sections)
+		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.max_thickness_vals = self.max_thickness[0]*spans**2 + self.max_thickness[1]*spans**2 + self.max_thickness[2]*spans + self.max_thickness[3]
 		return self.max_thickness_vals
 
 	# Calculate wing leading edge coordinates
 	def calcLeading_Edge(self):
 		# Build leading edge coordinates
-		self.Xle = np.zeros(self.num_Sections)
-		self.Yle = np.zeros(self.num_Sections)
-		self.Zle = np.zeros(self.num_Sections)
+		self.Xle = np.zeros(self.num_sections)
+		self.Yle = np.zeros(self.num_sections)
+		self.Zle = np.zeros(self.num_sections)
 		self.Xle[0] = self.Xo
 		self.Yle[0] = self.Yo
 		self.Zle[0] = self.Zo
 		Xo_quar = self.Xo-self.chord_vals[0]/4
-		# print(range(self.num_Sections))
-		for i in range(1, self.num_Sections):
+		# print(range(self.num_sections))
+		for i in range(1, self.num_sections):
 			# print("i",i)
 			angle = self.sweep_vals[i]*math.pi/180
 			self.Xle[i] = self.sec_span*i*math.tan(angle) 
@@ -201,7 +201,7 @@ class Wing(object):
 		self.MAC = 0
 		self.MAC = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
 			self.chord[2]*y + self.chord[3] )**2, 0, self.b_wing/2)
-		self.MAC = self.MAC[0]*2.0/self.Sref
+		self.MAC = self.MAC[0]*2.0/self.sref
 		return self.MAC
 
 	def addControlSurface(self, secStart, secEnd, hvec, name):
@@ -271,8 +271,8 @@ class Tail():
 		self.Yo = Yo							# Root chord, leading edge, X position
 		self.Zo = Zo 							# Root chord, leading edge, X position
 		self.boom_len = boom_len				# Tailboom length
-		self.sec_span_htail = self.b_htail/2.0/self.num_Sections 		# Span of each section of horiz. tail
-		self.sec_span_vtail = self.b_vtail/self.num_Sections 		# Span of each section of vert. tail
+		self.sec_span_htail = self.b_htail/2.0/self.num_sections 		# Span of each section of horiz. tail
+		self.sec_span_vtail = self.b_vtail/self.num_sections 		# Span of each section of vert. tail
 
 		# Check for linearly varying input
 		if self.is_linear == 1:
@@ -309,8 +309,8 @@ class Tail():
 
 	# Function: Calculate horiz. tail chord at sectional chord locations
 	def getHTailChord(self, htail_chord, sec_span_htail):
-		self.htail_chord_vals = np.zeros(self.num_Sections)
-		for i in range(self.num_Sections):
+		self.htail_chord_vals = np.zeros(self.num_sections)
+		for i in range(self.num_sections):
 			span = (i+1)*sec_span_htail
 			self.htail_chord_vals[i] = htail_chord[0]*span**3 + htail_chord[0]*span**2 + \
 			htail_chord[2]*span + htail_chord[3]
@@ -318,8 +318,8 @@ class Tail():
 
 	# Function: Calculate vertical tail chord at sectional chord locations
 	def getVTailChord(self, vtail_chord, sec_span_vtail):
-		self.vtail_chord_vals = np.zeros(self.num_Sections)
-		for i in range(self.num_Sections):
+		self.vtail_chord_vals = np.zeros(self.num_sections)
+		for i in range(self.num_sections):
 			span = (i+1)*sec_span_vtail
 			self.vtail_chord_vals[i] = vtail_chord[0]*span**3 + vtail_chord[0]*span**2 + \
 			vtail_chord[2]*span + vtail_chord[3]
@@ -328,17 +328,17 @@ class Tail():
 		# Calculate horiz. tail leading edge coordinates
 	def calcHorizLeading_Edge(self):
 		# Build leading edge coordinates
-		self.Xle_ht = np.zeros(self.num_Sections)
-		self.Yle_ht = np.zeros(self.num_Sections)
-		self.Zle_ht = np.zeros(self.num_Sections)
+		self.Xle_ht = np.zeros(self.num_sections)
+		self.Yle_ht = np.zeros(self.num_sections)
+		self.Zle_ht = np.zeros(self.num_sections)
 		self.Xle_ht[0] = self.Xo + self.boom_len + self.htail_chord_vals[0]
 		# print("Xle_ht HERE", self.Xle_ht)
 		self.Yle_ht[0] = self.Yo
 		self.Zle_ht[0] = self.Zo
 		Xo_quar_ht = self.Xle_ht[0]-self.htail_chord_vals[0]/4
-		# print(range(self.num_Sections))
+		# print(range(self.num_sections))
 		angle = 0								# No sweep
-		for i in range(1, self.num_Sections):
+		for i in range(1, self.num_sections):
 			# print("i",i)
 			self.Xle_ht[i] = self.Xle_ht[0] - self.sec_span_htail*i*math.tan(angle)
 			self.Yle_ht[i] = self.sec_span_htail*i

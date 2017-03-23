@@ -68,7 +68,7 @@ class calcWeight(Component):
         Xle = AC.wing.Xo
             
         Yle = AC.wing.Yo
-        sref_Wing = AC.wing.Sref
+        sref_Wing = AC.wing.sref
         b_vtail = AC.tail.b_vtail
         b_htail = AC.tail.b_htail
         Xle_t = AC.tail.Xo
@@ -211,6 +211,7 @@ class calcWeight(Component):
         AC.x_cg = x_cg
         AC.z_cg = z_cg
         AC.mass= m_total
+        AC.mass_tail = m_tail
         AC.weight = m_total*9.81
         AC.CG = ([AC.x_cg, 0.0, AC.z_cg])
 

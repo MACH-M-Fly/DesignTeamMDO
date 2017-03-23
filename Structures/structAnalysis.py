@@ -40,6 +40,8 @@ class structAnalysis(Component):
 
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+		self.add_output('stress_wing',val=0.0, desc='Stress on wing')
+		self.add_output('stress_tail',val=0.0, desc='Stress on tail')
 
 
 	def solve_nonlinear(self,params,unknowns,resids):
@@ -51,6 +53,8 @@ class structAnalysis(Component):
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
+		unknowns['stress_wing'] = AC.sig_max
+		unknowns['stress_tail'] = AC.sig_max_tail
 
 
 # Calculate area moment of inertia for input spar
@@ -201,6 +205,7 @@ def runStructAnalysis(AC):
 	# structure analysis on tail
 	x_tail = np.linspace(0, AC.boom_len, 1001)
 	c_tail, I_tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
+	# M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, AC.tail_f + AC.mass_tail*9.81, I_tail, AC.tail.boom_E, c_tail)
 	M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, AC.tail_f, I_tail, AC.tail.boom_E, c_tail)
 
 
