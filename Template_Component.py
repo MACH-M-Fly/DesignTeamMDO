@@ -16,7 +16,7 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 
 # Import self-created components
-from Input_Files.Input import AC
+from Input import AC
 
 # Change the name of your componenet here
 class exampleComponent(Component):

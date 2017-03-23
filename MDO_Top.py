@@ -18,6 +18,7 @@ from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
+from getBuildTime import getBuildTime
 # from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
 
@@ -57,6 +58,7 @@ class constrainedMDO(Group):
 		self.add('aeroAnalysis', aeroAnalysis())
 		self.add('structAnalysis',structAnalysis())
 		self.add('objPerformance', objPerformance())
+		self.add('getBuildTime', getBuildTime())
 		
 # ====================================== Connections ============================================ # 
 		# self.connect('b_wing.b_wing',['createAC.b_wing'])
@@ -85,6 +87,7 @@ class constrainedMDO(Group):
 		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+		self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
 		# self.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
@@ -216,6 +219,7 @@ print("Sweep Cubic Terms", out_ac.wing.sweep)
 print("Sweep Values", out_ac.wing.sweep_vals)
 print("Horiz. Tail Chord Values", out_ac.tail.htail_chord_vals)
 print("Horiz. Tail  Chord Cubic Terms", out_ac.tail.htail_chord)
+print("Total Build Hours", out_ac.total_hours)
 
 # print("CL", out_ac.CL)
 # print("CD", out_ac.CD)

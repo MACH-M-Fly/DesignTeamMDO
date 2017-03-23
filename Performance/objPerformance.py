@@ -46,7 +46,7 @@ class objPerformance(Component):
 		self.add_param('in_aircraft', val = AC, desc = 'Input Aircraft Class')
 
 		# Output instance of aircaft - after modification
-		# self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
 		# Set up outputs
 		self.add_output('score', val = 0.0, desc = 'score ')
@@ -129,11 +129,12 @@ class objPerformance(Component):
 
 
 		# Set output to updated instance of aircraft
-		# unknowns['out_aircraft'] = AC
+		unknowns['out_aircraft'] = AC
 		unknowns['score'] = score
 		unknowns['sum_y'] = sum_y
 		unknowns['chord_vals'] = AC.wing.chord_vals
 		unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
+		
 
 # Declare Constants
 
@@ -306,8 +307,8 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 		moment_tail = - q*tailCL(ang, Flapped)*sref_tail*(boom_len - dist_LG)
 		moment_wing = q*(CM(ang)*sref_wing*MAC + CL(ang)*sref_wing*dist_LG)
 		# damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*sref_wing
-		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail) # +damping_moment)
-		
+		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail) # +damping_moment
+
 		if (ang <= 0.0 and ang_accel < 0.0) :
 			ang_accel = 0
 		elif (ang >= max_rot_ang and v_ang >= 0.0):
