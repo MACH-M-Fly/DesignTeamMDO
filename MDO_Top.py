@@ -173,7 +173,8 @@ num_sections = 5
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
 prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
-prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
+prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.001  )
+# prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000)
 prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000)
 
@@ -244,7 +245,7 @@ print("CG", out_ac.CG)
 # Ooutput final geometry of aircraft
 plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.CG[0], out_ac.NP, out_ac.score)
+				out_ac.CG[0], out_ac.NP, out_ac.score, out_ac.mount_len)
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)

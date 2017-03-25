@@ -78,18 +78,16 @@ class calcWeight(Component):
         
         # calc mass of the Wing
         # current stats are based off of M-9
-        rib_dens = AC.k_ribs                # ribs/ meter wing
-        rib_dens_t = AC.k_ribs_t            # ribs/meter tail
+        rib_dens = 10               # ribs/ meter wing
+        rib_dens_t = 10            # ribs/meter tail
         
         linden_LE = AC.LE_lindens           # kg/m | leading edge
         linden_TE = AC.TE_lindens           # kg/m | Main Wing Trailing edge mass
         linden_spar = AC.spar_lindens       # kg/m | Main Wing Spar 
-        k_ribs = 0.0065                     # kg | Main Wing Ribs        linden_LE_t = 0.075  # kg/m | leading edge tail
         linden_spar_t = 0.25                # kg/m | tail spar
-        k_ribs_t = 0.003                    # kg | mass of ribs in the tail
         SM = 0.15                           # Static margin 
         payload_max_dimension = 0.07        # m | masimum dimension of payload, width depth height, that fuselage will build around 
-        linden_boom = 0.74                  # kg/m
+        linden_boom = 0.49                  # kg/m
         m_motor = AC.m_motor                # kg
         m_battery = AC.m_battery            # kg
         m_prop = AC.m_propeller             # kg 
@@ -107,18 +105,20 @@ class calcWeight(Component):
         ###############################################
         num_ribs = math.ceil(b_wing * rib_dens)
         AC.num_ribs = num_ribs
-        m_ribs = k_ribs * num_ribs * (MAC / 0.5)
+        m_ribs = AC.k_ribs * num_ribs * (MAC / 0.5)
         m_LE = linden_LE * b_wing
         m_TE = linden_TE * b_wing
         m_spar = linden_spar * b_wing
         
         m_wing = m_ribs + m_LE + m_TE + m_spar
+
         # calc mass of the tail
         num_ribs_t = math.ceil((b_htail + b_vtail) * rib_dens_t) 
-        m_ribs_t = k_ribs_t * num_ribs_t
+        m_ribs_t = AC.k_ribs_t * num_ribs_t
         m_LE_t = linden_LE * (b_htail + b_vtail)
         m_TE_t = linden_TE * (b_htail + b_vtail)
         m_spar_t = linden_spar_t * (b_htail + b_vtail)
+
         ultrakote_Density = .1318                                   #kg/m^2
         m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t
         wet_area_w = 2*(sref_Wing)
@@ -134,18 +134,21 @@ class calcWeight(Component):
         m_landgear_rear = 0.69 * height_LG * 2
         m_landgear = m_landgear_rear + 0.163
         #########
-        m_x = m_wing * 0.25 * MAC + m_landgear * dist_LG + m_tail * (C[0]+ boom_len) + m_boom * (C[0]+(boom_len / 2))
+        m_x = m_wing * 0.25 * MAC + m_landgear * dist_LG + m_tail * (C[0]+ boom_len + C_t[0]) + m_boom * (C[0]+(boom_len / 2))
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics
         
-        def x_CG_loc(mount_len):
+        # def x_CG_loc(mount_len):
             
-            cg = (m_x + mount_len * m_motor + mount_len / 2 * m_battery) / m_total
+        #     cg = (m_x + mount_len * m_motor + mount_len / 2 * (m_battery+m_electronics)) / m_total
         
-            return (cg - MAC / 4)
+        #     return (cg - MAC / 4)
         
-        # adjust the motor mount length until the CG is at c/4
-        mount_len = fsolve(x_CG_loc, np.array([1]))[0]       
-        
+        # # adjust the motor mount length until the CG is at c/4
+        # mount_len = fsolve(x_CG_loc, np.array([1]))[0]  
+        mount_len = - 0.15 
+        x_cg = (m_x + mount_len * m_motor + mount_len / 2 * (m_battery+m_electronics)) / m_total
+        #x_cg = MAC/4
+
         # x_cg = MAC/4
         z_cg = 0
         
@@ -163,11 +166,13 @@ class calcWeight(Component):
         else:
              NP = 0.25*MAC
 
+        fuselage_mass = 1.0 #kg
+
+        
         # # Add payload plates until static margin requirement is fulfilled. Defines the minimum fuselage length for achieving static stability.
         # payload_num = 0
         # payload_counter = 0
 
-        x_cg = x_CG_loc(mount_len)
         # RHS = (x_cg-NP)/MAC
         # m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
         
@@ -200,13 +205,15 @@ class calcWeight(Component):
         # fuselage_length = payload_depth * payload_counter;
         # fuselage_mass = fuselage_length * (mass_fuselage_payload)
 
-        fuselage_mass = 1.0 # mass of fuselage [kg]
+    
         payload_counter = 0
   
         # # total mass
         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + fuselage_mass
         total_payload_mass = payload_counter*m_payload
         
+        x_cg = x_cg + fuselage_mass*(C[0]/2)/m_total
+
         Ixx = (m_total/9.81)*(.245*b_wing/2)**2 
         Iyy = (m_total/9.81)*(.35*(C[0]+boom_len+C_t[0])/2)**2 
         Izz = (m_total/9.81)*(.393*(b_wing + C[0] + boom_len + C_t[0] )/2)**2
@@ -221,7 +228,7 @@ class calcWeight(Component):
         AC.mass_tail = m_tail
         AC.weight = m_total*9.81
         AC.CG = ([AC.x_cg, AC.y_cg, AC.z_cg])
-
+        AC.mount_len = mount_len
 #         print('============== input =================')
 #         print('b_wing= ' + str(b_wing))
 #         print('C= ' + str(C))
@@ -239,7 +246,15 @@ class calcWeight(Component):
         # print('x_cg: ' + str(x_cg) + '  z_cg: ' + str(z_cg))
         print('Total Mass: ' + str(m_total))
         print('Total Payload Mass: ' + str(total_payload_mass))
-              
+        print('X Cg:  ' + str(x_cg))
+        print('Chord:  ' + str(C[0]))    
+        print('Tail Chord:  ' + str(C_t[0])) 
+        print('Fuselage Mass:  ' + str(fuselage_mass)) 
+        print('Tail Mass:  ' + str(m_tail)) 
+        print('Wing Mass:  ' + str(m_wing))   
+        print('Boom Mass:  ' + str(m_boom))
+        print('Boom Mass:  ' + str(boom_len)) 
+
         # Create AVL geometry file
         genMass(AC)
         genGeo(AC)

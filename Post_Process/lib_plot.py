@@ -133,7 +133,7 @@ class Plot(Component):
 #		x_cg: CG position
 #		NP: Neutral point position
 #		Score: Objective function score                               
-def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
+def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 	wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]
@@ -162,7 +162,8 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score):
 	geo1.plot( [Yle[2], Yle[2]] , [Xle[2] ,Xle[2] + C[2]] ,  'm--')
 	geo1.plot( [Yle[3], Yle[3]] , [Xle[3] ,Xle[3] + C[3]] ,  'm--')
 	geo1.plot( [Yle[4], Yle[4]] , [Xle[4] ,Xle[4] + C[4]] ,  'm--')
-	geo1.plot(0, x_cg, 'ko', 0, NP, 'cd')
+	print("Mount lenght", mount_len)
+	geo1.plot(0, x_cg, 'ko', 0, NP, 'cd', 0, mount_len, 'bs')
 	# Automatic axis scaling
 	# geo1.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
 	geo1.axis('equal')

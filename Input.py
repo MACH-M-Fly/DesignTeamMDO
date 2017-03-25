@@ -91,7 +91,7 @@ ainc = np.array([ang_a,ang_b, ang_c, ang_d])
 b_htail = 0.75
 
 # Vertical tail span (m)
-b_vtail = 0.5
+b_vtail = 0.2
 
 # Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
 ht_a = 0; ht_b = 0; ht_c = 0; ht_d = 0.1;
@@ -133,24 +133,24 @@ AC.spar_lindens = 5*0.453592*0.3048
 AC.LE_lindens = 5*0.453592*0.3048
 # Trailing Edge (TE) density (kg/m)
 AC.TE_lindens = 5*0.453592*0.3048
-# Rib chordwise density (kg/m)
-AC.k_ribs = 1*0.453592*0.3048
+# Rib Mass (kg/r)
+AC.k_ribs = 0.0065
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
-# Tail Rib chordwise density (kg/m)
-AC.k_ribs_t = 1*0.453592*0.3048
+# Tail Rib Mass (kg/r)
+AC.k_ribs_t = 0.0045
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
 # Motor mass (kg)
-AC.m_motor = 2*0.453592
+AC.m_motor = 1*0.72
 # Battery mass (kg)
-AC.m_battery = 1*0.453592
+AC.m_battery = 1*0.0
 # Propeller mass (kg)
-AC.m_propeller = 1*0.453592
+AC.m_propeller = 1*0.0
 # Electronics mass (kg)
-AC.m_electronics = 1*0.453592
+AC.m_electronics = 1*0.68
 # Fuselage mass (kg)
-AC.m_fuselage = 1*0.453592
+#AC.m_fuselage = 1*0.453592
 
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
