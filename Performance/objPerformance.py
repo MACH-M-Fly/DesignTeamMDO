@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from time import localtime, strftime, time
-from xfoil_lib import xfoil_alt, getData_xfoil
+from xfoil_lib import xfoilAlt, getDataXfoil
 
 from Input import AC
 
@@ -148,8 +148,8 @@ inced_ang = -5.0 *np.pi/180.0
 xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
 
-alphas_tail, CLs_tail_flap = getData_xfoil(xfoil_path + '_flap.dat')[0:2]
-alphas_tail_noflap, CLs_tail_noflap = getData_xfoil(xfoil_path + '.dat')[0:2]
+alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path + '_flap.dat')[0:2]
+alphas_tail_noflap, CLs_tail_noflap = getDataXfoil(xfoil_path + '.dat')[0:2]
 alphas_tail = [x * np.pi/180 for x in alphas_tail]
 CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
 CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
