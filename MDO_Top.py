@@ -51,7 +51,7 @@ class constrainedMDO(Group):
 		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.1]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('c_r_vt',IndepVarComp('c_r_vt',np.array([0.0 , 0.0, 0.0,1.0])))
 		self.add('b_htail',IndepVarComp('b_htail',0.2))
-		self.add('b_vtail',IndepVarComp('b_vtail',0.3))
+		# self.add('b_vtail',IndepVarComp('b_vtail',0.3))
 
 		self.add('my_comp', createAC())
 		self.add('calcWeight', calcWeight())
@@ -82,6 +82,7 @@ class constrainedMDO(Group):
 		self.connect('boom_len.boom_len',['my_comp.boom_len'])
 		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
 		self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		self.connect('b_htail.b_htail', 'my_comp.b_htail')
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
 		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -163,7 +164,7 @@ prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05,
 													  	upper = np.array([0.1, 0.2, 0.2, 1.0]) )
 # prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 1.2)
+prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 1.2)
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 
 
@@ -172,10 +173,10 @@ num_sections = 5
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
-prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
+prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.05  )
 prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.01  )
 # prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
-prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000)
+# prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000)
 prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000)
 
 
@@ -236,7 +237,7 @@ print("Total Time", out_ac.tot_time)
 
 print('########    Structural Analysis  #######')
 print('Gross Lift', out_ac.gross_F)
-print('Max Stress ', out_ac.sig_max)
+print("Max Stress %.7E"% out_ac.sig_max)
 print("Max Deflection %.7E"% out_ac.y_max)
 print('Max Stress Tail', out_ac.sig_max_tail)
 print("Max Deflection Tail %.7E"% out_ac.y_max_tail)

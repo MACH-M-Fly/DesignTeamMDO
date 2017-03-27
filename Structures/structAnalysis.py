@@ -56,6 +56,10 @@ class structAnalysis(Component):
 		unknowns['stress_wing'] = AC.sig_max
 		unknowns['stress_tail'] = AC.sig_max_tail
 
+		# Print to screen
+		print("Max Stress on Wing Spar", AC.sig_max)
+		print("Max Stress on Tail Boom", AC.sig_max_tail)
+
 
 # Calculate area moment of inertia for input spar
 def calcI(shape, dim):

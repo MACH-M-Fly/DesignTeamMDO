@@ -50,7 +50,7 @@ class createAC(Component):
 		# self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')	
 		self.add_param('htail_chord',val = np.array([0.0 , 0.0, 0.0,0.1]), desc ='Horiz. tail chord')
 		# self.add_param('c_r_vt',val = np.array([0.0 , 0.0, 0.0,0.0]), desc = 'Vert. tail chord')
-		# self.add_param('b_htail',val = 0.0, desc = 'Horiz. tail span')
+		self.add_param('b_htail',val = 0.2, desc = 'Horiz. tail span')
 		# self.add_param('b_vtail',val = 0.0, desc = 'Vert. tail span')
 
 		# Output instance of aircaft - after modification
@@ -76,7 +76,7 @@ class createAC(Component):
 		# AC.wing.Ainc = params['Ainc']
 		AC.tail.htail_chord = params['htail_chord']
 		# AC.tail.c_r_vt = params['c_r_vt']
-		# AC.tail.b_htail = params['b_htail']
+		AC.tail.b_htail = params['b_htail']
 		# AC.tail.b_vtail = params['b_vtail']
 
 

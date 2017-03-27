@@ -53,7 +53,7 @@ sweep = np.array([s_a, s_b, s_c, s_d])
 ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.35;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
-# Distance between CG and landing gear (m)
+# Distance between LE of wing and landing gear (m)
 AC.dist_LG = 0.01
 
 # Length of tailboom (m)
@@ -129,6 +129,7 @@ AC.bank_angle = 20
 #       =========================================================================
 # Spar density (kg/m)
 AC.spar_lindens = 5*0.453592*0.3048/3
+AC.spar_den = 2700.0                   # kg/m^3 | density of aluminum
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
@@ -139,11 +140,11 @@ AC.spar_lindens_t = 1*0.25
 AC.LE_lindens_t = 5*0.453592*0.3048*0.25
 # Tail Trailing Edge (TE) density (kg/m)
 AC.TE_lindens_t = 5*0.453592*0.3048*0.15
-# Rib Mass (kg/r)
+# Rib Mass (kg/r) per 0.1 meter of rib
 AC.k_ribs = 0.0065
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
-# Tail Rib Mass (kg/r)
+# Tail Rib Mass (kg/r) per 0.1 meter of rib
 AC.k_ribs_t = 0.0045
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
@@ -183,7 +184,7 @@ def updateAircraft(cur_AC):
 	AC.wing.spar_type = 'C'
 
 	# Add spar dimensions (m)
-	outer_radius = 0.0762
+	outer_radius = 0.015
 	inner_radius = outer_radius*0.75
 	AC.wing.spar_dim = [outer_radius, inner_radius]
 
@@ -197,7 +198,7 @@ def updateAircraft(cur_AC):
 
 	AC.tail.boom_Type = 'C'
 
-	outer_radius = 0.0445
+	outer_radius = 0.015
 	inner_radius = outer_radius*0.75
 	AC.tail.boom_Dim = [outer_radius, inner_radius]
 
