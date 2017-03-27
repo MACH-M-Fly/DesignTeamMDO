@@ -262,7 +262,6 @@ def calcCruise_time(dist, velocity):
 
 def calcTurn_time(bank_angle, velocity, weight ,Sref_wing, turn_angle):
 	velocity = velocity/2
-
 	bank_angle_r = bank_angle*np.pi/180
 	g = 9.81
 
@@ -275,8 +274,18 @@ def calcTurn_time(bank_angle, velocity, weight ,Sref_wing, turn_angle):
 
 def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
 
+
 	Flapped = 0
-	max_rot_ang = 10*np.pi/180.0
+
+
+
+	landingGearHeight = 0.1 # [m]
+	# print (landingGearHeight - dist_LG)
+	# print landingGearHeight
+	max_rot_ang = np.arctan( 0.1/(boom_len - dist_LG)) 
+	# print max_rot_ang*180/np.pi
+	# exit()
+	# max_rot_ang = 10*np.pi/180.0
 
 
 	#declare functions for kinimatic varibles (F = ma and M = I*ang_a)
@@ -407,7 +416,6 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	# 400 ft runway length in meters
 	runway_len = 137.8
 
-	# print('from sim', sum_y)
 
 
 	# if (sum_y > 0.0 and dist[i] <= runway_len):
@@ -418,40 +426,40 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	# ============== Ploting ===============
 
 	# plt.figure(1)
-	# plt.subplot(711)
+	# plt.subplot(611)
 	# plt.ylabel('Angle)')
 	# plt.xlabel('time')
 	# plt.plot(time, ang, 'b')
 
-	# plt.subplot(712)
+	# plt.subplot(612)
 	# plt.ylabel('ang velocity')
 	# plt.xlabel('time')
 	# plt.plot(time, ang_vel, 'b')
 
-	# plt.subplot(713)
+	# plt.subplot(613)
 	# plt.ylabel('ang acceleration')
 	# plt.xlabel('time')
 	# plt.plot(time, ang_accel, 'b')
 
-	# plt.subplot(714)
+	# plt.subplot(614)
 	# plt.ylabel('distance')
 	# plt.xlabel('time')
 	# plt.plot(time, dist, 'b')
 
-	# plt.subplot(715)
+	# plt.subplot(615)
 	# plt.ylabel('Velocity')
 	# plt.xlabel('time')
 	# plt.plot(time, vel, 'b')
 
-	# plt.subplot(716)
+	# plt.subplot(616)
 	# plt.ylabel('Acceleration')
 	# plt.xlabel('time')
 	# plt.plot(time, accel, 'b')
 
-	# plt.subplot(717)
-	# plt.ylabel('dt')
-	# plt.xlabel('time')
-	# plt.plot(time, DT, 'b')
+	# # plt.subplot(717)
+	# # plt.ylabel('dt')
+	# # plt.xlabel('time')
+	# # plt.plot(time, DT, 'b')
 
 	# print('weight: ' + str(weight))
 	# print('Sum Y:' + str(sum_y))

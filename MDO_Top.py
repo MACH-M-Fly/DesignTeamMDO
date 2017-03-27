@@ -42,13 +42,13 @@ class constrainedMDO(Group):
 		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))# Quarter Chord Sweep in degrees (cubic)
 		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.08])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (m)
-		self.add('boom_len',IndepVarComp('boom_len', 0.75))						# Length of tailboom (m)
+		self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.04]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.1]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('c_r_vt',IndepVarComp('c_r_vt',np.array([0.0 , 0.0, 0.0,1.0])))
 		self.add('b_htail',IndepVarComp('b_htail',0.2))
 		self.add('b_vtail',IndepVarComp('b_vtail',0.3))
@@ -127,7 +127,7 @@ prob.root = constrainedMDO()
 
 prob.driver = ScipyOptimizer()
 prob.driver.options['optimizer'] = 'SLSQP'
-prob.driver.options['tol'] = 1.0e-2
+prob.driver.options['tol'] = 1.0e-4
 prob.root.fd_options['force_fd'] = True	
 prob.root.fd_options['form'] = 'central'
 prob.root.fd_options['step_size'] = 1.0e-6
@@ -173,7 +173,7 @@ num_sections = 5
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
 prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.001  )
-prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.001  )
+prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.01  )
 # prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000)
 prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000)
