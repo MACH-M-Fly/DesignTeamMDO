@@ -129,7 +129,8 @@ AC.bank_angle = 20
 #       =========================================================================
 # Spar density (kg/m)
 AC.spar_lindens = 5*0.453592*0.3048/3
-AC.spar_den = 2700.0                   # kg/m^3 | density of aluminum
+# density of aluminum (kg/m^3)
+AC.spar_den = 2700.0
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
@@ -140,7 +141,7 @@ AC.spar_lindens_t = 1*0.25
 AC.LE_lindens_t = 5*0.453592*0.3048*0.25
 # Tail Trailing Edge (TE) density (kg/m)
 AC.TE_lindens_t = 5*0.453592*0.3048*0.15
-# Rib Mass (kg/r) per 0.1 meter of rib
+# Rib Mass (kg/r) per 0.05 meter of rib
 AC.k_ribs = 0.0065
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
@@ -158,6 +159,8 @@ AC.m_propeller = 1*0.0
 AC.m_electronics = 1*0.2
 # Fuselage mass (kg)
 #AC.m_fuselage = 1*0.453592
+# Ultrakote density (kg/m^2)
+AC.ultrakote_Density = 0.1318
 
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
