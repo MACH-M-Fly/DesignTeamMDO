@@ -128,11 +128,17 @@ AC.bank_angle = 20
 #		Weights
 #       =========================================================================
 # Spar density (kg/m)
-AC.spar_lindens = 5*0.453592*0.3048
+AC.spar_lindens = 5*0.453592*0.3048/3
 # Leading Edge (LE) density (kg/m)
-AC.LE_lindens = 5*0.453592*0.3048
+AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5*0.453592*0.3048
+AC.TE_lindens = 5*0.453592*0.3048/4
+# Spar density (kg/m)
+AC.spar_lindens_t = 1*0.25
+# Tail Leading Edge (LE) density (kg/m)
+AC.LE_lindens_t = 5*0.453592*0.3048*0.25
+# Tail Trailing Edge (TE) density (kg/m)
+AC.TE_lindens_t = 5*0.453592*0.3048*0.15
 # Rib Mass (kg/r)
 AC.k_ribs = 0.0065
 # Rib spanwise desnity (# of ribs per m)
@@ -142,13 +148,13 @@ AC.k_ribs_t = 0.0045
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
 # Motor mass (kg)
-AC.m_motor = 1*0.72
+AC.m_motor = 1*0.3
 # Battery mass (kg)
-AC.m_battery = 1*0.0
+AC.m_battery = 1*0.34
 # Propeller mass (kg)
 AC.m_propeller = 1*0.0
 # Electronics mass (kg)
-AC.m_electronics = 1*0.68
+AC.m_electronics = 1*0.2
 # Fuselage mass (kg)
 #AC.m_fuselage = 1*0.453592
 
