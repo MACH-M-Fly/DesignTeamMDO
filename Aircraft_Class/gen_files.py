@@ -33,7 +33,7 @@ def genMass(AC, filename = 'aircraft.mass'):
 	out('# (kg) (m) (m) (m)     (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2)')
 	out('*   1.    1.    1.    1.    1.     1.    1.    1.    1.    1.')
 	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.') 
-	out( str(AC.weight) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
+	out( str(AC.mass) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
 
 def genGeo(AC):
 	"""
@@ -56,9 +56,12 @@ def genGeo(AC):
 	Xle = AC.wing.Xle
 	Yle = AC.wing.Yle
 	C = AC.wing.chord_vals
-	Xle_t = AC.tail.Xle_ht
-	Yle_t = AC.tail.Yle_ht
-	C_t = AC.tail.htail_chord_vals
+	Xle_ht = AC.tail.Xle_ht
+	Yle_ht = AC.tail.Yle_ht
+	Xle_vt = AC.tail.Xle_vt
+	Zle_vt = AC.tail.Zle_vt
+	C_ht = AC.tail.htail_chord_vals
+	C_vt = AC.tail.vtail_chord_vals
 
 	# print("Chords", C)
 	incAng = [0,   0,    0,  0,   0  ]
@@ -116,7 +119,7 @@ def genGeo(AC):
 		out(str(Xle[i]) + '    ' + str(Yle[i]) + '    0       '+ str(C[i]) + '     '+ str(incAng[i])+'      '+ '5      3')
 		out('AFILE')
 		out('airfoils/A_'+str(i+1) + '.dat')
-
+		out('')
 
 
 	# Horizontal surface data
@@ -127,7 +130,7 @@ def genGeo(AC):
 	out('SURFACE')
 	out('Horizontal Tail')
 	out('#Nchordwise  Cspace   Nspan   Sspace')
-	out('7       1.0           10        -2 ')
+	out('10       1.0           20         2 ')
 	out('YDUPLICATE')
 	out('0.0')
 	out('SCALE')
@@ -138,31 +141,49 @@ def genGeo(AC):
 	out('0')	
 	out('')
 	out('#------------------TAIL ROOT/ELEVATOR------------------')
-	out('SECTION')
-	out('#Xle   Yle     Zle     Chord   Ainc')
-	out(str(Xle_t[0]) + '  ' +  str(Yle_t[0]) + '   0.0  '+ str(C_t[0]) +'  0.000')
-	out('NACA')
-	out('0012')
-	out('CLAF')
-	out('1.1078')
-	out('')
-	out('CONTROL')
-	out('#surface gain xhinge hvec SgnDup')
-	out('Elevator -1.00 0.5 0 1 0 1.00')
-	out('')
-	out('#--------------------TAIL Tip--------------------------')
-	out('SECTION')
-	out('#Xle   Yle     Zle     Chord   Ainc')
-	out(str(Xle_t[1]) + '  ' +  str(Yle_t[1]) + ' 0.000   '+ str(C_t[1]) +'  0.000')
-	out('NACA')
-	out('0012')
-	out('CLAF')
-	out('1.1078')
-	out('')
-	out('CONTROL')
-	out('#surface gain xhinge hvec SgnDup')
-	out('Elevator -1.00 0.5 0 1 0 1.00')
-	out('')
+	inds = [0, len(C_ht) - 1]
+	# for i in range(0, len(C_ht)):
+	for i in inds:
+		out('SECTION')
+		out('#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace')
+		out(str(Xle_ht[i]) + '    ' + str(Yle_ht[i]) + '    0       '+ str(C_ht[i]) + '     '+ str(0.0) +'      '+ ' ')
+		out('NACA')
+		out('0012')
+		out('CLAF')
+		out('1.1078')
+		out('')
+		if ( (i == 0) | (i == (len(C_ht) - 1)) ):
+			out('CONTROL')
+			out('#surface gain xhinge hvec SgnDup')
+			out('Elevator -1.00 0.5 0 1 0 1.00')
+			out('')
+
+	# out('#------------------TAIL ROOT/ELEVATOR------------------')
+	# out('SECTION')
+	# out('#Xle   Yle     Zle     Chord   Ainc')
+	# out(str(Xle_ht[0]) + '  ' +  str(Yle_ht[0]) + '   0.0  '+ str(C_t[0]) +'  0.000')
+	# out('NACA')
+	# out('0012')
+	# out('CLAF')
+	# out('1.1078')
+	# out('')
+	# out('CONTROL')
+	# out('#surface gain xhinge hvec SgnDup')
+	# out('Elevator -1.00 0.5 0 1 0 1.00')
+	# out('')
+	# out('#--------------------TAIL Tip--------------------------')
+	# out('SECTION')
+	# out('#Xle   Yle     Zle     Chord   Ainc')
+	# out(str(Xle_ht[1]) + '  ' +  str(Yle_ht[1]) + ' 0.000   '+ str(C_t[1]) +'  0.000')
+	# out('NACA')
+	# out('0012')
+	# out('CLAF')
+	# out('1.1078')
+	# out('')
+	# out('CONTROL')
+	# out('#surface gain xhinge hvec SgnDup')
+	# out('Elevator -1.00 0.5 0 1 0 1.00')
+	# out('')
 	out('#======================================================')
 	out('#------------------- Vertical Tail --------------------')
 	out('#======================================================')
@@ -185,30 +206,47 @@ def genGeo(AC):
 	out('2')
 	out('')
 	out('#----------------------ROOT/RUDDER---------------------')
-	out('SECTION')
-	out('#Xle   Yle     Zle     Chord   Ainc')
-	out(str(Xle_t[0]) + ' 0.0   0 ' +str(C_t[0]) + '   0.000')
-	out('NACA')
-	out('0012')
-	out('CLAF')
-	out('1.1078')
-	out('')
-	out('CONTROL')
-	out('#surface gain xhinge hvec SgnDup')
-	out('Rudder 1.00 0.5 0 0 1 -1.00')
-	out('')
-	out('#-----------------------TIP/RUDDER---------------------')
-	out('SECTION')
-	out('#Xle   Yle     Zle     Chord   Ainc')
-	out(str(Xle_t[0]) + ' 0.0   0.2  ' +str(C_t[0]) + '   0.000')
-	out('NACA')
-	out('0012')
-	out('CLAF')
-	out('1.1078')
-	out('CONTROL')
-	out('#surface gain xhinge hvec SgnDup')
-	out('Rudder 1.00 0.5 0 0 1 -1.00')
-	out('#------------------------------------------------------')
+	# for i in range(0, len(C_vt)):
+	inds = [0, len(C_vt) - 1]
+	for i in inds:
+		out('SECTION')
+		out('#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace')
+		out(str(Xle_vt[i]) + ' 0 ' + str(Zle_vt[i]) +  '  '+ str(C_vt[i]) + '     '+ str(0.0) +'      '+ ' ')
+		out('NACA')
+		out('0012')
+		out('CLAF')
+		out('1.1078')
+		out('')
+		if ( (i == 0) | (i == (len(C_vt) - 1)) ):
+			out('CONTROL')
+			out('#surface gain xhinge hvec SgnDup')
+			out('Rudder 1.00 0.5 0 0 1 -1.00')
+			out('')
+
+	# out('SECTION')
+	# out('#Xle   Yle     Zle     Chord   Ainc')
+	# out(str(Xle_vt[0]) + ' 0.0   0 ' +str(C_vt[0]) + '   0.000')
+	# out('NACA')
+	# out('0012')
+	# out('CLAF')
+	# out('1.1078')
+	# out('')
+	# out('CONTROL')
+	# out('#surface gain xhinge hvec SgnDup')
+	# out('Rudder 1.00 0.5 0 0 1 -1.00')
+	# out('')
+	# out('#-----------------------TIP/RUDDER---------------------')
+	# out('SECTION')
+	# out('#Xle   Yle     Zle     Chord   Ainc')
+	# out(str(Xle_vt[0]) + ' 0.0   0.2  ' +str(C_vt[0]) + '   0.000')
+	# out('NACA')
+	# out('0012')
+	# out('CLAF')
+	# out('1.1078')
+	# out('CONTROL')
+	# out('#surface gain xhinge hvec SgnDup')
+	# out('Rudder 1.00 0.5 0 0 1 -1.00')
+	# out('#------------------------------------------------------')
 	out('\n\n')
 	out('# -- END OF FILE --')
 

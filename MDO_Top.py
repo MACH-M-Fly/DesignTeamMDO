@@ -37,20 +37,20 @@ class constrainedMDO(Group):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
-		self.add('b_wing',IndepVarComp('b_wing',1.0)) 							# Wingspan (m) 
+		# self.add('b_wing',IndepVarComp('b_wing',3.2)) 							# Wingspan (m) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.08])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (m)
-		self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
+		# self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.1]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		# self.add('c_r_vt',IndepVarComp('c_r_vt',np.array([0.0 , 0.0, 0.0,1.0])))
-		self.add('b_htail',IndepVarComp('b_htail',0.2))
+		# self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.35]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.35])))
+		# self.add('b_htail',IndepVarComp('b_htail',0.2))
 		# self.add('b_vtail',IndepVarComp('b_vtail',0.3))
 
 		self.add('my_comp', createAC())
@@ -77,12 +77,12 @@ class constrainedMDO(Group):
 		# self.connect('b_htail.b_htail','my_comp.b_htail')
 		# self.connect('b_vtail.b_vtail','my_comp.b_vtail')
 		
-		self.connect('chord.chord', 'my_comp.chord')
+		# self.connect('chord.chord', 'my_comp.chord')
 		self.connect('sweep.sweep', 'my_comp.sweep')
-		self.connect('boom_len.boom_len',['my_comp.boom_len'])
-		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
-		self.connect('b_wing.b_wing', 'my_comp.b_wing')
-		self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		# self.connect('boom_len.boom_len',['my_comp.boom_len'])
+		# self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
+		# self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		# self.connect('b_htail.b_htail', 'my_comp.b_htail')
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
 		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -128,7 +128,7 @@ prob.root = constrainedMDO()
 
 prob.driver = ScipyOptimizer()
 prob.driver.options['optimizer'] = 'SLSQP'
-prob.driver.options['tol'] = 1.0e-4
+prob.driver.options['tol'] = 1.0e-5
 prob.root.fd_options['force_fd'] = True	
 prob.root.fd_options['form'] = 'central'
 prob.root.fd_options['step_size'] = 1.0e-6
@@ -142,15 +142,14 @@ prob.root.fd_options['step_size'] = 1.0e-6
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
-prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 3. )
+# prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
-prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-0.4, -0.4, -0.4, -10.0 ]),\
+prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-1., -1., -1., -20.0 ]),\
 													  	upper = np.array([0.2, 0.2, 0.2, 30.0 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
-	# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.05, -0.1, -0.1, 0.01]),\
-													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
+# 													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
 # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
-prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
+# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
 # prob.driver.add_desvar('camber.camber',         		lower = np.array([0.10, 0.10, 0.10, 0.10, 0.10 ]),\
 # 										        		upper = np.array([0.15, 0.14, 0.14, 0.14, 0.14 ]))
 # prob.driver.add_desvar('max_camber.max_camber', 		lower = np.array([0.35, 0.35, 0.35, 0.35, 0.35 ]),\
@@ -160,11 +159,11 @@ prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
 # prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
 # prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
-prob.driver.add_desvar('htail_chord.htail_chord', 	  			lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
-													  	upper = np.array([0.1, 0.2, 0.2, 1.0]) )
+# prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
+# 													  	upper = np.array([0.1, 0.2, 0.2, 1.0]) )
 # prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 1.2)
+# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 1.2)
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 
 
@@ -173,11 +172,11 @@ num_sections = 5
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
-prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.05  )
-prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.01  )
-# prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
-# prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000)
-prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000)
+# prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.05  )
+# prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.01  )
+prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
+# prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
+# prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
 
 # # ======================================== Post-Processing ============================================== #
@@ -234,12 +233,14 @@ print("Number of Laps", out_ac.N)
 print("Score", out_ac.score)
 print("Total Time", out_ac.tot_time)
 
+print("#####")
+
 
 print('########    Structural Analysis  #######')
 print('Gross Lift', out_ac.gross_F)
 print("Max Stress %.7E"% out_ac.sig_max)
 print("Max Deflection %.7E"% out_ac.y_max)
-print('Max Stress Tail', out_ac.sig_max_tail)
+print("Max Stress Tail %.7E"% out_ac.sig_max_tail)
 print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 print("CG", out_ac.CG)
 

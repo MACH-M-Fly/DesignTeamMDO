@@ -157,11 +157,17 @@ CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
 
 
 def getThrust(vel, ang):
-	T_0 = 18.00
-	T_1 = -0.060
-	T_2 = -0.015
-	T_3 = 0 #-7*10**-5*3.28**3
-	T_4 = 0 # 4*10**-7*3.28**4
+	# T_0 = 18.00
+	# T_1 = -0.060
+	# T_2 = -0.015
+	# T_3 = 0 #-7*10**-5*3.28**3
+	# T_4 = 0 # 4*10**-7*3.28**4
+
+	T_0 = 53.29
+	T_1 = -1.02
+	T_2 = -0.05008
+	T_3 = 0
+	T_4 = 0
 
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
 			#X comp   # Y Comp

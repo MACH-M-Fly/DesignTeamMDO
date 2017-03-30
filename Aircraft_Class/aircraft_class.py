@@ -190,7 +190,7 @@ class Wing(object):
 	# Sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefWing(self):
 		self.sref = 0
-		self.sref = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
+		self.sref = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[1]*y**2 + \
 			self.chord[2]*y + self.chord[3] ), 0, self.b_wing/2)
 		self.sref = self.sref[0]*2
 		return self.sref
@@ -199,7 +199,7 @@ class Wing(object):
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC(self):
 		self.MAC = 0
-		self.MAC = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[0]*y**2 + \
+		self.MAC = integrate.quad(lambda y: (self.chord[0]*y**3 + self.chord[1]*y**2 + \
 			self.chord[2]*y + self.chord[3] )**2, 0, self.b_wing/2)
 		self.MAC = self.MAC[0]*2.0/self.sref
 		return self.MAC
@@ -309,27 +309,28 @@ class Tail():
 		# print("Wing MAC", self.MAC)
 
 		# Calculate vert. tail chord values at each section
-		self.vtail_chord_vals = self.getVTailChord(self.vtail_chord, self.sec_span_vtail)
+		# self.vtail_chord_vals = self.getVTailChord(self.vtail_chord, self.sec_span_vtail)
 		# print("Vtail hord Vals",self.vtail_chord_vals)
 
 		# Calculate leading edge coordinates
 		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge()
+		[self.Xle_vt, self.Yle_vt, self.Zle_vt] = self.calcVertLeading_Edge()
 		# print("Tail Leading Edge: X, Y, Z", self.Xle_ht, self.Yle_ht, self.Zle_ht)
 
 	# sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefHTail(self):
 		self.sref = 0
-		self.sref = integrate.quad(lambda y: (self.htail_chord_vals[0]*y**3 + self.htail_chord_vals[0]*y**2 + \
-			self.htail_chord_vals[2]*y + self.htail_chord_vals[3] ), 0, self.b_htail/2)
-		self.sref = self.sref[0]*2
+		self.sref = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 + \
+			self.htail_chord[2]*y + self.htail_chord[3] ), 0., self.b_htail/2.)
+		self.sref = self.sref[0]*2.
 		return self.sref
 
 	# sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefVTail(self):
 		self.sref = 0
-		self.sref = integrate.quad(lambda y: (self.vtail_chord_vals[0]*y**3 + self.vtail_chord_vals[0]*y**2 + \
-			self.vtail_chord_vals[2]*y + self.vtail_chord_vals[3] ), 0, self.b_vtail/2)
-		self.sref = self.sref[0]*2
+		self.sref = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 + \
+			self.vtail_chord[2]*y + self.vtail_chord[3] ), 0., self.b_vtail)
+		self.sref = self.sref[0]
 		return self.sref
 
 	# Function: Calculate horiz. tail chord at sectional chord locations
@@ -368,27 +369,49 @@ class Tail():
 			self.Xle_ht[i] = self.Xle_ht[0] - self.sec_span_htail*i*math.tan(angle)
 			self.Yle_ht[i] = self.sec_span_htail*i
 			self.Zle_ht[i] = self.Zo + self.sec_span_htail*i
-		print("YLE of Htail", self.Yle_ht)
+		# print("YLE of Htail", self.Yle_ht)
 		return np.array([self.Xle_ht,
 						 self.Yle_ht,
 						 self.Zle_ht])
+		# Calculate vert. tail leading edge coordinates
+	def calcVertLeading_Edge(self):
+		# Build leading edge coordinates
+		self.Xle_vt = np.zeros(self.num_sections)
+		self.Yle_vt = np.zeros(self.num_sections)
+		self.Zle_vt = np.zeros(self.num_sections)
+		self.Xle_vt[0] = self.Xo + self.boom_len + self.vtail_chord_vals[0]
+		# print("Xle_ht HERE", self.Xle_ht)
+		self.Yle_vt[0] = self.Yo
+		self.Zle_vt[0] = self.Zo
+		Xo_quar_vt = self.Xle_vt[0]-self.vtail_chord_vals[0]/4
+		# print(range(self.num_sections))
+		angle = 0								# No sweep
+		for i in range(1, self.num_sections):
+			# print("i",i)
+			self.Xle_vt[i] = self.Xle_vt[0] - self.sec_span_vtail*i*math.tan(angle)
+			self.Yle_vt[i] = self.sec_span_vtail*i
+			self.Zle_vt[i] = self.Zo + self.sec_span_vtail*i
+		# print("ZLE of Vtail", self.Zle_vt)
+		return np.array([self.Xle_vt,
+						 self.Yle_vt,
+						 self.Zle_vt])
 
 	# Function: Calculate mean aerodynaic chord for tail
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC_ht(self):
 		self.MAC_ht = 0
-		self.MAC_ht = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[0]*y**2 + \
-			self.htail_chord[2]*y + self.htail_chord[3] )**2, 0, self.b_htail/2)
-		self.MAC_ht = self.MAC_ht[0]*2.0/self.sref
+		self.MAC_ht = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 + \
+			self.htail_chord[2]*y + self.htail_chord[3] )**2, 0, self.b_htail/2.)
+		self.MAC_ht = self.MAC_ht[0]*2.0/self.sref_ht
 		return self.MAC_ht
 
 	# Function: Calculate mean aerodynaic chord for tail
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC_vt(self):
 		self.MAC_vt = 0
-		self.MAC_vt = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[0]*y**2 + \
-			self.vtail_chord[2]*y + self.vtail_chord[3] )**2, 0, self.b_vtail/2)
-		self.MAC_vt = self.MAC_vt[0]*2.0/self.sref
+		self.MAC_vt = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 + \
+			self.vtail_chord[2]*y + self.vtail_chord[3] )**2, 0, self.b_vtail)
+		self.MAC_vt = self.MAC_vt[0]/self.sref_vt
 		return self.MAC_vt
 
 class Body():

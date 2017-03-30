@@ -76,8 +76,8 @@ class calcWeight(Component):
         
         # MAC = AC.wing.MAC
 
-        # calc mass of the Wing
-        # current stats are based off of M-9
+        # # calc mass of the Wing
+        # # current stats are based off of M-9
         # rib_dens = 10.               # ribs/ meter wing
         # rib_dens_t = 10.            # ribs/meter tail
 
@@ -106,7 +106,7 @@ class calcWeight(Component):
         # volume_payload = fuselage_area * payload_depth
         # mass_fuselage_payload = volume_payload * balsa_Density
         
-        ###############################################
+        # ##############################################
         # num_ribs = math.ceil(b_wing * rib_dens)
         # AC.num_ribs = num_ribs
         # m_ribs = AC.k_ribs * num_ribs* (MAC / 0.05)
@@ -129,15 +129,15 @@ class calcWeight(Component):
         # m_LE_t = linden_LE_t * (b_htail + b_vtail)
         # m_TE_t = linden_TE_t * (b_htail + b_vtail)
         # m_spar_t = linden_spar_t * (b_htail + b_vtail)
-        # print("b_htail", b_htail)
-        # print("b_vtail", b_vtail)
-        # print("Number of Ribs in HTail", num_ribs_ht)
-        # print("Number of Ribs in VTail", num_ribs_vt)
-        # print("Kg per rib", AC.k_ribs_t)
-        # print("Mass of Tail Ribs", m_ribs_t)
-        # print("Mass of LE", m_LE_t)
-        # print("Mass of TE", m_TE_t)
-        # print("Mass of Tail Spar", m_spar_t)
+        # # print("b_htail", b_htail)
+        # # print("b_vtail", b_vtail)
+        # # print("Number of Ribs in HTail", num_ribs_ht)
+        # # print("Number of Ribs in VTail", num_ribs_vt)
+        # # print("Kg per rib", AC.k_ribs_t)
+        # # print("Mass of Tail Ribs", m_ribs_t)
+        # # print("Mass of LE", m_LE_t)
+        # # print("Mass of TE", m_TE_t)
+        # # print("Mass of Tail Spar", m_spar_t)
 
         # ultrakote_Density = .1318                                   #kg/m^2
         # m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t
@@ -146,41 +146,41 @@ class calcWeight(Component):
         # m_wing = m_wing + wet_area_w*ultrakote_Density
         # m_tail = m_tail + wet_area_t*ultrakote_Density
         
-        # mass boom
+        # # mass boom
         # AC.tail.boom_Dim
         # m_boom = boom_len * linden_boom 
         # m_boom = boom_len * np.pi*(AC.tail.boom_Dim[0]**2 - AC.tail.boom_Dim[1]**2) * den_boom
         
-        # mass landing gear
+        # # mass landing gear
         # height_LG = np.sin(10 * np.pi / 180) * (boom_len - dist_LG)
         # m_landgear_rear = 0.69 * height_LG * 2
         # m_landgear = m_landgear_rear + 0.163
-        #########
+        # ########
         # m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics
         
-        # def x_CG_loc(mount_len):
+        # # def x_CG_loc(mount_len):
             
-        #     cg = (m_x + mount_len * m_motor + mount_len / 2 * (m_battery+m_electronics)) / m_total
+        # #     cg = (m_x + mount_len * m_motor + mount_len / 2 * (m_battery+m_electronics)) / m_total
         
-        #     return (cg - MAC / 4)
+        # #     return (cg - MAC / 4)
         
         # # adjust the motor mount length until the CG is at c/4
-        # mount_len = fsolve(x_CG_loc, np.array([1]))[0]
+        # # mount_len = fsolve(x_CG_loc, np.array([1]))[0]
 
-        #x_cg = MAC/4
+        # x_cg = MAC/4
 
         # x_cg = MAC/4
         # z_cg = 0
         
-        # DETERMINE THE FUSELAGE LENGTH
+        # # DETERMINE THE FUSELAGE LENGTH
                     
-        # These variables need to be inputs in the input file
+        # # These variables need to be inputs in the input file
         # if hasattr(AC , 'SM'):
         #     SM = AC.SM
         # else:
         #     SM = 0.15
     
-        # Neutral point retrieval from aircraft class
+        # # Neutral point retrieval from aircraft class
         # if hasattr(AC , 'NP'):
         #     NP = AC.NP
         # else:
@@ -189,41 +189,42 @@ class calcWeight(Component):
 
         # fuselage_mass = 1.0 #kg
         
-        # # Add payload plates until static margin requirement is fulfilled. Defines the minimum fuselage length for achieving static stability.
-        # payload_num = 0
-        # payload_counter = 0
+        # # # Add payload plates until static margin requirement is fulfilled. Defines the minimum fuselage length for achieving static stability.
+        # # payload_num = 0
+        # # payload_counter = 0
 
-        # RHS = (x_cg-NP)/MAC
-        # m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
+        # # RHS = (x_cg-NP)/MAC
+        # # m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + mass_fuselage_payload
         
-        # for i in range(1, 100):
+        # # for i in range(1, 100):
                 
-        #     # Start fuselage iteration with x-axis increment of payload plate
-        #     payload_counter = i
-        #     fuselage_length = payload_depth * payload_counter;
-        #     fuselage_mass = fuselage_length * (mass_fuselage_payload)
+        # #     # Start fuselage iteration with x-axis increment of payload plate
+        # #     payload_counter = i
+        # #     fuselage_length = payload_depth * payload_counter;
+        # #     fuselage_mass = fuselage_length * (mass_fuselage_payload)
                 
-        #     m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(i) + fuselage_mass
-        #     x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*payload_counter) / m_total
-        #     if x_cg >= (RHS*MAC + NP):
-        #         break
+        # #     m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(i) + fuselage_mass
+        # #     x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*payload_counter) / m_total
+        # #     if x_cg >= (RHS*MAC + NP):
+        # #         break
             
-        #     elif max_payloadnum > i:
-        #         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(payload_counter) + fuselage_mass
-        #         x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*payload_counter) / m_total
-        #         x_cg = x_cg + x_cg_fuselage
-        #         RHS = (x_cg-NP)/MAC
-        #         if x_cg >= (RHS*MAC + NP):: 
-        #             break
+        # #     elif max_payloadnum > i:
+        # #         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(payload_counter) + fuselage_mass
+        # #         x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*payload_counter) / m_total
+        # #         x_cg = x_cg + x_cg_fuselage
+        # #         RHS = (x_cg-NP)/MAC
+        # #         if x_cg >= (RHS*MAC + NP):
+        # #             break
 
-        #     elif max_payloadnum <= i:
-        #         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(max_payloadnum) + fuselage_mass*payload_counter
-        #         x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*max_payloadnum) / m_total
-        #         x_cg = x_cg + x_cg_fuselage
-        #         break
+        # #     elif max_payloadnum <= i:
+        # #         m_total = m_wing + m_tail + m_landgear + m_boom + m_motor + m_battery + m_electronics + m_payload*(max_payloadnum) + fuselage_mass*payload_counter
+        # #         x_cg_fuselage = fuselage_length/2 * (mass_fuselage_payload*payload_counter + m_payload*max_payloadnum) / m_total
+        # #         x_cg = x_cg + x_cg_fuselage
+        # #         break
                             
-        # fuselage_length = payload_depth * payload_counter;
-        # fuselage_mass = fuselage_length * (mass_fuselage_payload)
+        # # fuselage_length = payload_depth * payload_counter;
+        # # fuselage_mass = fuselage_length * (mass_fuselage_payload)
+        # fuselage_mass = 1.
     
         # payload_counter = 0
   
@@ -252,56 +253,56 @@ class calcWeight(Component):
         # AC.weight = m_total*9.81
         # AC.CG = ([AC.x_cg, AC.y_cg, AC.z_cg])
         # AC.mount_len = mount_len
-        # print('============== input =================')
-        # print('b_wing= ' + str(b_wing))
-        # print('C= ' + str(C))
-        # print('b_htail= ' + str(b_htail))
-        # print('C_t= ' + str(C_t))        
-        # print('dist_LG= ' + str(dist_LG))
-        # print('boom_len= ' + str(boom_len))
-        # print(' ')
+        # # print('============== input =================')
+        # # print('b_wing= ' + str(b_wing))
+        # # print('C= ' + str(C))
+        # # print('b_htail= ' + str(b_htail))
+        # # print('C_t= ' + str(C_t))        
+        # # print('dist_LG= ' + str(dist_LG))
+        # # print('boom_len= ' + str(boom_len))
+        # # print(' ')
         
-        # print('============== output =================')
-        # print('sref_Wing: ' + str(sref_Wing))
-        # print('Mount length: ' + str(mount_len))
-        # print('MAC: ' + str(MAC))
-        # print('Xle: ' + str(Xle))
-        # print('x_cg: ' + str(x_cg) + '  z_cg: ' + str(z_cg))
-        # print('Total Mass: ' + str(m_total))
-        # print('Total Payload Mass: ' + str(total_payload_mass))
-        # print('X Cg:  ' + str(x_cg))
-        # print('Chord:  ' + str(C[0]))    
-        # print('Tail Chord:  ' + str(C_t[0])) 
-        # print('Fuselage Mass:  ' + str(fuselage_mass)) 
-        # print('Tail Mass:  ' + str(m_tail)) 
-        # print('Wing Mass:  ' + str(m_wing))   
-        # print('Boom Mass:  ' + str(m_boom))
-        # print('Boom Lenght:  ' + str(boom_len)) 
-        # print('Rib Mass:  ' + str(m_ribs)) #_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t
-        # print('LE Mass:  ' + str(m_LE))
-        # print('TE Mass:  ' + str(m_TE)) 
-        # print('Spar Mass:  ' + str(m_spar))    
+        # # print('============== output =================')
+        # # print('sref_Wing: ' + str(sref_Wing))
+        # # print('Mount length: ' + str(mount_len))
+        # # print('MAC: ' + str(MAC))
+        # # print('Xle: ' + str(Xle))
+        # # print('x_cg: ' + str(x_cg) + '  z_cg: ' + str(z_cg))
+        # # print('Total Mass: ' + str(m_total))
+        # # print('Total Payload Mass: ' + str(total_payload_mass))
+        # # print('X Cg:  ' + str(x_cg))
+        # # print('Chord:  ' + str(C[0]))    
+        # # print('Tail Chord:  ' + str(C_t[0])) 
+        # # print('Fuselage Mass:  ' + str(fuselage_mass)) 
+        # # print('Tail Mass:  ' + str(m_tail)) 
+        # # print('Wing Mass:  ' + str(m_wing))   
+        # # print('Boom Mass:  ' + str(m_boom))
+        # # print('Boom Lenght:  ' + str(boom_len)) 
+        # # print('Rib Mass:  ' + str(m_ribs)) #_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t
+        # # print('LE Mass:  ' + str(m_LE))
+        # # print('TE Mass:  ' + str(m_TE)) 
+        # # print('Spar Mass:  ' + str(m_spar))    
 
-        # Create AVL geometry file
+        # # Create AVL geometry file
         # genMass(AC)
         # genGeo(AC)
         
-        # # ========================== PLOT ===============================
-        # wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1 * x for x in Xle[::-1]]
-        # wing_pos = Yle + Yle[::-1] + [-1 * x for x in Yle] + [-1 * x for x in Yle[::-1]]
+        # # # ========================== PLOT ===============================
+        # # wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1 * x for x in Xle[::-1]]
+        # # wing_pos = Yle + Yle[::-1] + [-1 * x for x in Yle] + [-1 * x for x in Yle[::-1]]
         
-        # tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
-        # tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
+        # # tail_edge = Xle_t + [sum(x) for x in zip(Xle_t, C_t)][::-1] + [sum(x) for x in zip(Xle_t, C_t)] + [1 * x for x in Xle_t[::-1]]
+        # # tail_pos = Yle_t + Yle_t[::-1] + [-1 * x for x in Yle_t] + [-1 * x for x in Yle_t[::-1]]
         
-        # print("calcWeight Mass", m_total)
-        # print("Wing Mass", m_wing)
-        # print("Tail Mass", m_tail)
+        # # print("calcWeight Mass", m_total)
+        # # print("Wing Mass", m_wing)
+        # # print("Tail Mass", m_tail)
         
         # unknowns['out_aircraft'] = AC
-        # -- END OF FILE --
+        # # -- END OF FILE --
 
 def getWing_mass(AC):
-    rib_dens = 10.                          # ribs/ meter wing (current stats are based off of M-9)
+    rib_dens = 7.                          # ribs/ meter wing (current stats are based off of M-9)
 
     sref_wing = AC.wing.sref                # m^2 | reference area of wing
     b_wing = AC.wing.b_wing                 # m | wing span
@@ -310,6 +311,7 @@ def getWing_mass(AC):
     linden_LE = AC.LE_lindens               # kg/m | Main Wing Leading edge mass
     linden_TE = AC.TE_lindens               # kg/m | Main Wing Trailing edge mass
     linden_spar = AC.spar_lindens           # kg/m | Main Wing Spar mass
+    k_ribs = AC.k_ribs                      # kg/m | mass of rib per 0.05 meter of rib
 
     den_boom = AC.spar_den                  # kg/m^3 | density of aluminum
     outer_r = AC.wing.spar_dim[0]           # m | outer radius of wing alum. spar
@@ -321,13 +323,15 @@ def getWing_mass(AC):
     num_ribs = math.ceil(b_wing * rib_dens)
     
     # Calculate mass of components in wing
-    m_ribs = AC.k_ribs * num_ribs * (MAC / 0.05)    # kg | total mass of ribs
+    # m_ribs = k_ribs * num_ribs * (MAC / 0.05)       # kg | total mass of ribs
+    m_ribs = k_ribs * num_ribs * MAC
     m_LE = linden_LE * b_wing                       # kg | mass of leading edge
     m_TE = linden_TE * b_wing                       # kg | mass of trailing edge
     m_spar = linden_spar * b_wing                   # kg | mass of spar
 
     # kg | mass of aluminum spar of wing (asssume its length is half of wing span, hollow circular shape)
     m_wing_alum_spar = 0.5*b_wing * np.pi*(outer_r**2 - inner_r**2) * den_boom
+    m_wing_alum_spar = 0.
     
     # Calculate mass of ultrakote
     wet_area_w = 2*sref_wing
@@ -336,10 +340,16 @@ def getWing_mass(AC):
     # Get total mass of wing
     m_wing = m_ribs + m_LE + m_TE + m_spar + m_wing_alum_spar + m_ult
 
-    print("Wing Rib Mass  = %f"% m_ribs)
-    print("Wing LE Mass   = %f"% m_LE)
-    print("Wing TE Mass   = %f"% m_TE)
-    print("Wing Spar Mass = %f"% m_spar)
+    print("Wing Mass = %f kg"% m_wing)
+    # print(" Wing Rib Mass        = %f kg"% m_ribs)
+    # print(" Wing LE Mass         = %f kg"% m_LE)
+    # print(" Wing TE Mass         = %f kg"% m_TE)
+    # print(" Wing Spar Mass       = %f kg"% m_spar)
+    # print(" Wing ultrakote Mass  = %f kg"% m_ult)
+    # print(" Wing Alum. Spar Mass = %f kg"% m_wing_alum_spar)
+    # print(" Wing Rib Number 	 = %d"% num_ribs)
+    # print("MAC of wing = %f"% MAC)
+    print("Wing sweep = ", AC.wing.sweep)
 
     return num_ribs, m_wing 
 
@@ -364,8 +374,10 @@ def getTail_mass(AC):
     num_ribs_vt = math.ceil(b_vtail * rib_dens_t)
    
     # Calculate mass of components in tail
-    m_ribs_ht = AC.k_ribs_t * num_ribs_ht * (MAC_ht / 0.1)
-    m_ribs_vt = AC.k_ribs_t * num_ribs_vt * (MAC_vt / 0.1)
+    # m_ribs_ht = AC.k_ribs_t * num_ribs_ht * (MAC_ht / 0.1)
+    # m_ribs_vt = AC.k_ribs_t * num_ribs_vt * (MAC_vt / 0.1)
+    m_ribs_ht = AC.k_ribs_t * num_ribs_ht * MAC_ht
+    m_ribs_vt = AC.k_ribs_t * num_ribs_vt * MAC_vt
     m_ribs_t = m_ribs_ht + m_ribs_vt
 
     m_LE_t = linden_LE_t * (b_htail + b_vtail)
@@ -379,15 +391,23 @@ def getTail_mass(AC):
     # Get total mass of tail
     m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t + m_ult
 
-    print("b_htail = %f"% b_htail)
-    print("b_vtail = %f"% b_vtail)
-    print("Number of Ribs in HTail = %f"% num_ribs_ht)
-    print("Number of Ribs in VTail = %f"% num_ribs_vt)
-    print("Kg per rib = %f"% AC.k_ribs_t)
-    print("Mass of Tail Ribs = %f"% m_ribs_t)
-    print("Mass of LE = %f"% m_LE_t)
-    print("Mass of TE = %f"% m_TE_t)
-    print("Mass of Tail Spar = %f"% m_spar_t)
+    print("Tail Mass = %f kg"% m_tail)
+    # print("	Mass of Tail Ribs = %f kg"% m_ribs_t)
+    # print("	Mass of LE        = %f kg"% m_LE_t)
+    # print("	Mass of TE        = %f kg"% m_TE_t)
+    # print("	Mass of Tail Spar = %f kg"% m_spar_t)
+    # print("	Mass of Tail ultrakote = %f kg"% m_ult)
+
+    # print(" b_htail = %f"% b_htail)
+    # print(" b_vtail = %f"% b_vtail)
+    # print(" Number of Ribs in HTail = %f"% num_ribs_ht)
+    # print(" Number of Ribs in VTail = %f"% num_ribs_vt)
+    # print(" Kg per rib = %f"% AC.k_ribs_t)
+
+    # print("Sref of HT = %f m^2"% AC.tail.sref_ht)
+    # print("Sref of VT = %f m^2"% AC.tail.sref_vt)
+    # print("MAC of HT = %f"% MAC_ht)
+    # print("MAC of VT = %f"% MAC_vt)
 
     return m_tail 
 
@@ -405,21 +425,31 @@ def getStruct_mass(AC):
     dist_LG = AC.dist_LG                # m | distance between LE of wing and landing gear
     
     height_LG = np.sin(10 * np.pi / 180) * (boom_len - dist_LG)
-    m_landgear_rear = 0.69 * height_LG * 2
-    m_landgear_front = 0.163
+    m_landgear_rear = 1.29 * height_LG * 2
+    m_landgear_front = 0.27
 
     m_landgear = m_landgear_rear + m_landgear_front
 
-    return m_boom, m_landgear
+    # Calculate mass of ballast
+    m_ballast = 1.55					# kg 
 
-def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear):
+    # print("Boom Mass = %f kg"% m_boom)
+    # print("	Boom Length = %f m"% boom_len)
+    # print("Landing Gear Mass = %f kg"% m_landgear)
+    # print("	Front LG Mass = %f kg"% m_landgear_front)
+    # print("	Rear LG Mass  = %f kg"% m_landgear_rear)
+    # print("	Height of LG = %f m"% height_LG)
+
+    return m_boom, m_landgear, m_ballast
+
+def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     m_motor = AC.m_motor                # kg | motor mass
     m_prop = AC.m_propeller             # kg | propeller mass
     m_battery = AC.m_battery            # kg | battery mass
     m_electronics = AC.m_electronics    # kg | electronics mass
 
-    m_fuselage = 1.0                    # kg | fuselage mass (assume constant for now)
-    m_payload = 0.5                     # kg | payload mass (assume constant for now)
+    m_fuselage = 0.83                    # kg | fuselage mass (assume constant for now)
+    m_payload = 15.55                     # kg | payload mass (assume constant for now)
 
     MAC = AC.wing.MAC                   # m | mean aerodynamic chord of wing
     b_wing = AC.wing.b_wing             # m | wing span
@@ -430,41 +460,39 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear):
     mount_len = -0.15                   # m | position of prop relative to LE of wing
 
     # Calculate total mass
-    m_total = m_wing + m_tail + m_boom + m_landgear + m_motor + m_prop + m_battery + m_electronics + m_fuselage + m_payload 
+    m_total = m_wing + m_tail + m_boom + m_landgear + m_motor + m_prop + m_battery + m_electronics + m_fuselage + m_payload + m_ballast
     
     # Calculate CG
     x_wing = m_wing * 0.25 * MAC
-    x_tail = m_tail * (C[0] + boom_len * C_t[0]/4.)
-    x_boom = m_boom * (C[0] + boom_len/2.)
+    x_tail = m_tail * ( C[0] + boom_len + C_t[0]/4. )
+    x_boom = m_boom * ( C[0] + boom_len/2. )
     x_landgear = m_landgear * dist_LG
     x_motor = m_motor * mount_len
-    x_elec = (m_battery + m_electronics) * mount_len/4.
-    x_structs = (m_fuselage + m_payload) * C[0]/4.
+    x_elec = ( m_battery + m_electronics ) * mount_len/4.
+    x_structs = ( m_fuselage + m_payload ) * C[0]/4.
+    x_ballast = m_ballast * mount_len/2.
 
-    x_cg = (x_wing + x_tail + x_boom + x_landgear + x_motor + x_elec + x_structs) / m_total
+    x_cg = ( x_wing + x_tail + x_boom + x_landgear + x_motor + x_elec + x_structs + x_ballast ) / m_total
     y_cg = 0.
     z_cg = 0.
 
     # Calculate moment of inertia
-    Ixx = (m_total/9.81)*(.245*b_wing/2.)**2
-    Iyy = (m_total/9.81)*(.35*(C[0] + boom_len + C_t[0])/2.)**2 
-    Izz = (m_total/9.81)*(.393*(b_wing + C[0] + boom_len + C_t[0])/2.)**2
+    Ixx = m_total*(.245*b_wing/2.)**2
+    Iyy = m_total*(.35*(C[0] + boom_len + C_t[0])/2.)**2 
+    Izz = m_total*(.393*(b_wing + C[0] + boom_len + C_t[0])/2.)**2
 
     # Create array for output
     cg = ([x_cg, y_cg, z_cg])
     Is = ([Ixx, Iyy, Izz])
 
-    print("Total Mass      = %f"% m_total)
-    print("Payload Mass    = %f"% m_payload)
-    print("X CG            = %f"% x_cg)
-    print("Wing root chord = %f"% C[0])
-    print("Tail root chord = %f"% C_t[0])
-    print("Fuselage Mass   = %f"% m_fuselage)
-    print("Tail Mass       = %f"% m_tail)
-    print("Wing Mass       = %f"% m_wing)
-    print("Boom Mass       = %f"% m_boom)
-    print("Boom Length     = %f"% boom_len)
-
+    print("Total Mass = %f kg"% m_total)
+    # print(" Empenage Mass = %f kg"% (m_tail + m_boom))
+    # print(" Payload Mass = %f kg"% m_payload)
+    # print(" Fuselage Mass = %f kg"% m_fuselage)
+    print(" X CG = %f m from LE of wing"% x_cg)
+    # print(" Wing root chord = %f m"% C[0])
+    # print(" Tail root chord = %f m"% C_t[0])
+    
     return cg, Is, m_total, mount_len
 
 def calcWeight_process(AC):
@@ -476,10 +504,10 @@ def calcWeight_process(AC):
     m_tail = getTail_mass(AC)
 
     # Calculate tailboom mass
-    m_boom, m_landgear = getStruct_mass(AC)
+    m_boom, m_landgear, m_ballast = getStruct_mass(AC)
 
     # Calculate CG, I, and total mass
-    cg, Is, m_total, mount_len = massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear)
+    cg, Is, m_total, mount_len = massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast)
 
     AC.x_cg = cg[0]
     AC.y_cg = cg[1]

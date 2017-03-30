@@ -18,6 +18,7 @@ from Weights.calcWeight import calcWeight
 from Aerodynamics.aeroAnalysis import aeroAnalysis 
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
+from getBuildTime import getBuildTime
 # from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
 
@@ -36,29 +37,36 @@ class constrainedMDO(Group):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
-		self.add('b_wing',IndepVarComp('b_wing',1.8)) 							# Wingspan (m) 
+		self.add('b_wing',IndepVarComp('b_wing',3.2)) 							# Wingspan (m) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
-		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 10.0])))# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.2])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))# Quarter Chord Sweep in degrees (cubic)
+		self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (m)
-		self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
+		self.add('boom_len',IndepVarComp('boom_len', 1.60))						# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		# self.add('c_r_ht',IndepVarComp('c_r_ht',np.array([0.0 , 0.0, 0.0,1.0])))
-		# self.add('c_r_vt',IndepVarComp('c_r_vt',np.array([0.0 , 0.0, 0.0,1.0])))
-		# self.add('b_htail',IndepVarComp('b_htail',3.0))
-		# self.add('b_vtail',IndepVarComp('b_vtail',1.0))
+		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.35]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.35])))
+		self.add('b_htail',IndepVarComp('b_htail',1.30))
+		self.add('b_vtail',IndepVarComp('b_vtail',0.37))
+
+		self.add('my_comp', createAC())
+		self.add('calcWeight', calcWeight())
+		self.add('aeroAnalysis', aeroAnalysis())
+		self.add('structAnalysis',structAnalysis())
+		self.add('objPerformance', objPerformance())
+		self.add('getBuildTime', getBuildTime())
 		
 # ====================================== Connections ============================================ # 
-		self.connect('b_wing.b_wing',['createAC.b_wing'])
+		# self.connect('b_wing.b_wing',['createAC.b_wing'])
 		# self.connect('dihedral.dihedral',['createAC.dihedral'])
 		# self.connect('sweep.sweep',['createAC.sweep'])
-		self.connect('chord.chord',['createAC.chord'])
+		# self.connect('chord.chord',['createAC.chord'])
 		# self.connect('dist_LG.dist_LG',['createAC.dist_LG'])
-		self.connect('boom_len.boom_len',['createAC.boom_len'])
+		# self.connect('boom_len.boom_len',['createAC.boom_len'])
 		# self.connect('camber.camber',['createAC.camber'])
 		# self.connect('max_camber.max_camber',['createAC.max_camber'])
 		# self.connect('thickness.thickness',['createAC.thickness'])
@@ -66,13 +74,24 @@ class constrainedMDO(Group):
 		# self.connect('Ainc.Ainc',['createAC.Ainc'])
 		# self.connect('c_r_ht.c_r_ht',['createAC.c_r_ht'])
 		# self.connect('c_r_vt.c_r_vt',['createAC.c_r_vt'])
-		# self.connect('b_htail.b_htail',['createAC.b_htail'])
-		# self.connect('b_vtail.b_vtail',['createAC.b_vtail'])
+		# self.connect('b_htail.b_htail','my_comp.b_htail')
+		# self.connect('b_vtail.b_vtail','my_comp.b_vtail')
 		
-		self.connect('createAC.aircraft', 'aeroAnalysis.aircraft')
-		self.connect('aeroAnalysis.aircraft','structAnalysis.aircraft')
-		self.connect('aeroAnalysis.aircraft','objPerformance.aircraft')
-		self.connect('objPerformance.aircraft','Plot.aircraft')
+		self.connect('chord.chord', 'my_comp.chord')
+		self.connect('sweep.sweep', 'my_comp.sweep')
+		self.connect('boom_len.boom_len',['my_comp.boom_len'])
+		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
+		self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
+		self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		self.connect('b_vtail.b_vtail','my_comp.b_vtail')
+		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
+		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
+		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
+		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+		self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
+		# self.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
 
@@ -97,7 +116,7 @@ class constrainedMDO(Group):
 
 # plt.tight_layout()
 
-# # ============================================== Create Problem ============================================ #
+# ============================================== Create Problem ============================================ #
 # prob = Problem()
 # prob.root = constrainedMDO()
 
@@ -111,9 +130,17 @@ class constrainedMDO(Group):
 
 # prob.driver = ScipyOptimizer()
 # prob.driver.options['optimizer'] = 'SLSQP'
+# prob.driver.options['tol'] = 1.0e-4
 # prob.root.fd_options['force_fd'] = True	
-# prob.root.fd_options['form'] = 'forward'
-# prob.root.fd_options['step_size'] = 1e-3,
+# prob.root.fd_options['form'] = 'central'
+# prob.root.fd_options['step_size'] = 1.0e-6
+
+# prob.driver = ScipyOptimizer()
+# prob.driver.options['optimizer'] = 'SNOPT'
+# prob.driver.options['tol'] = 1.0e-2
+# prob.root.fd_options['force_fd'] = True	
+# prob.root.fd_options['form'] = 'central'
+# prob.root.fd_options['step_size'] = 1.0e-4
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
@@ -148,8 +175,8 @@ class constrainedMDO(Group):
 
 # ======================================== Post-Processing ============================================== #
 root = Group()
-root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.15])))
-root.add('indep_var2', IndepVarComp('b_wing', 2.0))
+# root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.15])))
+# root.add('indep_var2', IndepVarComp('b_wing', 2.0))
 root.add('my_comp', createAC())
 root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
@@ -158,8 +185,8 @@ root.add('objPerformance', objPerformance())
 # root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
-root.connect('indep_var.chord', 'my_comp.chord')
-root.connect('indep_var2.b_wing', 'my_comp.b_wing')
+# root.connect('indep_var.chord', 'my_comp.chord')
+# root.connect('indep_var2.b_wing', 'my_comp.b_wing')
 root.connect('my_comp.aircraft','calcWeight.in_aircraft')
 root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 # root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -199,7 +226,7 @@ print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 # Ooutput final geometry of aircraft
 plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.CG[0], out_ac.NP, 5.)
+				out_ac.CG[0], out_ac.NP, 5., out_ac.mount_len)
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)

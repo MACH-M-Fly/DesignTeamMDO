@@ -70,6 +70,7 @@ class aeroAnalysis(Component):
 
 		# print('Wing Lift = %f' % AC.wing_f)
 		# print('Tail Lift = %f' % AC.tail_f)
+		print("SM = %f"% AC.SM)
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -155,6 +156,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 
 
 	# plt.show()
+	print("NP = %f"% NP)
 
 	return (CL, CD, CM, NP)
 # Declare Constants

@@ -54,7 +54,7 @@ ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.35;
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
-AC.dist_LG = 0.01
+AC.dist_LG = 0.35
 
 # Length of tailboom (m)
 AC.boom_len = 0.75
@@ -128,35 +128,37 @@ AC.bank_angle = 20
 #		Weights
 #       =========================================================================
 # Spar density (kg/m)
-AC.spar_lindens = 5*0.453592*0.3048/3
+AC.spar_lindens = 5*0.453592*0.3048/3/1.5
 # density of aluminum (kg/m^3)
 AC.spar_den = 2700.0
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5*0.453592*0.3048/4
+AC.TE_lindens = 5*0.453592*0.3048/4./4.
 # Spar density (kg/m)
-AC.spar_lindens_t = 1*0.25
+AC.spar_lindens_t = 5*0.453592*0.3048/3/1.5/2.
 # Tail Leading Edge (LE) density (kg/m)
-AC.LE_lindens_t = 5*0.453592*0.3048*0.25
+AC.LE_lindens_t = 5*0.453592*0.3048*0.25/2.
 # Tail Trailing Edge (TE) density (kg/m)
-AC.TE_lindens_t = 5*0.453592*0.3048*0.15
-# Rib Mass (kg/r) per 0.05 meter of rib
-AC.k_ribs = 0.0065
+AC.TE_lindens_t = 5*0.453592*0.3048*0.15/2.
+# Rib Mass (kg/r) per meter of rib
+# AC.k_ribs = 0.0065
+AC.k_ribs = 0.0203
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
 # Tail Rib Mass (kg/r) per 0.1 meter of rib
-AC.k_ribs_t = 0.0045
+# AC.k_ribs_t = 0.0045
+AC.k_ribs_t = 0.0203/4.
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
 # Motor mass (kg)
-AC.m_motor = 1*0.3
+AC.m_motor = 0.965
 # Battery mass (kg)
-AC.m_battery = 1*0.34
+AC.m_battery = 0.427
 # Propeller mass (kg)
-AC.m_propeller = 1*0.0
+AC.m_propeller = 0.15
 # Electronics mass (kg)
-AC.m_electronics = 1*0.2
+AC.m_electronics = 0.381
 # Fuselage mass (kg)
 #AC.m_fuselage = 1*0.453592
 # Ultrakote density (kg/m^2)
@@ -201,8 +203,8 @@ def updateAircraft(cur_AC):
 
 	AC.tail.boom_Type = 'C'
 
-	outer_radius = 0.015
-	inner_radius = outer_radius*0.75
+	outer_radius = 0.0381/2.
+	inner_radius = 0.0174
 	AC.tail.boom_Dim = [outer_radius, inner_radius]
 
 	AC.tail.boom_E = 68.9e9

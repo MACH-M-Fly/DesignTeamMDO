@@ -11,9 +11,9 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-0.0770945273808  0.0770953201045  0.99999123473
+2.304  0.72  3.2
 #Xref    Yref    Zref
-0.019248989012 0.0 0.0
+0.18 0.0 0.0
 # CDp
 0.0
 
@@ -36,29 +36,34 @@ ANGLE
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.0    0       0.0769959560479     0      5      3
+0.0    0.0    0       0.72     0      5      3
 AFILE
 airfoils/A_1.dat
+
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-2.36112063191e-06    0.124998904341    0       0.0769959560507     0      5      3
+-0.0203436194712    0.4    0       0.72     0      5      3
 AFILE
 airfoils/A_2.dat
+
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-5.1127480824e-06    0.249997808683    0       0.0769959560541     0      5      3
+-0.0339257825677    0.8    0       0.72     0      5      3
 AFILE
 airfoils/A_3.dat
+
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-8.39025107506e-06    0.374996713024    0       0.076995956058     0      5      3
+-0.0345817532407    1.2    0       0.72     0      5      3
 AFILE
 airfoils/A_4.dat
+
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.23608496665e-05    0.499995617365    0       0.0769959560624     0      5      3
+-0.0140160569995    1.6    0       0.72     0      5      3
 AFILE
 airfoils/A_5.dat
+
 
 #======================================================
 #------------------- Horizontal Tail ------------------
@@ -66,7 +71,7 @@ airfoils/A_5.dat
 SURFACE
 Horizontal Tail
 #Nchordwise  Cspace   Nspan   Sspace
-7       1.0           10        -2 
+10       1.0           20         2 
 YDUPLICATE
 0.0
 SCALE
@@ -78,8 +83,8 @@ ANGLE
 
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
-#Xle   Yle     Zle     Chord   Ainc
-1.06778430845  0.0   0.0  0.0910393664756  0.000
+#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
+1.95    0.0    0       0.35     0.0       
 NACA
 0012
 CLAF
@@ -89,10 +94,9 @@ CONTROL
 #surface gain xhinge hvec SgnDup
 Elevator -1.00 0.5 0 1 0 1.00
 
-#--------------------TAIL Tip--------------------------
 SECTION
-#Xle   Yle     Zle     Chord   Ainc
-1.06778430845  0.0200000017748 0.000   0.0910346275353  0.000
+#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
+1.95    0.52    0       0.35     0.0       
 NACA
 0012
 CLAF
@@ -125,8 +129,8 @@ INDEX
 
 #----------------------ROOT/RUDDER---------------------
 SECTION
-#Xle   Yle     Zle     Chord   Ainc
-1.06778430845 0.0   0 0.0910393664756   0.000
+#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
+1.95 0 0.0  0.35     0.0       
 NACA
 0012
 CLAF
@@ -136,18 +140,18 @@ CONTROL
 #surface gain xhinge hvec SgnDup
 Rudder 1.00 0.5 0 0 1 -1.00
 
-#-----------------------TIP/RUDDER---------------------
 SECTION
-#Xle   Yle     Zle     Chord   Ainc
-1.06778430845 0.0   0.2  0.0910393664756   0.000
+#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
+1.95 0 0.296  0.35     0.0       
 NACA
 0012
 CLAF
 1.1078
+
 CONTROL
 #surface gain xhinge hvec SgnDup
 Rudder 1.00 0.5 0 0 1 -1.00
-#------------------------------------------------------
+
 
 
 
