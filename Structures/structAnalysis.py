@@ -200,6 +200,8 @@ def calcPointLoad(x, L, P, I, E, c):
 
 # Runs main structure analysis
 def runStructAnalysis(AC):
+	# Calls AVL to get max forces on wing and tail
+
 	# structure analysis on wing
 	x = np.linspace(0, AC.wing.b_wing/2.0, 1001)
 	w = distLoad(x, AC.wing_f/2.0, AC.wing.dist_type)
@@ -207,11 +209,10 @@ def runStructAnalysis(AC):
 	V, M, theta, y, sigma = calcDistribution(x, w, I, AC.wing.spar_E, c)
 
 	# structure analysis on tail
+	m_empenage = AC.mass_tail + AC.mass_boom/2.
 	x_tail = np.linspace(0, AC.boom_len, 1001)
 	c_tail, I_tail = calcI(AC.tail.boom_Type, AC.tail.boom_Dim)
-	# M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, AC.tail_f + AC.mass_tail*9.81, I_tail, AC.tail.boom_E, c_tail)
-	M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, AC.tail_f, I_tail, AC.tail.boom_E, c_tail)
-
+	M_tail, y_tail, sigma_tail = calcPointLoad(x_tail, AC.boom_len, 10.*AC.tail_f + m_empenage*9.81, I_tail, AC.tail.boom_E, c_tail)
 
 	# plt.figure(1)
 	# plt.plot(x_tail, y_tail, label='deflection of tail'); plt.legend()

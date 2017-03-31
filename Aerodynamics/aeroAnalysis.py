@@ -55,7 +55,7 @@ class aeroAnalysis(Component):
 		# print("Horiz. Tail  Chord Cubic Terms", AC.tail.htail_chord)
 	
 		# Call aero analysis to get CL, CD, CM and NP - Add to class
-		AC.CL, AC.CD, AC.CM, AC.NP = getAeroCoef()
+		AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.secCL, AC.sec_Yle = getAeroCoef()
 
 		# Static Margine calculation
 		SM = (AC.NP - AC.CG[0])/AC.wing.MAC
@@ -70,7 +70,12 @@ class aeroAnalysis(Component):
 
 		# print('Wing Lift = %f' % AC.wing_f)
 		# print('Tail Lift = %f' % AC.tail_f)
-		print("SM = %f"% AC.SM)
+
+		print("Cruise Velocity = %f m/s" % AC.vel)
+		print("Cruise AOA = %f degrees" % AC.ang)
+		print("CL of aircraft = %f" % AC.CL(AC.ang))
+		print("CD of aircraft = %f" % AC.CD(AC.ang))
+		print("SM = %f" % AC.SM)
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
@@ -104,7 +109,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file = mass_filename)
 
 
-	# stead level flight contraints
+	# steady level flight contraints
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
@@ -122,7 +127,9 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case.alphaSweep(-15, 15, 4)
 	# case.calcNP()
 
-
+	alpha = case.alpha
+	secCL = case.sec_CL
+	sec_Yle = case.sec_Yle
 
 	# get func for aero coeificent
 	CL = np.poly1d(np.polyfit(case.alpha,case.CL, 1))
@@ -157,8 +164,9 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 
 	# plt.show()
 	print("NP = %f"% NP)
+	print("Max Elevator deflection = %f deg" % max(case.elev_def))
 
-	return (CL, CD, CM, NP)
+	return (alpha, CL, CD, CM, NP, secCL, sec_Yle)
 # Declare Constants
 
 Rho = 1.225 # make global

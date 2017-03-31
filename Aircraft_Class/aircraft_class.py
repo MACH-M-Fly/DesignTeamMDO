@@ -122,7 +122,7 @@ class Wing(object):
 		self.sweep_vals = np.zeros(self.num_sections)
 		for i in range(self.num_sections):
 			span = (i+1)*self.sec_span
-			self.sweep_vals[i] =  sweep[0]*span**3 + sweep[0]*span**2 + \
+			self.sweep_vals[i] =  sweep[0]*span**3 + sweep[1]*span**2 + \
 			sweep[2]*span + sweep[3] 
 		return self.sweep_vals
 
@@ -338,7 +338,7 @@ class Tail():
 		self.htail_chord_vals = np.zeros(self.num_sections)
 		for i in range(self.num_sections):
 			span = (i+1)*sec_span_htail
-			self.htail_chord_vals[i] = htail_chord[0]*span**3 + htail_chord[0]*span**2 + \
+			self.htail_chord_vals[i] = htail_chord[0]*span**3 + htail_chord[1]*span**2 + \
 			htail_chord[2]*span + htail_chord[3]
 		return self.htail_chord_vals
 
@@ -347,7 +347,7 @@ class Tail():
 		self.vtail_chord_vals = np.zeros(self.num_sections)
 		for i in range(self.num_sections):
 			span = (i+1)*sec_span_vtail
-			self.vtail_chord_vals[i] = vtail_chord[0]*span**3 + vtail_chord[0]*span**2 + \
+			self.vtail_chord_vals[i] = vtail_chord[0]*span**3 + vtail_chord[1]*span**2 + \
 			vtail_chord[2]*span + vtail_chord[3]
 		return self.vtail_chord_vals
 

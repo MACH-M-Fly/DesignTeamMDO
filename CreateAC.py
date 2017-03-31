@@ -37,19 +37,19 @@ class createAC(Component):
 		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
 
 		# Parameter(s) of aicraft to be modified within this component
-		self.add_param('b_wing',val=3.2, desc='wing span')						
-		# self.add_param('dihedral',val = 0.0, desc='wing dihedral')						
+		self.add_param('b_wing',val = 3.2, desc='wing span')				
+		# self.add_param('dihedral',val = 0.0, desc='wing dihedral')
 		self.add_param('sweep',val =  np.array([0.0, 0.0, 0.0, 0.0]), desc = 'wing sweep')
-		self.add_param('chord',val = np.array([0.0, 0.0, 0.0, 0.72]), desc = 'wing chord')	
-		# self.add_param('dist_LG',val = 0.0, desc = 'Distance b/w LG and CG')					
+		self.add_param('chord',val = np.array([0.0, 0.0, 0.0, 0.72]), desc = 'wing chord')
+		# self.add_param('dist_LG',val = 0.0, desc = 'Distance b/w LG and CG')
 		self.add_param('boom_len',val = 1.60, desc='Length of Tailboom')
 		# self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
 		# self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')	
 		# self.add_param('thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='wing thickness')
 		# self.add_param('max_thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max thickness')	# Vertical Tail Span
 		# self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')	
-		self.add_param('htail_chord',val = np.array([0.0 , 0.0, 0.0,0.35]), desc ='Horiz. tail chord')
-		self.add_param('vtail_chord',val = np.array([0.0 , 0.0, 0.0,0.35]), desc = 'Vert. tail chord')
+		self.add_param('htail_chord',val = np.array([0.0 , 0.0, 0.0,0.325]), desc = 'Horiz. tail chord')
+		self.add_param('vtail_chord',val = np.array([0.0 , 0.0, 0.0,0.325]), desc = 'Vert. tail chord')
 		self.add_param('b_htail',val = 1.30, desc = 'Horiz. tail span')
 		self.add_param('b_vtail',val = 0.37, desc = 'Vert. tail span')
 

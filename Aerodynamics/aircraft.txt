@@ -11,7 +11,7 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-2.304  0.72  3.2
+2.92083915671  0.72  4.05672105099
 #Xref    Yref    Zref
 0.18 0.0 0.0
 # CDp
@@ -42,25 +42,25 @@ airfoils/A_1.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
--0.0203436194712    0.4    0       0.72     0      5      3
+0.0    0.507090131373    0       0.72     0      5      3
 AFILE
 airfoils/A_2.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
--0.0339257825677    0.8    0       0.72     0      5      3
+0.0    1.01418026275    0       0.72     0      5      3
 AFILE
 airfoils/A_3.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
--0.0345817532407    1.2    0       0.72     0      5      3
+0.0    1.52127039412    0       0.72     0      5      3
 AFILE
 airfoils/A_4.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
--0.0140160569995    1.6    0       0.72     0      5      3
+0.0    2.02836052549    0       0.72     0      5      3
 AFILE
 airfoils/A_5.dat
 
@@ -84,7 +84,7 @@ ANGLE
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.95    0.0    0       0.35     0.0       
+1.925    0.0    0       0.325     0.0       
 NACA
 0012
 CLAF
@@ -96,7 +96,7 @@ Elevator -1.00 0.5 0 1 0 1.00
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.95    0.52    0       0.35     0.0       
+1.925    0.52    0       0.325     0.0       
 NACA
 0012
 CLAF
@@ -130,7 +130,7 @@ INDEX
 #----------------------ROOT/RUDDER---------------------
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.95 0 0.0  0.35     0.0       
+1.925 0 0.0  0.325     0.0       
 NACA
 0012
 CLAF
@@ -142,7 +142,7 @@ Rudder 1.00 0.5 0 0 1 -1.00
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.95 0 0.296  0.35     0.0       
+1.925 0 0.296  0.325     0.0       
 NACA
 0012
 CLAF

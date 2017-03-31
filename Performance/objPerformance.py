@@ -112,7 +112,7 @@ class objPerformance(Component):
 		# Faulty mision input
 		else:
 			print('###################################################')
-			print('Error: Mission select must be 0 (MACH) or 1 (M-Fly)')
+			print('Error: Mission select must be 1 (M-Fly) or 2 (MACH)')
 			print('###################################################')
 
 

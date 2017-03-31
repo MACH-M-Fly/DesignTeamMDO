@@ -323,8 +323,7 @@ def getWing_mass(AC):
     num_ribs = math.ceil(b_wing * rib_dens)
     
     # Calculate mass of components in wing
-    # m_ribs = k_ribs * num_ribs * (MAC / 0.05)       # kg | total mass of ribs
-    m_ribs = k_ribs * num_ribs * MAC
+    m_ribs = k_ribs * num_ribs * MAC 				# kg | total mass of ribs
     m_LE = linden_LE * b_wing                       # kg | mass of leading edge
     m_TE = linden_TE * b_wing                       # kg | mass of trailing edge
     m_spar = linden_spar * b_wing                   # kg | mass of spar
@@ -341,15 +340,20 @@ def getWing_mass(AC):
     m_wing = m_ribs + m_LE + m_TE + m_spar + m_wing_alum_spar + m_ult
 
     print("Wing Mass = %f kg"% m_wing)
-    # print(" Wing Rib Mass        = %f kg"% m_ribs)
-    # print(" Wing LE Mass         = %f kg"% m_LE)
-    # print(" Wing TE Mass         = %f kg"% m_TE)
-    # print(" Wing Spar Mass       = %f kg"% m_spar)
-    # print(" Wing ultrakote Mass  = %f kg"% m_ult)
-    # print(" Wing Alum. Spar Mass = %f kg"% m_wing_alum_spar)
-    # print(" Wing Rib Number 	 = %d"% num_ribs)
-    # print("MAC of wing = %f"% MAC)
-    print("Wing sweep = ", AC.wing.sweep)
+    # print("	Wing Rib Mass        = %f kg"% m_ribs)
+    # print("	Wing LE Mass         = %f kg"% m_LE)
+    # print("	Wing TE Mass         = %f kg"% m_TE)
+    # print("	Wing Spar Mass       = %f kg"% m_spar)
+    # print("	Wing ultrakote Mass  = %f kg"% m_ult)
+    # print("	Wing Alum. Spar Mass = %f kg"% m_wing_alum_spar)
+    # print("	Wing Rib Number 	 = %d"% num_ribs)
+    print("	Wing Sref = %f m^2" % sref_wing)
+    print("	MAC of wing = %f m" % MAC)
+    print("	Wing span = %f m" % b_wing)
+    print("	Wing chord = " + ', '.join("%f" % n for n in AC.wing.chord))
+    print("	Wing chord vals = " + ', '.join("%f" % n for n in AC.wing.chord_vals))
+    print("	Wing sweep = " + ', '.join("%f" % n for n in AC.wing.sweep))
+    print("	Wing sweep vals = " + ', '.join("%f" % n for n in AC.wing.sweep_vals))
 
     return num_ribs, m_wing 
 
@@ -374,8 +378,6 @@ def getTail_mass(AC):
     num_ribs_vt = math.ceil(b_vtail * rib_dens_t)
    
     # Calculate mass of components in tail
-    # m_ribs_ht = AC.k_ribs_t * num_ribs_ht * (MAC_ht / 0.1)
-    # m_ribs_vt = AC.k_ribs_t * num_ribs_vt * (MAC_vt / 0.1)
     m_ribs_ht = AC.k_ribs_t * num_ribs_ht * MAC_ht
     m_ribs_vt = AC.k_ribs_t * num_ribs_vt * MAC_vt
     m_ribs_t = m_ribs_ht + m_ribs_vt
@@ -391,23 +393,29 @@ def getTail_mass(AC):
     # Get total mass of tail
     m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t + m_ult
 
-    print("Tail Mass = %f kg"% m_tail)
+    print("Tail Mass = %f kg" % m_tail)
     # print("	Mass of Tail Ribs = %f kg"% m_ribs_t)
     # print("	Mass of LE        = %f kg"% m_LE_t)
     # print("	Mass of TE        = %f kg"% m_TE_t)
     # print("	Mass of Tail Spar = %f kg"% m_spar_t)
     # print("	Mass of Tail ultrakote = %f kg"% m_ult)
 
-    # print(" b_htail = %f"% b_htail)
-    # print(" b_vtail = %f"% b_vtail)
-    # print(" Number of Ribs in HTail = %f"% num_ribs_ht)
-    # print(" Number of Ribs in VTail = %f"% num_ribs_vt)
-    # print(" Kg per rib = %f"% AC.k_ribs_t)
+    # print("H_Tail")
+    # print("	b_htail = %f m"% b_htail)
+    # print("	Sref of HT = %f m^2"% AC.tail.sref_ht)
+    # print("	MAC of HT = %f"% MAC_ht)
+    # print("	H_Tail chord = " + ', '.join("%f" % n for n in AC.tail.htail_chord))
+    # print("	H_Tail chord_val = " + ', '.join("%f" % n for n in C_t))
+    # print("	Number of Ribs in HTail = %f"% num_ribs_ht)
 
-    # print("Sref of HT = %f m^2"% AC.tail.sref_ht)
-    # print("Sref of VT = %f m^2"% AC.tail.sref_vt)
-    # print("MAC of HT = %f"% MAC_ht)
-    # print("MAC of VT = %f"% MAC_vt)
+    # prnt("V_Tail")
+    # print("	b_vtail = %f"% b_vtail)
+    # print("	Sref of VT = %f m^2"% AC.tail.sref_vt)
+    # print("	MAC of VT = %f"% MAC_vt)
+    # print("	V_Tail chord = " + ', '.join("%f" % n for n in AC.tail.vtail_chord))
+    # print("	V_Tail chord_val = " + ', '.join("%f" % n for n in C.tail.vtail_chord_vals))
+    # print("	Number of Ribs in VTail = %f"% num_ribs_vt)
+    # print("	Kg per rib = %f"% AC.k_ribs_t)
 
     return m_tail 
 
@@ -431,10 +439,10 @@ def getStruct_mass(AC):
     m_landgear = m_landgear_rear + m_landgear_front
 
     # Calculate mass of ballast
-    m_ballast = 1.55					# kg 
+    m_ballast = 1.55					# kg | ballast mass (assume constant for now)
 
-    # print("Boom Mass = %f kg"% m_boom)
-    # print("	Boom Length = %f m"% boom_len)
+    print("Boom Mass = %f kg"% m_boom)
+    print("	Boom Length = %f m"% boom_len)
     # print("Landing Gear Mass = %f kg"% m_landgear)
     # print("	Front LG Mass = %f kg"% m_landgear_front)
     # print("	Rear LG Mass  = %f kg"% m_landgear_rear)
@@ -486,12 +494,13 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     Is = ([Ixx, Iyy, Izz])
 
     print("Total Mass = %f kg"% m_total)
-    # print(" Empenage Mass = %f kg"% (m_tail + m_boom))
-    # print(" Payload Mass = %f kg"% m_payload)
-    # print(" Fuselage Mass = %f kg"% m_fuselage)
-    print(" X CG = %f m from LE of wing"% x_cg)
-    # print(" Wing root chord = %f m"% C[0])
-    # print(" Tail root chord = %f m"% C_t[0])
+    # print("	Empenage Mass = %f kg"% (m_tail + m_boom))
+    # print("	Payload Mass = %f kg"% m_payload)
+    # print("	Fuselage Mass = %f kg"% m_fuselage)
+    print("	X CG = %f m from LE of wing"% x_cg)
+    print("	Wing loading = %f N/m^2" % (9.81*m_total/b_wing))
+    # print("	Wing root chord = %f m"% C[0])
+    # print("	Tail root chord = %f m"% C_t[0])
     
     return cg, Is, m_total, mount_len
 
@@ -520,6 +529,7 @@ def calcWeight_process(AC):
 
     AC.mass = m_total
     AC.mass_tail = m_tail
+    AC.mass_boom = m_boom
     AC.weight = m_total*9.81
     AC.mount_len = mount_len
 

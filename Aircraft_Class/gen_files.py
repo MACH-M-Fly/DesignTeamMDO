@@ -3,7 +3,7 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
-def genMass(AC, filename = 'aircraft.mass'):
+def genMass(AC):
 	"""
 	gen_mass: Generates AVL mass file
 	Inputs:
@@ -12,11 +12,11 @@ def genMass(AC, filename = 'aircraft.mass'):
 		None, just "outs" the mass file
 	"""
 	try:
-		os.remove('./aircraft.mass')
+		os.remove('./Aerodynamics/aircraft.mass')
 	except:
 		pass
 
-	f = open('./aircraft.mass', 'w')
+	f = open('./Aerodynamics/aircraft.mass', 'w')
 
 
 	def out(cmd):
@@ -34,6 +34,8 @@ def genMass(AC, filename = 'aircraft.mass'):
 	out('*   1.    1.    1.    1.    1.     1.    1.    1.    1.    1.')
 	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.') 
 	out( str(AC.mass) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
+
+	f.close()
 
 def genGeo(AC):
 	"""

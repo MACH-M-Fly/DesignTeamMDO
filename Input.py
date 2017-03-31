@@ -142,12 +142,10 @@ AC.LE_lindens_t = 5*0.453592*0.3048*0.25/2.
 # Tail Trailing Edge (TE) density (kg/m)
 AC.TE_lindens_t = 5*0.453592*0.3048*0.15/2.
 # Rib Mass (kg/r) per meter of rib
-# AC.k_ribs = 0.0065
 AC.k_ribs = 0.0203
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
-# Tail Rib Mass (kg/r) per 0.1 meter of rib
-# AC.k_ribs_t = 0.0045
+# Tail Rib Mass (kg/r) per meter of rib
 AC.k_ribs_t = 0.0203/4.
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
@@ -160,7 +158,7 @@ AC.m_propeller = 0.15
 # Electronics mass (kg)
 AC.m_electronics = 0.381
 # Fuselage mass (kg)
-#AC.m_fuselage = 1*0.453592
+# AC.m_fuselage = 0.83
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
 
@@ -209,8 +207,6 @@ def updateAircraft(cur_AC):
 
 	AC.tail.boom_E = 68.9e9
 	
-
-
 
 	AC.score = 0
 

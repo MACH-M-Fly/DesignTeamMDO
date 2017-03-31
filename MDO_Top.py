@@ -6,6 +6,7 @@ from time import localtime, strftime, time
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import copy
 
 #open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
@@ -37,21 +38,21 @@ class constrainedMDO(Group):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
-		# self.add('b_wing',IndepVarComp('b_wing',3.2)) 							# Wingspan (m) 
-		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
-		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))# Quarter Chord Sweep in degrees (cubic)
-		# self.add('chord',IndepVarComp('chord',np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))						# Distance between CG and landing gear (m)
-		# self.add('boom_len',IndepVarComp('boom_len', 1.0))						# Length of tailboom (m)
+		self.add('b_wing',IndepVarComp('b_wing', 3.2)) 								# Wingspan (m) 
+		# self.add('dihedral',IndepVarComp('dihedral',1.0))							# Wing dihedral angle (degrees)
+		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
+		# self.add('chord',IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))							# Distance between CG and landing gear (m)
+		# self.add('boom_len',IndepVarComp('boom_len', 1.60))							# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		# self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.35]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.35])))
-		# self.add('b_htail',IndepVarComp('b_htail',0.2))
-		# self.add('b_vtail',IndepVarComp('b_vtail',0.3))
+		# self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
+		# self.add('b_htail',IndepVarComp('b_htail',1.30))
+		# self.add('b_vtail',IndepVarComp('b_vtail',0.37))
 
 		self.add('my_comp', createAC())
 		self.add('calcWeight', calcWeight())
@@ -77,12 +78,14 @@ class constrainedMDO(Group):
 		# self.connect('b_htail.b_htail','my_comp.b_htail')
 		# self.connect('b_vtail.b_vtail','my_comp.b_vtail')
 		
+		self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		# self.connect('sweep.sweep', 'my_comp.sweep')
 		# self.connect('chord.chord', 'my_comp.chord')
-		self.connect('sweep.sweep', 'my_comp.sweep')
-		# self.connect('boom_len.boom_len',['my_comp.boom_len'])
-		# self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
-		# self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		# self.connect('boom_len.boom_len', 'my_comp.boom_len')
+		# self.connect('htail_chord.htail_chord', 'my_comp.htail_chord') 
+		# self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
 		# self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		# self.connect('b_vtail.b_vtail', 'my_comp.b_vtail')
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
 		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -118,18 +121,16 @@ class constrainedMDO(Group):
 prob = Problem()
 prob.root = constrainedMDO()
 
-
-
 # # ================================================ Add Driver ============================================== #
 # prob.driver = pyOptSparseDriver()
-# prob.driver.options['optimizer'] = 'ALPSO'
+# prob.driver.options['optimizer'] = 'ALPSO6
 # prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
 # 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
 prob.driver = ScipyOptimizer()
 prob.driver.options['optimizer'] = 'SLSQP'
 prob.driver.options['tol'] = 1.0e-5
-prob.root.fd_options['force_fd'] = True	
+prob.root.fd_options['force_fd'] = True
 prob.root.fd_options['form'] = 'central'
 prob.root.fd_options['step_size'] = 1.0e-6
 
@@ -142,10 +143,10 @@ prob.root.fd_options['step_size'] = 1.0e-6
 
 
 # ===================================== Add design Varibles and Bounds ==================================== #
-# prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
+prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 7. )
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
-prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-1., -1., -1., -20.0 ]),\
-													  	upper = np.array([0.2, 0.2, 0.2, 30.0 ]) )
+# prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
+# 													  	upper = np.array([5., 5., 5., 30.0 ]) )
 # prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
 # 													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
 # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
@@ -160,10 +161,10 @@ prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-1., -1., -1., -20
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
 # prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
 # prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
-# 													  	upper = np.array([0.1, 0.2, 0.2, 1.0]) )
-# prob.driver.add_desvar('c_r_vt.c_r_vt', 	  			lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
+# 													  	upper = np.array([0.1, 0.2, 0.2, 3.0]) )
+# prob.driver.add_desvar('vtail_chord.vtail_chord', 		lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 1.2)
+# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 
 
@@ -174,32 +175,34 @@ prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
 # prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((num_sections,1))*0.05  )
 # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((num_sections,1))*0.01  )
-prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
+# prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
 # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
 
-# # ======================================== Post-Processing ============================================== #
-# root = Group()
+# ======================================== Post-Processing ============================================== #
+root = Group()
 # root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
-# root.add('my_comp', createAC())
-# # root.add('calcWeight', calcWeight())
-# root.add('aeroAnalysis', aeroAnalysis())
-# root.add('structAnalysis',structAnalysis())
-# root.add('objPerformance', objPerformance())
-# # root.add('Plot', Plot(geo1, geo2, A, writer, fig))
+root.add('my_comp', createAC())
+root.add('calcWeight', calcWeight())
+root.add('aeroAnalysis', aeroAnalysis())
+root.add('structAnalysis',structAnalysis())
+root.add('objPerformance', objPerformance())
+# root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
 # root.connect('indep_var.chord', 'my_comp.chord')
-# # root.connect('my_comp.aircraft','calcWeight.in_aircraft')
-# # root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+root.connect('my_comp.aircraft','calcWeight.in_aircraft')
+root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 # root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
-# root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
-# root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-# # root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
+root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
+root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
-# prob = Problem(root)
-
+prob0 = Problem(root)
+prob0.setup()
+prob0.run()
+in_ac = copy.copy(prob0['my_comp.aircraft'])
 
 prob.setup()
 prob.run()
@@ -222,19 +225,18 @@ print("Horiz. Tail Chord Values", out_ac.tail.htail_chord_vals)
 print("Horiz. Tail  Chord Cubic Terms", out_ac.tail.htail_chord)
 print("Total Build Hours", out_ac.total_hours)
 
+print('########    Aerodynamics Analysis  #######')
 # print("CL", out_ac.CL)
 # print("CD", out_ac.CD)
-# print("CD", out_ac.wing.chord)
-
 # print("CM", out_ac.CM)
+
 print("NP", out_ac.NP)
+print("SM", out_ac.SM)
+
 print('########    Performance Metrics  #######')
 print("Number of Laps", out_ac.N)
 print("Score", out_ac.score)
 print("Total Time", out_ac.tot_time)
-
-print("#####")
-
 
 print('########    Structural Analysis  #######')
 print('Gross Lift', out_ac.gross_F)
@@ -244,10 +246,14 @@ print("Max Stress Tail %.7E"% out_ac.sig_max_tail)
 print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 print("CG", out_ac.CG)
 
+print("#####")
+
 # Ooutput final geometry of aircraft
-plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
-				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.CG[0], out_ac.NP, out_ac.score, out_ac.mount_len)
+plotGeoFinalDuo(in_ac, out_ac)
+
+# plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
+# 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
+# 				out_ac.CG[0], out_ac.NP, out_ac.score, out_ac.mount_len)
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)

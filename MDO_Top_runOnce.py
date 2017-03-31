@@ -6,6 +6,7 @@ from time import localtime, strftime, time
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import copy
 
 #open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
@@ -48,8 +49,8 @@ class constrainedMDO(Group):
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.35]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.35])))
+		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
 		self.add('b_htail',IndepVarComp('b_htail',1.30))
 		self.add('b_vtail',IndepVarComp('b_vtail',0.37))
 
@@ -196,6 +197,8 @@ root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
+in_ac = copy.copy(prob['my_comp.aircraft'])
+
 prob.run()
 
 # with writer.saving(fig, "OPT_#.mp4", 100):
@@ -224,9 +227,25 @@ print('Max Stress Tail ', out_ac.sig_max_tail)
 print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
 
 # Ooutput final geometry of aircraft
-plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
-				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-				out_ac.CG[0], out_ac.NP, 5., out_ac.mount_len)
+print("in_AC.wing.Yle = ", in_ac.wing.Yle)
+print("out_AC.wing.Yle = ", out_ac.wing.Yle)
+
+in_ac.score = 10
+in_ac.CG = ([0.1, 0, 0])
+in_ac.NP = 0.1
+in_ac.mount_len = -0.15
+out_ac.score = 12
+out_ac.wing.Yle[-1] = 2.
+
+print("in_AC.wing.Yle = ", in_ac.wing.Yle)
+print("out_AC.wing.Yle = ", out_ac.wing.Yle)
+plotGeoFinalDuo(in_ac, out_ac)
+
+
+# plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
+# 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
+# 				out_ac.CG[0], out_ac.NP, 5., out_ac.mount_len)
+
 
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)
