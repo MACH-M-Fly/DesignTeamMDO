@@ -19,15 +19,25 @@ import pyAVL
 
 
 class aeroAnalysis(Component):
-	"""
-		aeroAnalysis: Uses the current iteration of the aircraft, performs
-		AVL aerodynamic analysis
-		Inputs:
-			- Aircraft_Class: Input aircraft instance
-			- Design variables: These will be modified based on new MDO iteration
-		Outputs:
-			- Aircraft_Class: Output and modified aircraft instance 
-	"""
+    """
+    OpenMDAO component for aerodynamic analysis via AVL
+    - Uses the current iteration of the aircraft: in_aircraft
+    - Modifies in_aircraft, outputs a new out_aircraft
+    - ^ All of the same AC class (AC.wing, AC.tail, etc.)
+
+	Inputs
+	-------
+	Aircraft_Class:	class
+					in_aircraft class
+
+
+    Outputs
+    -------
+	Aircraft_Class:	class
+					out_aircraft class
+	SM			: 	float
+					Static margin			
+    """   
 
 	def __init__(self ):
 		super(aeroAnalysis,self).__init__()
@@ -37,6 +47,8 @@ class aeroAnalysis(Component):
 
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+
+		# Other outputs to be used in top_level group (e.g. constraints)
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 
 	def solve_nonlinear(self,params,unknowns,resids):
@@ -83,50 +95,52 @@ class aeroAnalysis(Component):
 
 
 def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = './Aerodynamics/aircraft.mass'):
-	'''
-	Summary:
+	"""
+	Using AVL, calculate the full-vehicle aerodynamic coefficients
+	*As functions of the angle of attack
 
 
 	Inputs
 	----------
-	geo_filename : String
+	geo_filename 	: 	String
 	    File name of the AVL geometry file for the aircraft
 
-	mass_filename : String
+	mass_filename 	: 	String
 	    File name of the AVL geometry file for the aircraft
 
 	Outputs
 	----------
-	CL,CD, CD : Functions
+	alpha 			: 	ndarray
+						Sweep of angle of attacks used
+	CL,CD, CD, secCL, sec_Yle : Functions
 	    Functions that will return the value for the coeffiecent 
 	    for a given angle of attack 
 	    example: CL(10*np.pi/180)  <- note the use of radians
 
 	NP : float
 	   X location of NP in AVL coordinate system
-	'''
+	"""
 
+	# Create the pyAVL case
 	case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file = mass_filename)
 
 
-	# steady level flight contraints
+	# Steady level flight contraints
 	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
-
+	# Execute the case
 	case.executeRun()
 
-	#print '----------------- Neutral Point ----------------'
+	# Calculate the neutral point
 	case.calcNP()
 	NP = case.NP
 	
 	case.clearVals()
 
-
+	# Create a sweep over angle of attack
 	# case.alphaSweep(-15, 30, 2)
 	case.alphaSweep(-15, 15, 4)
-	# case.calcNP()
-
 	alpha = case.alpha
 	secCL = case.sec_CL
 	sec_Yle = case.sec_Yle
@@ -160,26 +174,22 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	# plt.xlabel('Alpha')
 	# plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
 
-
-
 	# plt.show()
 	print("NP = %f"% NP)
 	print("Max Elevator deflection = %f deg" % max(case.elev_def))
 
 	return (alpha, CL, CD, CM, NP, secCL, sec_Yle)
-# Declare Constants
 
-Rho = 1.225 # make global
-# Sref_tail = 0.212
+# Declare Constants (global)
+Rho = 1.225 
 g = 9.81
 mu_k = 0.005
-
 inced_ang = -5.0 *np.pi/180.0
 
-# xfoil_path = '/home/creynol/Joint_MDO_v1/Aerodynamics/xfoil/elev_data'
+# Specify path of xfoil
 xfoil_path = 'Aerodynamics/xfoil/elev_data'
 
-
+# Use xfoil to get sectional values for an airfoil
 alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path+ '_flap.dat')[0:2]
 alphas_tail_noflap,CLs_tail_noflap = getDataXfoil(xfoil_path+ '.dat')[0:2]
 alphas_tail = [x * np.pi/180 for x in alphas_tail]
@@ -189,38 +199,134 @@ CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap,CLs_tail_noflap, 2))
 
 
 def getThrust(vel, ang):
+    """
+    Calculate the thrust available at a flight condition
+
+	Inputs
+	-------
+	vel 		:	float
+					velocity
+	ang 		:	float
+					angle of attack
+
+
+    Outputs
+    -------
+	X_comp 		:	float
+					X component of thrust available
+	Y_comp 		:	float
+					Y component of thrust available		
+    """   
+
+    # Thrust data (from dynamic thrust testing)
 	T_0 = 18.00
 	T_1 = -0.060
 	T_2 = -0.015
-	T_3 = 0 #-7*10**-5*3.28**3
-	T_4 = 0 # 4*10**-7*3.28**4
+	T_3 = 0 
+	T_4 = 0 
 
+	# Thrust available
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
-			#X comp   # Y Comp
-	return (np.cos(ang)*T, np.sin(ang)*T )
+	
+	# X and Y components of thrust available
+	X_comp = np.cos(ang)*T
+	Y_comp = np.sin(ang)*T
+	return (X_comp, Y_comp)
 
 
 def getTailCL(ang, flapped):
+    """
+    Get the new CL of the tail if elevator is deflected
+
+	Inputs
+	-------
+	ang 		:	float
+					angle of elevator deflection
+	flapped		:	bool ('True' or 'False')
+					If elevator is deflected
+
+
+    Outputs
+    -------
+	CL 			:	float
+					CL of the tail with/without deflection
+    """   
+
+    # Call output data from tail
 	if (flapped):
 		return CL_tail_flap(ang + inced_ang)
 	else:
 		return CL_tail_noflap(ang + inced_ang)
 
 def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
+    """
+    Calculate the gross lift of a configuration
 
+	Inputs
+	-------
+	vel 		:	float
+					velocity
+	ang 		:	float
+					angle of attack
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area
+	flapped		:	bool ('True' or 'False')
+					If elevator is deflected
+	CL 			: 	function
+					CL function from AVL run				
+
+
+    Outputs
+    -------
+	gross_F 	:	float
+					gross lift of vehicle
+	wing_F 		:	float
+					wing lift of vehicle
+	tail_F 		:	float
+					tail lift of vehicle
+    """   
+
+   	# Calculate lifts using CL functions
 	wing_f = 0.5*Rho*vel**2*(CL(ang)*sref_wing)
 	tail_f = 0.5*Rho*vel**2*(getTailCL(ang, flapped)*sref_tail)
 	l_net = wing_f + tail_f
-
 	gross_F = l_net + getThrust(vel,ang)[1]
 
 	return gross_F, wing_f, tail_f
 
 
+def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
+    """
+    Calculate the cruise velocity of a configuration
+
+	Inputs
+	-------
+	CL 			: 	function
+					CL function from AVL run
+	CD 			: 	function
+					CD function from AVL run	
+	weight 		: 	float
+					weight of vehicle	
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area			
 
 
-def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):	
+    Outputs
+    -------
+	vel  		:	float
+					cruise velocity
+	ang 		:	float
+					cruise angle of attack
+    """   
+
 	def sumForces (A):
+		"""
+		Get sum of the forces, used for fsolve
+		"""
 		vel = A[0]
 		ang = A[1]
 
@@ -233,11 +339,10 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 		
 		return F
 
+	# Fsolve to balance lift and weight
  	Z = fsolve(sumForces,np.array([40, -10*np.pi/180]))
 
+ 	# Return cruise velocity and angle of attack
  	ang = Z[1]
  	vel =  Z[0]
-
  	return (vel, ang)
-
-

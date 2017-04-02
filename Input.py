@@ -1,8 +1,21 @@
 from Aircraft_Class.aircraft_class import *
 
-# Create an object of type aircraft called the aircraft name, M6
-# SI Units only: kg, m, s
+"""
+Input.py
+- User modifies:
+	- Starting design variables
+	- Constraints
+	- Mission select (0 for Mach or 1 for M-Fly)
+	- Weights data
+	- Thrust data
 
+SI UNITS ONLY
+- kg
+- m
+- s
+"""
+
+# Create initial class
 AC = Aircraft()
 
 #=========================================================================
@@ -173,7 +186,21 @@ AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail, \
 
 
 def updateAircraft(cur_AC):
-	
+    """
+    Function to update the aircraft on each iteration of MDO
+
+
+    Inputs
+    ----------
+    cur_AC          :   Class
+                        Class containing all aircraft data
+
+
+    Outputs
+    ----------
+    none, just updates the aircraft (AC)
+    """
+          
 	# Create an instance of AC for wing values
 	AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
 		cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber, \
@@ -207,9 +234,10 @@ def updateAircraft(cur_AC):
 
 	AC.tail.boom_E = 68.9e9
 	
-
+	# Reset score
 	AC.score = 0
 
+# Call the above function to update the aircraft for this MDO iteration
 updateAircraft(AC)
 
 

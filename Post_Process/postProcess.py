@@ -3,7 +3,11 @@ import math
 from lib_plot import plot_geo_final
 
 def postProcess(opt_problem):
+    """
+    Not currently used
+    - Is an example of an all-in-one post-processing script
 
+    """   
 	# Remove possibility for surpressing output with ellipsis
 	numpy.set_printoptions(threshold='nan')
 

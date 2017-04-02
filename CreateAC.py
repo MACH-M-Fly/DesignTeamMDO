@@ -21,13 +21,22 @@ from Aircraft_Class.aircraft_class import *
 
 
 class createAC(Component):
-	"""
-		createAC: Updates the aircraft parameters after every iteration of MDO
-		Inputs:
-			- Aircraft_Class: Input aircraft instance
-			- Design variables: These will be modified based on new MDO iteration
-		Outputs:
-			- Aircraft_Class: Output and modified aircraft instance 
+    """
+    OpenMDAO component for updating the aircaft (AC) after each iteration of MDO
+
+    Inputs
+    -------
+    Aircraft_Class  :   class
+                        in_aircraft class
+    design variables: 	many variables
+    					Variables for modification
+
+
+    Outputs
+    -------
+    Aircraft_Class  :   class
+                        out_aircraft class
+
 	"""
 
 	def __init__(self ):
@@ -37,6 +46,8 @@ class createAC(Component):
 		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
 
 		# Parameter(s) of aicraft to be modified within this component
+		# - I.e. design variables
+		# - Uncomment the variables to be used
 		self.add_param('b_wing',val = 3.2, desc='wing span')				
 		# self.add_param('dihedral',val = 0.0, desc='wing dihedral')
 		self.add_param('sweep',val =  np.array([0.0, 0.0, 0.0, 0.0]), desc = 'wing sweep')
@@ -61,8 +72,7 @@ class createAC(Component):
 		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
 	
-		# print('test', AC.wing.b_wing)
-		# Modify instance of aircraft - This is where analysis would happen
+		# Uncomment to reveal more design variables for use in the MDO
 		AC.wing.b_wing = params['b_wing']
 		# AC.wing.dihedral = params['dihedral']
 		AC.wing.sweep = params['sweep']
@@ -81,9 +91,7 @@ class createAC(Component):
 
 
 		# Update aircraft before analysis
-		# AC.wing = Wing(AC.wing.num_Sections, AC.wing.is_linear, AC.wing.b_wing, AC.wing.sweep, AC.wing.chord, AC.wing.Xo, AC.wing.Yo, AC.wing.Zo, AC.wing.dihedral, AC.wing.camber,AC.wing.max_camber, AC.wing.thickness, AC.wing.max_thickness)
 		updateAircraft(AC)
-
 
 		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC

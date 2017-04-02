@@ -1,13 +1,3 @@
-'''
- lib_plot.py
- Created by Josh Anibal (JLA), modified by Chris Reynolds (CLR)
- - Plots aircraft:
-    - During each iteration and at the end (plotGeoFinal)
-    - Plots wing (blue) and tail (red)
- 	- Plots CG (black) and NP (light blue - cyan)
-    - Includes configuration number (fig)
-'''
-
 from __future__ import division
 
 from scipy.optimize import *
@@ -26,9 +16,27 @@ from openmdao.api import IndepVarComp, Component, Problem, Group
 from Input import AC
 
 
-
-# Class for plotting each iteration and a final geometry plotter
 class Plot(Component):
+    """
+    OpenMDAO component for post-processing
+    - Movie writing DOES NOT work on CAEN linux
+    - Plots aircraft:
+	    - During each iteration and at the end (plotGeoFinal)
+	    - Plots wing (blue) and tail (red)
+	 	- Plots CG (black) and NP (light blue - cyan)
+	    - Includes configuration number (fig)
+
+
+	Inputs
+	-------
+	Aircraft_Class:	class
+					in_aircraft class (now has data from upstream components)
+
+
+    Outputs
+    -------
+	Plots		
+    """  
 	
 	# Plots each iteration configuration
 	def __init__(self, geo1, geo2, A, writer, fig):
@@ -134,6 +142,28 @@ class Plot(Component):
 #		NP: Neutral point position
 #		Score: Objective function score                               
 def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
+    """
+    Plots the final optimized geometry
+
+	Inputs
+	-------
+    	Xle: Wing leading edge at each section (x coord.)
+		Yle: Wing leading edge at each section (y coord.)
+ 		C: Chord at each section
+	  	Xle_ht: Tail leading edge at each section (x coord.)       
+	  	Yle_ht: Tail leading edge at each section (y coord.)  
+ 		C_t: Tail chord at each section  
+		x_cg: CG position
+		NP: Neutral point position
+		Score: Objective function score      
+		mount_len: Motor mount length to plot the motor  
+
+
+    Outputs
+    -------
+	Single plot
+    """   
+    
 	wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]

@@ -22,23 +22,38 @@ from Input import AC
 
 
 class objPerformance(Component):
-	"""
-		objPerformance: Uses the current iteration of the aircraft, runs a
-		performance analysis (either Max payload or lap-time around a set perimeter)
+    """
+    OpenMDAO component for performance analysis for 0: lap-time objective or
+    1: maximum payload
+    Obj 1) M-Fly: Maximum payload, limited runway
+	Obj 2) MACH: Minimum lap time, given lap perimiter
 
-		# Obj 1) M-Fly: Maximum payload, limited runway
-		# Obj 2) MACH: Minimum lap time, given lap perimiter
 
-		Inputs:
-		- Aircraft_Class
-		- Data from Aero(CL, CD, neutral point)
+	Inputs
+	-------
+	Aircraft_Class:	class
+					in_aircraft class (now has data from upstream components)
 
-		Outputs:
-		- Objective Function (1: Payload or 2: lap time)
-		- Takeoff distance (constraint)
-		- Climb rate (constraint)
 
-	"""
+    Outputs
+    -------
+	Aircraft_Class:	class
+					out_aircraft class
+	score		: 	float
+					Objective function score
+	sum_y      	: 	float
+					net lift at the end of the runway
+	N 			:	int
+					Number of laps (MACH)
+	NP 			: 	float
+					Neutral point
+	tot_time	:	float
+					total time per lap (MACH)
+	chord_vals 	:	ndarray
+					Chord value at each section, returned to top level for constraining
+	htail_ chord_vals 	:	ndarray
+					Tail chord value at each section, returned to top level for constraining				
+    """   
 	def __init__(self ):
 		super(objPerformance, self).__init__()
 
@@ -48,7 +63,7 @@ class objPerformance(Component):
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
-		# Set up outputs
+		# Other outputs to be used in top_level group (e.g. constraints)
 		self.add_output('score', val = 0.0, desc = 'score ')
 		self.add_output('sum_y', val = 0.0, desc = 'Net Lift at End of Runway')
 		self.add_output('N', val = 0.0, desc = 'number of laps')		
@@ -83,18 +98,9 @@ class objPerformance(Component):
 		# Run MACH lap-time objective
 		elif AC.mission == 2:
 
-
-			# if (SM >= 0.12 and SM <= 0.20):
+			# Call num_laps function for MACH mission
 			N, tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len, AC.dist_LG, AC.wing.MAC, AC.Iyy)
-			# print 'N used for score', N
-
 			score = -1*(N*100 - tot_time/100.0)
-
-			# else:
-			# 	print('BAD SM: ' + str(SM))
-			# 	N = 0
-			# 	tot_time= 0.0
-			# 	score = abs(0.16 - SM)
 					
 			# Print output
 			print("Net Lift ", sum_y , ' Score: ' + str(score) + ' N: ' + str(N) + ' Total Time: ' + str(tot_time) + ' SM: ' + str(AC.SM))
@@ -121,9 +127,6 @@ class objPerformance(Component):
 		# static margin (SM), and objective value to instance of AC
 		AC.N = N
 		AC.tot_time = tot_time
-		# AC.SM = SM
-		# print(AC.score)
-
 		AC.score = score
 		AC.tot_time = tot_time
 
@@ -137,12 +140,9 @@ class objPerformance(Component):
 		
 
 # Declare Constants
-
-Rho = 1.225 # make global
-# sref_tail = 0.212
+Rho = 1.225
 g = 9.81
 mu_k = 0.005
-
 inced_ang = -5.0 *np.pi/180.0
 
 xfoil_path = 'Aerodynamics/xfoil/elev_data'
@@ -155,73 +155,203 @@ CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
 CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
 
 
-
 def getThrust(vel, ang):
-	# T_0 = 18.00
-	# T_1 = -0.060
-	# T_2 = -0.015
-	# T_3 = 0 #-7*10**-5*3.28**3
-	# T_4 = 0 # 4*10**-7*3.28**4
+    """
+    Calculate the thrust available at a flight condition
 
+	Inputs
+	-------
+	vel 		:	float
+					velocity
+	ang 		:	float
+					angle of attack
+
+
+    Outputs
+    -------
+	X_comp 		:	float
+					X component of thrust available
+	Y_comp 		:	float
+					Y component of thrust available		
+    """   
+
+    # Thrust data (from dynamic thrust testing)
 	T_0 = 53.29
 	T_1 = -1.02
 	T_2 = -0.05008
 	T_3 = 0
 	T_4 = 0
 
+	# Thrust available
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
-			#X comp   # Y Comp
-	return (np.cos(ang)*T, np.sin(ang)*T)
+	
+	# X and Y components of thrust available
+	X_comp = np.cos(ang)*T
+	Y_comp = np.sin(ang)*T
+	return (X_comp, Y_comp)
 
-def tailCL(ang, flapped):
+
+def getTailCL(ang, flapped):
+    """
+    Get the new CL of the tail if elevator is deflected
+
+	Inputs
+	-------
+	ang 		:	float
+					angle of elevator deflection
+	flapped		:	bool ('True' or 'False')
+					If elevator is deflected
+
+
+    Outputs
+    -------
+	CL 			:	float
+					CL of the tail with/without deflection
+    """   
+
+    # Call output data from tail
 	if (flapped):
 		return CL_tail_flap(ang + inced_ang)
 	else:
 		return CL_tail_noflap(ang + inced_ang)
 
-def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
-	l_net = 0.5*Rho*vel**2*(CL(ang)*sref_wing + tailCL(ang, flapped)*sref_tail)
 
+def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
+    """
+    Calculate the gross lift of a configuration
+
+	Inputs
+	-------
+	vel 		:	float
+					velocity
+	ang 		:	float
+					angle of attack
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area
+	flapped		:	bool ('True' or 'False')
+					If elevator is deflected
+	CL 			: 	function
+					CL function from AVL run				
+
+
+    Outputs
+    -------
+	gross_F 	:	float
+					gross lift of vehicle
+	wing_F 		:	float
+					wing lift of vehicle
+	tail_F 		:	float
+					tail lift of vehicle
+    """   
+
+   	# Calculate lifts using CL functions
+	wing_f = 0.5*Rho*vel**2*(CL(ang)*sref_wing)
+	tail_f = 0.5*Rho*vel**2*(getTailCL(ang, flapped)*sref_tail)
+	l_net = wing_f + tail_f
 	gross_F = l_net + getThrust(vel,ang)[1]
 
-	return gross_F
+	return gross_F, wing_f, tail_f
 
-def calcCruise_vel(CL, CD, weight, sref_wing, sref_tail):	
+def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
+    """
+    Calculate the cruise performance of a configuration
+
+	Inputs
+	-------
+	CL 			: 	function
+					CL function from AVL run
+	CD 			: 	function
+					CD function from AVL run	
+	weight 		: 	float
+					weight of vehicle	
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area			
+
+
+    Outputs
+    -------
+	vel  		:	float
+					cruise velocity
+	ang 		:	float
+					cruise angle of attack
+    """   
+
 	def sumForces (A):
+		"""
+		Get sum of the forces, used for fsolve
+		"""
 		vel = A[0]
 		ang = A[1]
 
+		gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL)
+
 		F = np.empty(2)
+
 		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing
-		F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL) - weight
-		# print(F)
+		F[1] = gross_F - weight
+		
 		return F
 
- 	Z = fsolve(sumForces, np.array([800, -10*np.pi/180]))
+	# Fsolve to balance lift and weight
+ 	Z = fsolve(sumForces,np.array([40, -10*np.pi/180]))
 
+ 	# Return cruise velocity and angle of attack
  	ang = Z[1]
  	vel =  Z[0]
-
  	return (vel, ang)
 
-def calcClimb(CL, CD, weight, sref_wing, sref_tail):
-	def sumForces (A):
 
+def calcClimb(CL, CD, weight, sref_wing, sref_tail):
+    """
+    Calculate the climb performance of a configuration
+
+	Inputs
+	-------
+	CL 			: 	function
+					CL function from AVL run
+	CD 			: 	function
+					CD function from AVL run	
+	weight 		: 	float
+					weight of vehicle	
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area			
+
+
+    Outputs
+    -------
+	vel_climb 	:	float
+					climb velocity
+	V_climb 	:	float
+					climb velocity
+	horz_Vel 	: 	float
+					horizontal velocity in climb
+	AoA_climb 	: 	float
+					angle of attack in climb
+    """   
+	def sumForces (A):
+		"""
+		Get sum of the forces, used for fsolve
+		"""
 		vel = A[0]
 		gamma = A[1]
-		# print("vel: " + str(vel))
-		# print("gamma: " + str(gamma))
-
 		F = np.empty(2)
 		F[0] = getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing - weight*np.sin(gamma)
 		F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL) - weight*np.cos(gamma)
-		# print(F)
+
 		return F
 
+	# Pull out the solution
 	sol = np.empty((0,3), float)
 	A = np.zeros((1,3))
 	AoA = []
 
+	# Iterate through angles of attack
 	for ang in np.linspace(0*np.pi/180, 5*np.pi/180, 30):
 
 		AoA.append(ang)
@@ -234,10 +364,12 @@ def calcClimb(CL, CD, weight, sref_wing, sref_tail):
 
 		sol = np.append(sol, A, axis=0)
 
+	# Calculate climb velocity
 	V_climb = np.max(sol[:,2])
 
 	index = np.where(sol[:,2] == V_climb)[0][0]
 
+	# Calculate AOA and climb velocity
 	AoA_climb = AoA[index]
 	vel_climb = sol[index,0]
 
@@ -257,34 +389,116 @@ def calcClimb(CL, CD, weight, sref_wing, sref_tail):
 
 	# plt.show()
 
+	# Horizontal velocity
 	horz_Vel = np.cos(sol[index,1])*vel_climb
-	# print(horz_Vel)
 
 	return(vel_climb, V_climb, horz_Vel, AoA_climb)
 
 def calcCruise_time(dist, velocity):
+    """
+    Calculate the cruising time
+
+	Inputs
+	-------
+	dist 		: 	float
+					distance (m) of runway
+	velocity 	:	float
+					cruise velocity (m/s)		
+
+
+    Outputs
+    -------
+	time 		:	float
+					time that vehicle can cruise
+    """   
+
 	time = dist/velocity
 	return time 
 
 def calcTurn_time(bank_angle, velocity, weight ,Sref_wing, turn_angle):
+    """
+    Calculate the turn performance of a configuration
+
+	Inputs
+	-------
+	bank_angle 	:	float
+					bank angle for turning	
+	velocity 	: 	float
+					velocity for the turn
+	weight 		: 	float
+					weight of vehicle	
+	sref_wing   :	float
+					wing surface area
+	turn_angle  :	float
+					angle to turn (in plane parallel to ground)	
+
+
+    Outputs
+    -------
+	time 		: 	float
+					time to execute a turn
+	"""
+
+	# Halve velocity in turn (assumption)
 	velocity = velocity/2
 	bank_angle_r = bank_angle*np.pi/180
 	g = 9.81
 
+	# Get turning radius and CL for turn
 	rad = velocity**2/(np.tan(bank_angle)*g)
 	CL = (weight*2)/(np.cos(bank_angle_r)*Sref_wing*Rho*velocity**2)
 
+	# Calculate time for the turn maneuver
 	time = (rad*2*np.pi*(turn_angle/360))/velocity
 
 	return time
 
 def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+    """
+    Runway simulation to find maximum payload
+
+	Inputs
+	-------
+	CL 			: 	function
+					CL function from AVL run
+	CD 			: 	function
+					CD function from AVL run	
+	CM 			: 	function
+					CM function from AVL run	
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area			
+	weight 		: 	float
+					weight of vehicle	
+	boom_len    :	float
+					length of tailboom
+	dist_LG 	: 	float
+					distance between leading edge and CG
+	MAC 		: 	float
+					MAC of wing
+	Iyy 		:  	float
+					inertia of vehicle
 
 
+    Outputs
+    -------
+	sum_y 		:	float
+					net lift at the end of the runway
+	dist 		:	float
+					distance needed to takeoff
+	ang 	 	: 	float
+					angle of attack at takeoff
+	ang_vel 	: 	float
+					angular pitch velocity at takeoff
+	time 		: 	float
+					time to takeoff
+    """   
+
+    # Speify no flaps used for takeoff
 	Flapped = 0
 
-
-
+	# This should be a design variable eventually
 	landingGearHeight = 0.1 # [m]
 	# print (landingGearHeight - dist_LG)
 	# print landingGearHeight
@@ -294,12 +508,13 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	# max_rot_ang = 10*np.pi/180.0
 
 
-	#declare functions for kinimatic varibles (F = ma and M = I*ang_a)
+	# Declare functions for kinematic varibles (F = ma and M = I*ang_a)
 
-	# super trivail func, but it helped me organize my thoughts
+	# Get velocity
 	def getVelocity(vel):
 		return vel
 
+	# Get acceleration
 	def getAcceleration(vel, ang):
 		N =  weight - grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL)
 		if N < 0:
@@ -307,6 +522,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 		accel = (g/weight)*(getThrust(vel, ang)[0] - 0.5*vel**2*Rho*CD(ang)*sref_wing - mu_k*N)
 		return accel
 
+	# Get angular velocity
 	def getVelocity_ang(a_vel, ang):
 		if (ang <= 0.0 and a_vel < 0.0) :
 			a = 0
@@ -317,9 +533,10 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 		return a
 
+	# Get angular acceleration
 	def getAcceleration_ang(vel, ang, v_ang):
 		q = 0.5*Rho*vel**2
-		moment_tail = - q*tailCL(ang, Flapped)*sref_tail*(boom_len - dist_LG)
+		moment_tail = - q*gettailCL(ang, Flapped)*sref_tail*(boom_len - dist_LG)
 		moment_wing = q*(CM(ang)*sref_wing*MAC + CL(ang)*sref_wing*dist_LG)
 		# damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*sref_wing
 		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail) # +damping_moment
@@ -337,7 +554,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 		return ang_accel
 
-	# main loop
+	# Main loop
 	i = 0
 
 	dist = [0.0]
@@ -360,6 +577,8 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 	sum_y =  grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL) - weight
 
+	# While loop until no more net lift at the end oft he runway
+	# -  Uses a momentum buildup
 	while (sum_y <= 0.0 and time_elap < 20) :
 
 		# F = ma yeilds two second order equations => system of 4 first order
@@ -419,8 +638,8 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 			Flapped = 1
 		
 
-	# 400 ft runway length in meters
-	runway_len = 137.8
+	# # 400 ft runway length in meters
+	# runway_len = 137.8
 
 
 
@@ -483,17 +702,58 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
 
 def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+    """
+    Runway simulation to find maximum payload
+
+	Inputs
+	-------
+	CL 			: 	function
+					CL function from AVL run
+	CD 			: 	function
+					CD function from AVL run	
+	CM 			: 	function
+					CM function from AVL run	
+	sref_wing   :	float
+					wing surface area
+	sref_tail 	: 	float
+					tail surface area			
+	weight 		: 	float
+					weight of vehicle	
+	boom_len    :	float
+					length of tailboom
+	dist_LG 	: 	float
+					distance between leading edge and CG
+	MAC 		: 	float
+					MAC of wing
+	Iyy 		:  	float
+					inertia of vehicle
+
+
+    Outputs
+    -------
+    N 			: 	int
+    				Number of laps (MACH)
+	time 		: 	float
+					time to takeoff
+	sum_y 		:	float
+					net lift at the end of the runway
+
+    """   
 
 	max_time = 4*60.0
 	N = 0
 
+	# Allowable runway length
 	leg_len = 400*0.3048
+
+	# No flaps used for runway assistance
 	Flapped = 0
 
-	cruise_vel, cruise_Ang = calcCruise_vel(CL, CD, weight, sref_wing, sref_tail)
+	# Get performance for cruise and climb
+	cruise_vel, cruise_Ang = calcVelCruise(CL, CD, weight, sref_wing, sref_tail)
 	climb_vel, climb_hvel = calcClimb(CL, CD, weight, sref_wing, sref_tail)[1:3]
 
-	
+	# Check if blimp is too slow/cannot climb
 	# if climb_vel <= 0.5 or cruise_vel <= 6.0:
 	# 	print('Can not Climb/Cruise is slow' + ' V_climb: ' + str(climb_vel) + ' Vel_Cruise: ' + str(cruise_vel))
 	# 	return 0, 0.0
@@ -505,12 +765,11 @@ def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, I
 	# print('cruise_vel =' + str(cruise_vel)+  ' cruise_Ang: ' + str(cruise_Ang) + 'climb_vel = ' + str(climb_vel) + ' climb_hvel =' + str(climb_hvel))
 
 	# ==========================  beign takeoff ===========================
-	#find time to takeoff
+	# Find time to takeoff
 	sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
 	
 
-
-	# If taakeoff not achieved, return a factor of N
+	# If takeoff not achieved, return a factor of N
 	if sum_y < 0:
 		print('Failed to Takeoff')
 		# print('Takeoff Distance', dist)F
@@ -530,6 +789,7 @@ def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, I
 	time += time_to_alt
 	dist += climb_hvel*time_to_alt
 
+	# Iterate until distance to takeoff is less than runway distance
 	if dist < leg_len:
 		time += calcCruise_time(leg_len - dist, cruise_vel)
 

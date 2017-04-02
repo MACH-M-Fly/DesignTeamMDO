@@ -22,14 +22,25 @@ from sympy import Symbol, nsolve
 from Input import AC
 
 class structAnalysis(Component):
-	"""
-		structAnalysis: Uses the current iteration of the aircraft, performs structure
-		analysis to get maximum stress and deflection
-		Inputs:
-			- Aircraft_Class: Input aircraft instance
-			- Design variables: These will be modified based on new MDO iteration
-		Outputs:
-			- Aircraft_Class: Output and modified aircraft instance 
+    """
+    OpenMDAO component for structural analysis
+    - Wing spar stress and deflection 
+    - Tail boom stress and deflection
+
+	Inputs
+	-------
+	Aircraft_Class	:	class
+						in_aircraft class
+
+
+    Outputs
+    -------
+	Aircraft_Class	:	class
+						out_aircraft class
+	stress_wing 	:	float
+						stress in wing spar
+	stress_tail 	:	float
+						stress in tail boom	
 	"""
 
 	def __init__(self ):
@@ -40,6 +51,8 @@ class structAnalysis(Component):
 
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+
+		# Other outputs to be used in top_level group (e.g. constraints)
 		self.add_output('stress_wing',val=0.0, desc='Stress on wing')
 		self.add_output('stress_tail',val=0.0, desc='Stress on tail')
 

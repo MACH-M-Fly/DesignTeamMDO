@@ -30,14 +30,20 @@ from Post_Process.lib_plot import *
 # writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
-	"""
-		constrainedMDO: Top level OpenMDAO setup script for constrained MDO
+    """
+    OpenMDAO group for Version 1.0 of the constrained MDO for the joint design team
+    - Developed by Chris Reynolds in partnership with Joint Design Team MDO group
+ 	- Top level OpenMDAO setup script for constrained MDO
 		on the Joint MDO design team project
 	"""
+
 	def __init__(self):
 		super(constrainedMDO,self).__init__()
 
+
 		# ====================================== Params =============================================== #
+		# - Uncomment a param to add it as a design variable
+		# - Must also uncomment the param in createAC.py
 		self.add('b_wing',IndepVarComp('b_wing', 3.2)) 								# Wingspan (m) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))							# Wing dihedral angle (degrees)
 		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
@@ -54,6 +60,8 @@ class constrainedMDO(Group):
 		# self.add('b_htail',IndepVarComp('b_htail',1.30))
 		# self.add('b_vtail',IndepVarComp('b_vtail',0.37))
 
+		# Adding components
+		# - First component to add is AC itself
 		self.add('my_comp', createAC())
 		self.add('calcWeight', calcWeight())
 		self.add('aeroAnalysis', aeroAnalysis())
@@ -61,7 +69,9 @@ class constrainedMDO(Group):
 		self.add('objPerformance', objPerformance())
 		self.add('getBuildTime', getBuildTime())
 		
-# ====================================== Connections ============================================ # 
+		# ====================================== Connections ============================================ # 
+		# - Uncomment a connection to add that param as a design variable
+		# - Must also uncomment the param in createAC.py
 		# self.connect('b_wing.b_wing',['createAC.b_wing'])
 		# self.connect('dihedral.dihedral',['createAC.dihedral'])
 		# self.connect('sweep.sweep',['createAC.sweep'])
@@ -77,7 +87,6 @@ class constrainedMDO(Group):
 		# self.connect('c_r_vt.c_r_vt',['createAC.c_r_vt'])
 		# self.connect('b_htail.b_htail','my_comp.b_htail')
 		# self.connect('b_vtail.b_vtail','my_comp.b_vtail')
-		
 		self.connect('b_wing.b_wing', 'my_comp.b_wing')
 		# self.connect('sweep.sweep', 'my_comp.sweep')
 		# self.connect('chord.chord', 'my_comp.chord')
@@ -86,15 +95,17 @@ class constrainedMDO(Group):
 		# self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
 		# self.connect('b_htail.b_htail', 'my_comp.b_htail')
 		# self.connect('b_vtail.b_vtail', 'my_comp.b_vtail')
+
+		# Connections for components
+		# - This is where you can connect additional components
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
 		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 		self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-		# self.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 # ==================================== Initailize plots for animation ===================================== #
+# - Can only use on a non-CAEN linux
 
 # fig = plt.figure(figsize=[12,8])
 
@@ -122,11 +133,13 @@ prob = Problem()
 prob.root = constrainedMDO()
 
 # # ================================================ Add Driver ============================================== #
+# Gradient-Free Method: Not currently working
 # prob.driver = pyOptSparseDriver()
-# prob.driver.options['optimizer'] = 'ALPSO6
+# prob.driver.options['optimizer'] = 'ALPSO'
 # prob.driver.opt_settings = {'SwarmSize': 40, 'maxOuterIter': 30,\
 # 				'maxInnerIter': 7, 'minInnerIter' : 7,  'seed': 2.0}
 
+# Gradient-based method
 prob.driver = ScipyOptimizer()
 prob.driver.options['optimizer'] = 'SLSQP'
 prob.driver.options['tol'] = 1.0e-5
@@ -134,15 +147,10 @@ prob.root.fd_options['force_fd'] = True
 prob.root.fd_options['form'] = 'central'
 prob.root.fd_options['step_size'] = 1.0e-6
 
-# prob.driver = ScipyOptimizer()
-# prob.driver.options['optimizer'] = 'SNOPT'
-# prob.driver.options['tol'] = 1.0e-2
-# prob.root.fd_options['force_fd'] = True	
-# prob.root.fd_options['form'] = 'central'
-# prob.root.fd_options['step_size'] = 1.0e-4
-
 
 # ===================================== Add design Varibles and Bounds ==================================== #
+# - Uncomment any bounds as you add more design variables
+# - Must also uncomment the param in createAC.py
 prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 7. )
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
@@ -169,7 +177,6 @@ prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 7. )
 
 
 
-num_sections = 5
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
@@ -181,23 +188,20 @@ prob.driver.add_objective('objPerformance.score')
 
 
 # ======================================== Post-Processing ============================================== #
+# Setting up the first iteration run, where nothing is modified
 root = Group()
-# root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 1.5])))
 root.add('my_comp', createAC())
 root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
-# root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
-# root.connect('indep_var.chord', 'my_comp.chord')
+# Setting up the MDO run
 root.connect('my_comp.aircraft','calcWeight.in_aircraft')
 root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-# root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
-# root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob0 = Problem(root)
 prob0.setup()
@@ -207,11 +211,13 @@ in_ac = copy.copy(prob0['my_comp.aircraft'])
 prob.setup()
 prob.run()
 
+# Animation settings
 # with writer.saving(fig, "OPT_#.mp4", 100):
 # 	prob.run()
 
 # lib_plot(prob)
 
+# Specify the output aircraft (final AC) from the MDO
 out_ac = prob['my_comp.aircraft']
 print('================  Final Results ===================')
 print('\n')
@@ -254,14 +260,3 @@ plotGeoFinalDuo(in_ac, out_ac)
 # plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 # 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
 # 				out_ac.CG[0], out_ac.NP, out_ac.score, out_ac.mount_len)
-
-# Inputs:
-#     	Xle: Wing leading edge at each section (x coord.)
-#		Yle: Wing leading edge at each section (y coord.)
-#  		C: Chord at each section
-#   	Xle_ht: Tail leading edge at each section (x coord.)       
-#   	Yle_ht: Tail leading edge at each section (y coord.)  
-#  		C_t: Tail chord at each section  
-#		x_cg: CG position
-#		NP: Neutral point position
-#		Score: Objective function score  

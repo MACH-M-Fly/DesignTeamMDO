@@ -5,37 +5,59 @@ import shutil
 import sys
 import string
 from time import localtime, strftime
-# 
-# xfoilpath = '/home/josh/Documents/Xfoil/bin/xfoil'
-#xfoilpath = r'D:\home\josh\Documents\Xfoil\bin\xfoil.exe'
 
+# Specify path
 xfoilpath = '/home/josh/xfoil'
 
 
 def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
+    """Alters an airfoil from an existing airfoil
 
+    Parameters
+    ----------
+    name        :   string
+                    airfoil name
+    camber      :   float
+                    camber of new airfoil
+    max_camb_pos:   float
+                    % chord of maximum camber
+    thickness   :   float
+                    t/c of new airfoil
+    max_thick_pos:  float
+                    % chord of maximum thickness
+    Re:             float
+                    Reynolds number
+    alpha:          float
+                    angle of attack
+
+    Outputs
+    -------
+    Saves airfoil to airfoils directory
+
+    """
+    
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
-
+    # Alter name if needed
     try:
         os.remove(name+'_data.dat')
     except :
         pass
-    #    print ("no such file")
-    # run xfoil
+
+    # Open xfoil
     ps = sp.Popen( xfoilpath ,stdin=sp.PIPE,stderr=sp.PIPE,stdout=sp.PIPE)
     ps.stderr.close()
 
+    # Setup
     Cmd('PLOP')
     Cmd('G')
     Cmd(' ')
 
-
-    # Cmd('load ./airfoils/'+name+'.dat')
+    # Load geometry to alter
     Cmd('load E420.dat')
 
-    # alter geometry
+    # Alter geometry
     Cmd('GDES')
     Cmd('TSET')
     Cmd(str(thickness))
@@ -47,8 +69,7 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd(' ')
     Cmd(' ')
 
- 
-    # increase panling 
+    # Increase paneling 
     # Cmd('PANE')
     Cmd('PPAR')
     Cmd('N')
@@ -56,9 +77,7 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd(' ')
     Cmd(' ')
 
-
-
-    # calculate data
+    # Calculate data
     Cmd('OPER')
     Cmd('ITER 100')
     Cmd('visc '+str(Re))
@@ -69,7 +88,6 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd('PACC')
     Cmd('PDEL 0')
     Cmd(' ')
-
     Cmd(' ')
     Cmd('SAVE')
     Cmd('./airfoils/'+name+'.dat')
@@ -83,28 +101,43 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     ps.wait()
 
 def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
+    """Runs xfoil with a flap (elevator deflection)
+
+    Parameters
+    ----------
+    name        :   string
+                    airfoil name
+    Re:             float
+                    Reynolds number
+    alpha_start:    float
+                    angle of attack to start collecting data
+    alpha_end:      float
+                    angle of attack to end collecting data
+
+    Outputs
+    -------
+    Saves all data to a .dat file
+    
+    """
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
-
+    # Modify name if needed
     try:
         os.remove('elev_data_flap.dat')
     except :
         pass
-
+    # Modify name if needed
     try:
         os.remove('elev_data.dat')
     except :
         pass
-    #    print ("no such file")
-    # run xfoil
+
+    # Open xfoil
     ps = sp.Popen(xfoilpath,stdin=sp.PIPE,stderr=sp.PIPE,stdout=sp.PIPE)
     ps.stderr.close()
 
-    # Cmd('PLOP')
-    # Cmd('G')
-    # Cmd(' ')
 
     Cmd(name)
 
@@ -116,7 +149,8 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd('x')
     Cmd(' ')
     Cmd(' ')
-    # increase panling 
+
+    # Increase paneling 
     Cmd('PPAR')
     Cmd('N')
     Cmd('250')
@@ -124,7 +158,7 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd(' ')
     Cmd(' ')
 
-    # calculate data
+    # Calculate data
     Cmd('OPER')
     Cmd('ITER 200')
     Cmd('visc '+str(Re))
@@ -142,7 +176,7 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd(' ')  
 
     Cmd(name)
-    # increase panling 
+    # Increase paneling 
     Cmd('GDES')
     Cmd(' ')
 
@@ -165,30 +199,44 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     ps.stdin.close()
     ps.wait()
 
-
 def xfoilRun(name, Re, alpha_start, alpha_end ):
+    """Runs xfoil, no deflections
+
+    Parameters
+    ----------
+    name        :   string
+                    airfoil name
+    Re:             float
+                    Reynolds number
+    alpha_start:    float
+                    angle of attack to start collecting data
+    alpha_end:      float
+                    angle of attack to end collecting data
+
+    Outputs
+    -------
+    Saves all data to a .dat file
+    
+    """
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
-
+    # Modify name if needed
     try:
         os.remove(name+'_data.dat')
     except :
         pass
-    #    print ("no such file")
-    # run xfoil
+
+    # Open xfoil
     ps = sp.Popen(xfoilpath,stdin=sp.PIPE,stderr=sp.PIPE,stdout=sp.PIPE)
     ps.stderr.close()
 
-    # Cmd('PLOP')
-    # Cmd('G')
-    # Cmd(' ')
-
+    # Load airfoil
     Cmd('load '+name+'.dat')
 
     
-    # increase panling 
+    # Increase paneling 
     Cmd('PANE')
     Cmd('PPAR')
     Cmd('N')
@@ -196,7 +244,7 @@ def xfoilRun(name, Re, alpha_start, alpha_end ):
     Cmd(' ')
     Cmd(' ')
 
-    # calculate data
+    # Calculate data
     Cmd('OPER')
     Cmd('ITER 200')
     Cmd('visc '+str(Re))
@@ -217,18 +265,38 @@ def xfoilRun(name, Re, alpha_start, alpha_end ):
     ps.wait()
 
 def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
+    """Alters an airfoil from an existing airfoil
+
+    Parameters
+    ----------
+    name        :   string
+                    airfoil name
+    camber      :   float
+                    camber of new airfoil
+    max_camb_pos:   float
+                    % chord of maximum camber
+    thickness   :   float
+                    t/c of new airfoil
+    max_thick_pos:  float
+                    % chord of maximum thickness
+
+
+    Outputs
+    -------
+    Saves airfoil to airfoils directory
+
+    """
 
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
-
+    # Modify name if needed
     try:
         os.remove(name+'_data.dat')
 
     except :
         pass
-    #    print ("no such file")
-    # run xfoil
+
     ps = sp.Popen( xfoilpath ,stdin=sp.PIPE,stderr=sp.PIPE,stdout=sp.PIPE)
     ps.stderr.close()
 
@@ -236,11 +304,11 @@ def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
     Cmd('G')
     Cmd(' ')
 
-
+    # Load base airfoil
     # Cmd('load ./airfoils/'+name+'.dat')
     Cmd('load E420.dat')
 
-    # alter geometry
+    # Alter geometry
     Cmd('GDES')
     Cmd('TSET')
     Cmd(str(thickness))
@@ -252,6 +320,7 @@ def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
     Cmd(' ')
     Cmd(' ')
 
+    # Save new geometry
     Cmd('SAVE')
     Cmd('./airfoils/'+name+'.dat')
     Cmd(' ')
@@ -267,16 +336,39 @@ def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
 
 
 def getDataXfoil(filename):
-    
+    """Reads in previously run xfoil data
+
+    Parameters
+    ----------
+    filename    :   string
+                    name of xfoil run file
+
+
+    Outputs
+    -------
+    alphas:     :   ndarray
+                    Angles of attack run
+    Cls:        :   ndarray
+                    Cl's from run
+    Cds:        :   ndarray
+                    Cd's from run   
+    Cms:        :   ndarray
+                    Cm's from run
+    LtoDs:      :   ndarray
+                    L/D's (Ratios) from run                 
+    """    
+
+    # Open file and read in
     f = open(filename, 'r')
     flines = f.readlines()
 
+    # Initialize
     alphas = []
     Cls = []
     Cds = []
     Cms =  []
    
-
+    # Read data
     for i in range(12,len(flines)): 
         words = string.split(flines[i]) 
         alphas.append(float(words[ 0]))
@@ -284,6 +376,7 @@ def getDataXfoil(filename):
         Cds.append(float(words[ 2]))
         Cms.append(float(words[ 4]))
 
+    # Calculate lift-to-drag ratio
     LtoDs = [a/b for a,b in zip(Cls,Cds)]
 
     return (alphas, Cls, Cds, Cms, LtoDs)

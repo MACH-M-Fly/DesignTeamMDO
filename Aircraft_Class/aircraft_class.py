@@ -3,46 +3,36 @@ import math
 import scipy.integrate as integrate
 import scipy.special as special
 
-# aircraft_Class.py
-# - Creates aircraft from input file parameters
-#    - Aircraft (Mass, Inertias)
-#    - Surfaces (Wing, horizontal tail, vertical tail)
-#    - Fuselage (body volume)
+"""
+Creates aircraft from input file parameters
+   - Aircraft (Mass, Inertias)
+   - Surfaces (Wing, horizontal tail, vertical tail)
+   - Fuselage (body volume)
+"""
 
 
 class Aircraft(object):
-# Aircraft class deals with all full aircraft parameters 
-#   -  Convert units
-#   -  Calculate aircraft mass
-#   -  Calculate inertias
+    """
+    Class used as a container for aircraft computation
+    - Parasitic drag
+		
+    """   
+
 	def __init__(self):
 
-										 # Wing= defult_wing, Tail_Horz=defult_tail_horz, Tail_Vert=defult_tail_vert,\
-										 # X_cg=0.0, Y_cg=0.0, Z_cg=0.0, CD_p=0.0):
-
-
 		self.CD_p = 0.0					# Parasitic drag coefficient
-		# self.weight = 55.0				# Weight in N
-		# self.CG = ([0.2, 0.0, 0.0])					# Cg, m. behind root LE of wing
 		self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0])
-
-		self.Iyy = self.calcI()
-
-
-	def calcMass(self):
-		pass
-		return
-
-	# Calculate aircraft Iyy, NOT the spar or tailboom I
-	def calcI(self):
-		self.Iyy = 5.0
-		return self.Iyy
-
-
 
 
 class Wing(object):
-# Wing class fully defines wing surface(s).
+    """
+    Class used as a container for all wing information (taken from input file)
+    - Surface geometry
+    - Position of the wing
+    - Sectional splitting
+    - Airfoils for wing	
+    """   
+
 	def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
 	 Afiles=[], ainc=np.array([])):
 
@@ -129,10 +119,6 @@ class Wing(object):
 	# Function: Calculate chord at spanwise locations
 	def getChord(self):
 		self.chord_vals = np.zeros(self.num_sections)
-		# for i in range(self.num_sections):
-		# 	span = (i+1)*self.sec_span
-		# 	self.chord_vals[i] =  self.chord[0]*span**3 + self.chord[0]*span**2 + \
-		# 	self.chord[2]*span + self.chord[3] 
 		spans = np.arange(1,self.num_sections+1)*self.sec_span
 		self.chord_vals = self.chord[0]*spans**2 + self.chord[1]*spans**2 + self.chord[2]*spans + self.chord[3]
 		return self.chord_vals
@@ -204,60 +190,68 @@ class Wing(object):
 		self.MAC = self.MAC[0]*2.0/self.sref
 		return self.MAC
 
+	# Function to add control surfaces to the wing
 	def addControlSurface(self, secStart, secEnd, hvec, name):
-
 		self.control_surf = name
 		self.control_secstart = secStart
 		self.control_secend = secEnd
 		self.control_hvec = hvec
 		return
 
+	# Function to add a spar that covers the thickness of the airfoil
+	# - To be finished later
 	def addSpar(self):
 		pass
 
-	def updateAircraft(self):
-		self.b_wing = 5.0
-		# Calculate wing chord values at each section
+	# # Function to update the wing on each iteration
+	# def updateAircraftWing(self):
+	# 	self.b_wing = 5.0
+	# 	# Calculate wing chord values at each section
 		
-		self.getChord()
-		# print("Chord Vals",self.chord_vals)
+	# 	self.getChord()
+	# 	# print("Chord Vals",self.chord_vals)
 
-		# Calculate sweep values at each section
-		self.getSweep(self.sweep)
-		# print("Sweep Vals", self.sweep_vals)
+	# 	# Calculate sweep values at each section
+	# 	self.getSweep(self.sweep)
+	# 	# print("Sweep Vals", self.sweep_vals)
 
-		# Calculate leading edge coordinates
-		self.calcLeading_Edge()
-		# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
+	# 	# Calculate leading edge coordinates
+	# 	self.calcLeading_Edge()
+	# 	# print("Leading Edge: X, Y, Z", self.Xle, self.Yle, self.Zle)
 
-		# Calulate wing surface reference area
-		self.calcSrefWing()
-		# print("Wing Sref", self.Sref)
+	# 	# Calulate wing surface reference area
+	# 	self.calcSrefWing()
+	# 	# print("Wing Sref", self.Sref)
 
-		# Calculate the mean aerodynamic chord
-		self.calcMAC()
-		# print("Wing MAC", self.MAC)
+	# 	# Calculate the mean aerodynamic chord
+	# 	self.calcMAC()
+	# 	# print("Wing MAC", self.MAC)
 
-		# Calculate the CG of the aircraft
-		self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
+	# 	# Calculate the CG of the aircraft
+	# 	self.CG = np.array([self.chord_vals[0]/4, 0.0, 0.0])
 
-		# Get cmaber values at spanwise locations
-		self.getCamber()
+	# 	# Get cmaber values at spanwise locations
+	# 	self.getCamber()
 
-		# Get cmaber values at spanwise locations
-		self.getMaxCamber()
+	# 	# Get cmaber values at spanwise locations
+	# 	self.getMaxCamber()
 
-		# Get cmaber values at spanwise locations
-		self.getThickness()
+	# 	# Get cmaber values at spanwise locations
+	# 	self.getThickness()
 
-		# Get cmaber values at spanwise locations
-		self.getMaxThickness()
-
-
+	# 	# Get cmaber values at spanwise locations
+	# 	self.getMaxThickness()
 
 
 class Tail():
-# Tail class fully deines tail surface(s).
+    """
+    Class used as a container for all wing information (taken from input file)
+    - Surface geometry
+    - Position of the wing
+    - Sectional splitting
+    - Airfoils for wing	
+    """   
+
 	def __init__(self, num_sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len):
 
 		# Assign Inputs to aircraft object
@@ -414,8 +408,14 @@ class Tail():
 		self.MAC_vt = self.MAC_vt[0]/self.sref_vt
 		return self.MAC_vt
 
+
 class Body():
-	# Body class obtains the interior volume of the aircraft
+    """
+    Class used as a container for all body/fuselage information (taken from input file)
+    - Translate and scale fuselage
+    - Volume
+    """   
+
 	def __init__(self, Bfile, translate = [0, 0, 0], scale = [1, 1, 1] ):
 		self.Bfile
 		self.translate
@@ -426,11 +426,6 @@ class Body():
 		pass 
 		return
 
-# defult_wing = Surface( Sref=0.5, MAC=0.5, Bref=1.0, Chord=np.array([0.6, 0.4]) )
-# defult_tail_horz = Surface( Sref=0.125, MAC=0.25, Bref=0.5, Chord=np.array([0.3, 0.2]), Xle=np.array([1.0, 1.0]) )
-# defult_tail_horz = Surface( Sref=0.125, MAC=0.25, Bref=0.5, Chord=np.array([0.3, 0.2]), Xle=np.array([1.0, 1.0]), Yle=np.array([0.0, 0.0]), Zle=np.array([0.0, 0.25]) )
 
-
-# print(defult_wing.Yle)
 
 

@@ -30,14 +30,20 @@ from Post_Process.lib_plot import *
 # writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
-	"""
-		constrainedMDO: Top level OpenMDAO setup script for constrained MDO
+    """
+    WARNING: Only used for testing to "run once", i.e. no optimization
+    OpenMDAO group for Version 1.0 of the constrained MDO for the joint design team
+    - Developed by Chris Reynolds in partnership with Joint Design Team MDO group
+ 	- Top level OpenMDAO setup script for constrained MDO
 		on the Joint MDO design team project
 	"""
+
 	def __init__(self):
 		super(constrainedMDO,self).__init__()
 
 		# ====================================== Params =============================================== #
+		# - Uncomment a param to add it as a design variable
+		# - Must also uncomment the param in createAC.py
 		self.add('b_wing',IndepVarComp('b_wing',3.2)) 							# Wingspan (m) 
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))						# Wing dihedral angle (degrees)
 		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))# Quarter Chord Sweep in degrees (cubic)
@@ -54,6 +60,8 @@ class constrainedMDO(Group):
 		self.add('b_htail',IndepVarComp('b_htail',1.30))
 		self.add('b_vtail',IndepVarComp('b_vtail',0.37))
 
+		# Adding components
+		# - First component to add is AC itself
 		self.add('my_comp', createAC())
 		self.add('calcWeight', calcWeight())
 		self.add('aeroAnalysis', aeroAnalysis())
@@ -61,7 +69,9 @@ class constrainedMDO(Group):
 		self.add('objPerformance', objPerformance())
 		self.add('getBuildTime', getBuildTime())
 		
-# ====================================== Connections ============================================ # 
+		# ====================================== Connections ============================================ # 
+		# - Uncomment a connection to add that param as a design variable
+		# - Must also uncomment the param in createAC.py
 		# self.connect('b_wing.b_wing',['createAC.b_wing'])
 		# self.connect('dihedral.dihedral',['createAC.dihedral'])
 		# self.connect('sweep.sweep',['createAC.sweep'])
@@ -86,6 +96,9 @@ class constrainedMDO(Group):
 		self.connect('b_wing.b_wing', 'my_comp.b_wing')
 		self.connect('b_htail.b_htail', 'my_comp.b_htail')
 		self.connect('b_vtail.b_vtail','my_comp.b_vtail')
+
+		# Connections for components
+		# - This is where you can connect additional components
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
 		self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 		# self.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
@@ -175,6 +188,7 @@ class constrainedMDO(Group):
 
 
 # ======================================== Post-Processing ============================================== #
+# Setting up the first iteration run, where nothing is modified
 root = Group()
 # root.add('indep_var', IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.15])))
 # root.add('indep_var2', IndepVarComp('b_wing', 2.0))

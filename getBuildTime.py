@@ -19,15 +19,24 @@ from sympy import Symbol, nsolve
 # Import self-created components
 from Input import AC
 
-# Change the name of your componenet here
 class getBuildTime(Component):
-	"""
-		getBuildTime: Uses the current iteration of the aircraft, performs a build time estimation
-		Inputs:
-			- Aircraft_Class: Input aircraft instance
-		Outputs:
-			- Aircraft_Class: Output and modified aircraft instance 
-			- build_time: Man/Woman hours for construction
+    """
+    OpenMDAO component for estimating build time
+    - Based on historical values for both teamse
+
+    Inputs
+    -------
+    Aircraft_Class  :   class
+                        in_aircraft class
+
+
+    Outputs
+    -------
+    Aircraft_Class  :   class
+                        out_aircraft class
+    build_time 		:	float
+    					Estimated build time in people hours
+
 	"""
 
 	def __init__(self ):

@@ -6,11 +6,13 @@ import os
 def genMass(AC):
 	"""
 	gen_mass: Generates AVL mass file
+	
 	Inputs:
-		AC: Aircraft with attributes, m_total, cg, I
+		AC: Aircraft with all current attributes
 	Outputs:
 		None, just "outs" the mass file
 	"""
+
 	try:
 		os.remove('./Aerodynamics/aircraft.mass')
 	except:
