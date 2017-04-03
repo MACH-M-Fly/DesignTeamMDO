@@ -17,14 +17,14 @@ from Input import AC
 
 
 class Plot(Component):
-    """
-    OpenMDAO component for post-processing
-    - Movie writing DOES NOT work on CAEN linux
-    - Plots aircraft:
-	    - During each iteration and at the end (plotGeoFinal)
-	    - Plots wing (blue) and tail (red)
-	 	- Plots CG (black) and NP (light blue - cyan)
-	    - Includes configuration number (fig)
+	"""
+	OpenMDAO component for post-processing
+	- Movie writing DOES NOT work on CAEN linux
+	- Plots aircraft:
+		- During each iteration and at the end (plotGeoFinal)
+		- Plots wing (blue) and tail (red)
+		- Plots CG (black) and NP (light blue - cyan)
+		- Includes configuration number (fig)
 
 
 	Inputs
@@ -33,10 +33,10 @@ class Plot(Component):
 					in_aircraft class (now has data from upstream components)
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	Plots		
-    """  
+	"""  
 	
 	# Plots each iteration configuration
 	def __init__(self, geo1, geo2, A, writer, fig):
@@ -142,28 +142,28 @@ class Plot(Component):
 #		NP: Neutral point position
 #		Score: Objective function score                               
 def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
-    """
-    Plots the final optimized geometry
+	"""
+	Plots the final optimized geometry
 
 	Inputs
 	-------
-    	Xle: Wing leading edge at each section (x coord.)
+		Xle: Wing leading edge at each section (x coord.)
 		Yle: Wing leading edge at each section (y coord.)
- 		C: Chord at each section
-	  	Xle_ht: Tail leading edge at each section (x coord.)       
-	  	Yle_ht: Tail leading edge at each section (y coord.)  
- 		C_t: Tail chord at each section  
+		C: Chord at each section
+		Xle_ht: Tail leading edge at each section (x coord.)       
+		Yle_ht: Tail leading edge at each section (y coord.)  
+		C_t: Tail chord at each section  
 		x_cg: CG position
 		NP: Neutral point position
 		Score: Objective function score      
 		mount_len: Motor mount length to plot the motor  
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	Single plot
-    """   
-    
+	"""   
+	
 	wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]
@@ -259,10 +259,10 @@ def plotGeoFinalDuo(in_AC, out_AC):
 	for n in range(2):
 		if n == 0:
 			AC = in_AC
-			c1 = 'k-'; c2 = 'k-'; c3 = 'k-'; c4 = 'k--'; c5 = 'k-'
+			c1 = 'k-'; c2 = 'k-'; c3 = 'k-'; c4 = 'k--'; c5 = 'k-'; c6 = 'k--'
 		elif n == 1:
 			AC = out_AC
-			c1 = 'b-'; c2 = 'r-'; c3 = 'g-'; c4 = 'm--'; c5 = 'm-'
+			c1 = 'b-'; c2 = 'r-'; c3 = 'g-'; c4 = 'm--'; c5 = 'm-'; c6 = 'b--'
 		else:
 			print("Error")
 
@@ -276,8 +276,13 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		NP = AC.NP
 		score = AC.score
 		mount_len = AC.mount_len
-		
 
+		alpha = AC.alpha
+		cruise_alpha = AC.ang
+		secCL = AC.secCL
+		sec_Yle = AC.sec_Yle
+		
+		# Plot aircraft geometry
 		wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 		wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 		wing_zpos = [0.0*abs(x) for x in wing_pos]
@@ -286,7 +291,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		tail_pos = Yle_ht + Yle_ht[::-1] + [-1*x for x in Yle_ht] + [-1*x for x in Yle_ht[::-1]]
 		tail_zpos = [0.0*abs(x) for x in tail_pos]
 
-		geo1.plot(  wing_pos, wing_edge ,  c1, tail_pos, tail_edge, c2,[0, 0], [C[0], Xle_ht[0]], c3)
+		geo1.plot(  wing_pos, wing_edge ,  c1, tail_pos, tail_edge, c2, [0, 0], [C[0], Xle_ht[0]], c3)
 		geo1.plot( [Yle[0], Yle[0]] , [Xle[0] ,Xle[0] + C[0]] ,  c4)
 		geo1.plot( [Yle[1], Yle[1]] , [Xle[1] ,Xle[1] + C[1]] ,  c4)
 		geo1.plot( [Yle[2], Yle[2]] , [Xle[2] ,Xle[2] + C[2]] ,  c4)
@@ -300,26 +305,27 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		geo1_xlim.append([-max(Yle)*1.2, max(Yle)*1.2])
 		geo1_ylim.append([0.0, (max(Xle_ht) + max(C_t)*1.2)])
 
-		at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
-		at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-		geo1.add_artist(at)
-
+		# Show score to plot
 		if n == 1:
-			alpha = AC.alpha
-			cruise_alpha = AC.ang
-			secCL = AC.secCL
-			sec_Yle = AC.sec_Yle
+			at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
+			at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+			geo1.add_artist(at)
 
-			temp = [abs(np.pi/180.*x - cruise_alpha) for x in alpha]
-			plt_ind = temp.index(min(temp))
-			plt_secCL = secCL[plt_ind]
-			plt_Yle = sec_Yle[plt_ind]
-
-			geo2.plot(  plt_Yle, plt_secCL, 'b-')
+		# Plot list distribution (use AOA closest to the cruise AOA)
+		temp = [abs(np.pi/180.*x - cruise_alpha) for x in alpha]
+		plt_ind = temp.index(min(temp))
+		plt_secCL = secCL[plt_ind]
+		plt_Yle = sec_Yle[plt_ind]
+		geo2.plot(  plt_Yle, plt_secCL, c1 )
 		
-			# Automatic axis scaling
-			geo2.set_xlim([min(plt_Yle)*1.2, max(plt_Yle)*1.2])
-			geo2.set_ylim([min(plt_secCL)*1.5, max(plt_secCL)*1.5])
+		# Elliptical list distribution
+		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secCL[0]
+		plt_ellipCL = [b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0])]
+		geo2.plot( plt_Yle, plt_ellipCL, c6 )
+	
+		# Automatic axis scaling
+		geo2_xlim.append([0.0, max(plt_Yle)*1.2])
+		geo2_ylim.append([min(plt_secCL)*1.2, max(plt_secCL)*1.2])
 		
 		# Use other subplots in window for plotting sectional airfoils
 		for i in range (1, len(A) +1):
@@ -349,8 +355,8 @@ def plotGeoFinalDuo(in_AC, out_AC):
 	geo1.axis('equal')
 	geo1.set_ylim(min(geo1_ylim[0][0], geo1_ylim[1][0]), max(geo1_ylim[0][1], geo1_ylim[1][1]))
 
-	# geo2.set_xlim(min(geo2_xlim[0][0], geo2_xlim[1][0]), max(geo2_xlim[0][1], geo2_xlim[1][1]))
-	# geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
+	geo2.set_xlim(min(geo2_xlim[0][0], geo2_xlim[1][0]), max(geo2_xlim[0][1], geo2_xlim[1][1]))
+	geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
 
 	plt.tight_layout()
 	plt.show()

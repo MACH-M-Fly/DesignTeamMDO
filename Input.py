@@ -40,7 +40,7 @@ num_sections_tail = 5
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-AC.is_linear = 0
+AC.is_linear = 1
 
 # Specify origin for aicraft build (root chord leading edge position)
 AC.Xo = 0
@@ -182,25 +182,25 @@ AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
 # Create an instance of AC for tail values
 AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail, \
 		htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo, \
-		AC.Zo, AC.boom_len)
+		AC.Zo, AC.boom_len, AC.wing.chord_vals[0]/4.)
 
 
 def updateAircraft(cur_AC):
-    """
-    Function to update the aircraft on each iteration of MDO
+	"""
+	Function to update the aircraft on each iteration of MDO
 
 
-    Inputs
-    ----------
-    cur_AC          :   Class
-                        Class containing all aircraft data
+	Inputs
+	----------
+	cur_AC          :   Class
+						Class containing all aircraft data
 
 
-    Outputs
-    ----------
-    none, just updates the aircraft (AC)
-    """
-          
+	Outputs
+	----------
+	none, just updates the aircraft (AC)
+	"""
+		  
 	# Create an instance of AC for wing values
 	AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
 		cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber, \
@@ -224,7 +224,7 @@ def updateAircraft(cur_AC):
 	# Create an instance of AC for tail values
 	AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail, \
 		cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo, \
-		cur_AC.Zo, AC.boom_len)
+		cur_AC.Zo, AC.boom_len, cur_AC.wing.chord_vals[0]/4.)
 
 	AC.tail.boom_Type = 'C'
 
@@ -242,13 +242,9 @@ updateAircraft(AC)
 
 
 print('=============== Initial vehicle Parameters =============')
-# print('Weight (lbs)', AC.weight)
 print('CDp', AC.CD_p)
 print('Tailboom Length', AC.boom_len)
-print('Iyy', AC.Iyy)
 print('Mission', AC.mission)
-# print('CG (x,y,z)', AC.CG)
-
 
 print('=============== Initial wing Parameters =============')
 print('AC.wing.num_Sections: ', AC.wing.num_sections)

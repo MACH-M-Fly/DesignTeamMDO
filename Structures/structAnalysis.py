@@ -22,10 +22,10 @@ from sympy import Symbol, nsolve
 from Input import AC
 
 class structAnalysis(Component):
-    """
-    OpenMDAO component for structural analysis
-    - Wing spar stress and deflection 
-    - Tail boom stress and deflection
+	"""
+	OpenMDAO component for structural analysis
+	- Wing spar stress and deflection 
+	- Tail boom stress and deflection
 
 	Inputs
 	-------
@@ -33,8 +33,8 @@ class structAnalysis(Component):
 						in_aircraft class
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	Aircraft_Class	:	class
 						out_aircraft class
 	stress_wing 	:	float
@@ -82,50 +82,50 @@ def calcI(shape, dim):
 		c = dim[0];
 		I = np.pi/4*(dim[0]**4 - dim[1]**4);
 
-  	# spar is hollow rectangle
-  	# dim should be [outer width, outer height, inner width, inner height]
+	# spar is hollow rectangle
+	# dim should be [outer width, outer height, inner width, inner height]
 	elif shape == 'R':
 		c = dim[1]/2;
 		I = 1./12*(dim[0]*dim[1]**3 - dim[2]*dim[3]**3);
 
-  	#spar is I-beam
-  	# dim should be [flange width, flange height, web width, web height]
-  	elif shape == 'I':
+	#spar is I-beam
+	# dim should be [flange width, flange height, web width, web height]
+	elif shape == 'I':
 
-	  	"""
+		"""
 		I beam definition
 
-		       Flange Width
+			   Flange Width
 		  < ---------------- >
 		  ____________________
 		 |          1         |  ^   Flange Height 
 		 |____________________|  v
-		        |      |  ^     
-		        |      |  |     
-		        |      |       
-		        |   2  |  | Web Height    
-		        |      |       
-		        |      |  |           
+				|      |  ^     
+				|      |  |     
+				|      |       
+				|   2  |  | Web Height    
+				|      |       
+				|      |  |           
 		  ______|______|__v___             ^ Z
 		 |          3         |            |
 		 |____________________| ___datum    ----> Y
 
-		        <----->
-		        Web Width
-	    """
+				<----->
+				Web Width
+		"""
 
-  		A = np.zeros(3); y = np.zeros(3); Is = np.zeros(3);
+		A = np.zeros(3); y = np.zeros(3); Is = np.zeros(3);
 
-  		# calculate centroid of I beam
-  		A[0] = dim[0]*dim[1]; A[1] = dim[2]*dim[3]; A[2] = A[0];
-  		y[0] = dim[1] + dim[1]/2 + dim[3]; y[1] = dim[1] + dim[3]/2; y[2] = dim[1]/2;
-  		ybar = np.inner(A, y)/np.sum(A);
+		# calculate centroid of I beam
+		A[0] = dim[0]*dim[1]; A[1] = dim[2]*dim[3]; A[2] = A[0];
+		y[0] = dim[1] + dim[1]/2 + dim[3]; y[1] = dim[1] + dim[3]/2; y[2] = dim[1]/2;
+		ybar = np.inner(A, y)/np.sum(A);
 
-  		# calculate area moment of inertia
-  		Is[0] = 1./12*(dim[0]*dim[1]**3); Is[1] = 1./12*(dim[2]*dim[3]**3); Is[2] = Is[0];
-  		d = abs(y - ybar);
-  		I = np.sum(Is + A*np.power(d,2));
-  		c = ybar;
+		# calculate area moment of inertia
+		Is[0] = 1./12*(dim[0]*dim[1]**3); Is[1] = 1./12*(dim[2]*dim[3]**3); Is[2] = Is[0];
+		d = abs(y - ybar);
+		I = np.sum(Is + A*np.power(d,2));
+		c = ybar;
 
 	return c, I
 

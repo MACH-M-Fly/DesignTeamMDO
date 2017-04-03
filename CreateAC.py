@@ -21,21 +21,21 @@ from Aircraft_Class.aircraft_class import *
 
 
 class createAC(Component):
-    """
-    OpenMDAO component for updating the aircaft (AC) after each iteration of MDO
+	"""
+	OpenMDAO component for updating the aircaft (AC) after each iteration of MDO
 
-    Inputs
-    -------
-    Aircraft_Class  :   class
-                        in_aircraft class
-    design variables: 	many variables
-    					Variables for modification
+	Inputs
+	-------
+	Aircraft_Class  :   class
+						in_aircraft class
+	design variables: 	many variables
+						Variables for modification
 
 
-    Outputs
-    -------
-    Aircraft_Class  :   class
-                        out_aircraft class
+	Outputs
+	-------
+	Aircraft_Class  :   class
+						out_aircraft class
 
 	"""
 
@@ -48,7 +48,7 @@ class createAC(Component):
 		# Parameter(s) of aicraft to be modified within this component
 		# - I.e. design variables
 		# - Uncomment the variables to be used
-		self.add_param('b_wing',val = 3.2, desc='wing span')				
+		self.add_param('b_wing',val = 3.2, desc='wing span')
 		# self.add_param('dihedral',val = 0.0, desc='wing dihedral')
 		self.add_param('sweep',val =  np.array([0.0, 0.0, 0.0, 0.0]), desc = 'wing sweep')
 		self.add_param('chord',val = np.array([0.0, 0.0, 0.0, 0.72]), desc = 'wing chord')

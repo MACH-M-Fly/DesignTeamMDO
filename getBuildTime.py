@@ -20,22 +20,22 @@ from sympy import Symbol, nsolve
 from Input import AC
 
 class getBuildTime(Component):
-    """
-    OpenMDAO component for estimating build time
-    - Based on historical values for both teamse
+	"""
+	OpenMDAO component for estimating build time
+	- Based on historical values for both teamse
 
-    Inputs
-    -------
-    Aircraft_Class  :   class
-                        in_aircraft class
+	Inputs
+	-------
+	Aircraft_Class  :   class
+						in_aircraft class
 
 
-    Outputs
-    -------
-    Aircraft_Class  :   class
-                        out_aircraft class
-    build_time 		:	float
-    					Estimated build time in people hours
+	Outputs
+	-------
+	Aircraft_Class  :   class
+						out_aircraft class
+	build_time 		:	float
+						Estimated build time in people hours
 
 	"""
 
@@ -99,8 +99,8 @@ class getBuildTime(Component):
 		# Spar Constant
 
 		if isCarbonFiber:
-		    hoursPerLeMeter = 3
-		    hoursPerSparMeter = 1
+			hoursPerLeMeter = 3
+			hoursPerSparMeter = 1
 
 		# Constants for defining fuselage build hours
 
@@ -108,57 +108,57 @@ class getBuildTime(Component):
 
 		# Estimator Function to get Wing Build Hours
 		def getWingBuildHours():
-		    # Estimate roughly 1/2 hour per rib of the aircraft
-		    airfoilHours = numRibs * hoursPerRib
+			# Estimate roughly 1/2 hour per rib of the aircraft
+			airfoilHours = numRibs * hoursPerRib
 
-		    # Increase the time rquried for creating an airfoil if the
-		    # thickness is less than a certian threshold
-		    #
-		    #  -> Should look into not straight multiplication, but perhaps a log?
-		    if airfoilTC < airfoilTC_Threshold:
-		        airfoilHours = airfoilHours * airfoilTC_Threshold / airfoilTC
-
-
-		    # Get an estimate for the spar hours
-		    #  -> assumes constants spar, no taper/bend
-		    sparHours = wingspanMeters * hoursPerSparMeter
+			# Increase the time rquried for creating an airfoil if the
+			# thickness is less than a certian threshold
+			#
+			#  -> Should look into not straight multiplication, but perhaps a log?
+			if airfoilTC < airfoilTC_Threshold:
+				airfoilHours = airfoilHours * airfoilTC_Threshold / airfoilTC
 
 
-		    # Trailing Edge hours
-		    teHours = wingspanMeters * hoursPerTeMeter
+			# Get an estimate for the spar hours
+			#  -> assumes constants spar, no taper/bend
+			sparHours = wingspanMeters * hoursPerSparMeter
 
-		    # Leading Edge hours
-		    if isCarbonFiber:
-		        leHours = hoursPerCarbonCureCycle + hoursPerCarbonCyclePeron * math.ceil(personPerLeMeter * wingspanMeters)
-		    else:
-		        leHours = wingspanMeters * hoursPerLeMeter
 
-		    # -> Need something to delineate taper...
+			# Trailing Edge hours
+			teHours = wingspanMeters * hoursPerTeMeter
 
-		    # Monokote Hours for estimated wetted area of the wing
-		    monokoteHours = 2*wingspanMeters*avgChordMeters*hoursPerMonokoteMeter2
+			# Leading Edge hours
+			if isCarbonFiber:
+				leHours = hoursPerCarbonCureCycle + hoursPerCarbonCyclePeron * math.ceil(personPerLeMeter * wingspanMeters)
+			else:
+				leHours = wingspanMeters * hoursPerLeMeter
 
-		    # Return the sum of all hours calculated above
-		    return airfoilHours + sparHours + teHours + leHours + monokoteHours
+			# -> Need something to delineate taper...
+
+			# Monokote Hours for estimated wetted area of the wing
+			monokoteHours = 2*wingspanMeters*avgChordMeters*hoursPerMonokoteMeter2
+
+			# Return the sum of all hours calculated above
+			return airfoilHours + sparHours + teHours + leHours + monokoteHours
 
 		# Estimator Function to get Fuselage Build Hours
 		def getFuselageBuildHours():
-		    return 50 # Currently just an estimated constant 50 hours
+			return 50 # Currently just an estimated constant 50 hours
 
 		# Estimator Function to get Tail Build Hours
 		def getTailBuildHours():
-		    vsArea = height_VSt * chord_VSt
-		    hzArea = width_HSt * chord_HSt
+			vsArea = height_VSt * chord_VSt
+			hzArea = width_HSt * chord_HSt
 
-		    leteHours = (hoursPerLeMeter + hoursPerTeMeter) * (height_VSt + width_HSt)
-		    
-		    return leteHours + vsArea * hoursPerVertSurfaceMeter2 * 2 + hzArea * hoursPerHorzSurfaceMeter2 * 2
+			leteHours = (hoursPerLeMeter + hoursPerTeMeter) * (height_VSt + width_HSt)
+			
+			return leteHours + vsArea * hoursPerVertSurfaceMeter2 * 2 + hzArea * hoursPerHorzSurfaceMeter2 * 2
 
 		def getAircraftBuildHours():
-		    totalHours = getWingBuildHours()
-		    totalHours = totalHours + getFuselageBuildHours()
-		    totalHours = totalHours + getTailBuildHours()
-		    return totalHours
+			totalHours = getWingBuildHours()
+			totalHours = totalHours + getFuselageBuildHours()
+			totalHours = totalHours + getTailBuildHours()
+			return totalHours
 
 		# Run build time estimation
 		AC.total_hours = getAircraftBuildHours()

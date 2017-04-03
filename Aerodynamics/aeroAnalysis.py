@@ -19,11 +19,11 @@ import pyAVL
 
 
 class aeroAnalysis(Component):
-    """
-    OpenMDAO component for aerodynamic analysis via AVL
-    - Uses the current iteration of the aircraft: in_aircraft
-    - Modifies in_aircraft, outputs a new out_aircraft
-    - ^ All of the same AC class (AC.wing, AC.tail, etc.)
+	"""
+	OpenMDAO component for aerodynamic analysis via AVL
+	- Uses the current iteration of the aircraft: in_aircraft
+	- Modifies in_aircraft, outputs a new out_aircraft
+	- ^ All of the same AC class (AC.wing, AC.tail, etc.)
 
 	Inputs
 	-------
@@ -31,13 +31,13 @@ class aeroAnalysis(Component):
 					in_aircraft class
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	Aircraft_Class:	class
 					out_aircraft class
 	SM			: 	float
 					Static margin			
-    """   
+	"""   
 
 	def __init__(self ):
 		super(aeroAnalysis,self).__init__()
@@ -103,19 +103,19 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	Inputs
 	----------
 	geo_filename 	: 	String
-	    File name of the AVL geometry file for the aircraft
+		File name of the AVL geometry file for the aircraft
 
 	mass_filename 	: 	String
-	    File name of the AVL geometry file for the aircraft
+		File name of the AVL geometry file for the aircraft
 
 	Outputs
 	----------
 	alpha 			: 	ndarray
 						Sweep of angle of attacks used
 	CL,CD, CD, secCL, sec_Yle : Functions
-	    Functions that will return the value for the coeffiecent 
-	    for a given angle of attack 
-	    example: CL(10*np.pi/180)  <- note the use of radians
+		Functions that will return the value for the coeffiecent 
+		for a given angle of attack 
+		example: CL(10*np.pi/180)  <- note the use of radians
 
 	NP : float
 	   X location of NP in AVL coordinate system
@@ -199,8 +199,8 @@ CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap,CLs_tail_noflap, 2))
 
 
 def getThrust(vel, ang):
-    """
-    Calculate the thrust available at a flight condition
+	"""
+	Calculate the thrust available at a flight condition
 
 	Inputs
 	-------
@@ -210,15 +210,15 @@ def getThrust(vel, ang):
 					angle of attack
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	X_comp 		:	float
 					X component of thrust available
 	Y_comp 		:	float
 					Y component of thrust available		
-    """   
+	"""   
 
-    # Thrust data (from dynamic thrust testing)
+	# Thrust data (from dynamic thrust testing)
 	T_0 = 18.00
 	T_1 = -0.060
 	T_2 = -0.015
@@ -235,8 +235,8 @@ def getThrust(vel, ang):
 
 
 def getTailCL(ang, flapped):
-    """
-    Get the new CL of the tail if elevator is deflected
+	"""
+	Get the new CL of the tail if elevator is deflected
 
 	Inputs
 	-------
@@ -246,21 +246,21 @@ def getTailCL(ang, flapped):
 					If elevator is deflected
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	CL 			:	float
 					CL of the tail with/without deflection
-    """   
+	"""   
 
-    # Call output data from tail
+	# Call output data from tail
 	if (flapped):
 		return CL_tail_flap(ang + inced_ang)
 	else:
 		return CL_tail_noflap(ang + inced_ang)
 
 def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
-    """
-    Calculate the gross lift of a configuration
+	"""
+	Calculate the gross lift of a configuration
 
 	Inputs
 	-------
@@ -278,17 +278,17 @@ def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
 					CL function from AVL run				
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	gross_F 	:	float
 					gross lift of vehicle
 	wing_F 		:	float
 					wing lift of vehicle
 	tail_F 		:	float
 					tail lift of vehicle
-    """   
+	"""   
 
-   	# Calculate lifts using CL functions
+	# Calculate lifts using CL functions
 	wing_f = 0.5*Rho*vel**2*(CL(ang)*sref_wing)
 	tail_f = 0.5*Rho*vel**2*(getTailCL(ang, flapped)*sref_tail)
 	l_net = wing_f + tail_f
@@ -298,8 +298,8 @@ def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
 
 
 def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
-    """
-    Calculate the cruise velocity of a configuration
+	"""
+	Calculate the cruise velocity of a configuration
 
 	Inputs
 	-------
@@ -315,13 +315,13 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 					tail surface area			
 
 
-    Outputs
-    -------
+	Outputs
+	-------
 	vel  		:	float
 					cruise velocity
 	ang 		:	float
 					cruise angle of attack
-    """   
+	"""   
 
 	def sumForces (A):
 		"""
@@ -340,9 +340,9 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 		return F
 
 	# Fsolve to balance lift and weight
- 	Z = fsolve(sumForces,np.array([40, -10*np.pi/180]))
+	Z = fsolve(sumForces,np.array([40, -10*np.pi/180]))
 
- 	# Return cruise velocity and angle of attack
- 	ang = Z[1]
- 	vel =  Z[0]
- 	return (vel, ang)
+	# Return cruise velocity and angle of attack
+	ang = Z[1]
+	vel =  Z[0]
+	return (vel, ang)

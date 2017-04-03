@@ -12,11 +12,11 @@ Creates aircraft from input file parameters
 
 
 class Aircraft(object):
-    """
-    Class used as a container for aircraft computation
-    - Parasitic drag
+	"""
+	Class used as a container for aircraft computation
+	- Parasitic drag
 		
-    """   
+	"""   
 
 	def __init__(self):
 
@@ -25,13 +25,13 @@ class Aircraft(object):
 
 
 class Wing(object):
-    """
-    Class used as a container for all wing information (taken from input file)
-    - Surface geometry
-    - Position of the wing
-    - Sectional splitting
-    - Airfoils for wing	
-    """   
+	"""
+	Class used as a container for all wing information (taken from input file)
+	- Surface geometry
+	- Position of the wing
+	- Sectional splitting
+	- Airfoils for wing	
+	"""   
 
 	def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
 	 Afiles=[], ainc=np.array([])):
@@ -244,15 +244,15 @@ class Wing(object):
 
 
 class Tail():
-    """
-    Class used as a container for all wing information (taken from input file)
-    - Surface geometry
-    - Position of the wing
-    - Sectional splitting
-    - Airfoils for wing	
-    """   
+	"""
+	Class used as a container for all wing information (taken from input file)
+	- Surface geometry
+	- Position of the wing
+	- Sectional splitting
+	- Airfoils for wing	
+	"""   
 
-	def __init__(self, num_sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len):
+	def __init__(self, num_sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len, wing_rootchord_qrt):
 
 		# Assign Inputs to aircraft object
 		self.num_sections = num_sections 		# Number of sections per half-wing
@@ -307,7 +307,7 @@ class Tail():
 		# print("Vtail hord Vals",self.vtail_chord_vals)
 
 		# Calculate leading edge coordinates
-		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge()
+		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge(wing_rootchord_qrt)
 		[self.Xle_vt, self.Yle_vt, self.Zle_vt] = self.calcVertLeading_Edge()
 		# print("Tail Leading Edge: X, Y, Z", self.Xle_ht, self.Yle_ht, self.Zle_ht)
 
@@ -346,12 +346,13 @@ class Tail():
 		return self.vtail_chord_vals
 
 		# Calculate horiz. tail leading edge coordinates
-	def calcHorizLeading_Edge(self):
+	def calcHorizLeading_Edge(self, wing_rootchord_qrt):
 		# Build leading edge coordinates
 		self.Xle_ht = np.zeros(self.num_sections)
 		self.Yle_ht = np.zeros(self.num_sections)
 		self.Zle_ht = np.zeros(self.num_sections)
-		self.Xle_ht[0] = self.Xo + self.boom_len + self.htail_chord_vals[0]
+
+		self.Xle_ht[0] = self.Xo + wing_rootchord_qrt + self.boom_len - self.htail_chord_vals[0]/4.
 		# print("Xle_ht HERE", self.Xle_ht)
 		self.Yle_ht[0] = self.Yo
 		self.Zle_ht[0] = self.Zo
@@ -410,11 +411,11 @@ class Tail():
 
 
 class Body():
-    """
-    Class used as a container for all body/fuselage information (taken from input file)
-    - Translate and scale fuselage
-    - Volume
-    """   
+	"""
+	Class used as a container for all body/fuselage information (taken from input file)
+	- Translate and scale fuselage
+	- Volume
+	"""   
 
 	def __init__(self, Bfile, translate = [0, 0, 0], scale = [1, 1, 1] ):
 		self.Bfile

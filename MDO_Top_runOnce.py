@@ -30,11 +30,11 @@ from Post_Process.lib_plot import *
 # writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
-    """
-    WARNING: Only used for testing to "run once", i.e. no optimization
-    OpenMDAO group for Version 1.0 of the constrained MDO for the joint design team
-    - Developed by Chris Reynolds in partnership with Joint Design Team MDO group
- 	- Top level OpenMDAO setup script for constrained MDO
+	"""
+	WARNING: Only used for testing to "run once", i.e. no optimization
+	OpenMDAO group for Version 1.0 of the constrained MDO for the joint design team
+	- Developed by Chris Reynolds in partnership with Joint Design Team MDO group
+	- Top level OpenMDAO setup script for constrained MDO
 		on the Joint MDO design team project
 	"""
 
@@ -211,7 +211,7 @@ root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 
 prob = Problem(root)
 prob.setup()
-in_ac = copy.copy(prob['my_comp.aircraft'])
+in_ac = copy.deepcopy(prob['my_comp.aircraft'])
 
 prob.run()
 
