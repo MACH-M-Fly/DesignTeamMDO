@@ -9,7 +9,6 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 import numpy as np
 import matplotlib.pyplot as plt
-import copy
 
 from time import localtime, strftime, time
 from xfoil_lib import xfoilAlt, getDataXfoil
@@ -352,7 +351,6 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 	return (vel, ang)
 
 def calcSecLift(velocity, sec_CL, sec_Chord):
-	# sec_L = copy.copy(sec_CL)
 	sec_L = []
 	for n in range(len(sec_CL)):
 		# sec_L[n] = [0.5*Rho*velocity[n][0]**2*sec_CL[n][x]*sec_Chord[n][x] for x in range(len(sec_CL[n]))]

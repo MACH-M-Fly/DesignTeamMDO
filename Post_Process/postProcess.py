@@ -133,7 +133,7 @@ def printParameters(AC, param_str):
 
 def postProcess_Main(in_ac, out_ac):
 	# Print starting parameters
-	printParameters(in_ac, 'Initial')
+	# printParameters(in_ac, 'Initial')
 
 	# Print final parameters
 	printParameters(out_ac, 'Final')

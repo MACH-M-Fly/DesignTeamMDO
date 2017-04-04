@@ -306,30 +306,31 @@ def plotGeoFinalDuo(in_AC, out_AC):
 			at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
 			geo1.add_artist(at)
 
-		# Plot list distribution (use AOA closest to the cruise AOA)
-		alpha = AC.alpha
-		cruise_alpha = AC.ang
-		sec_CL = AC.sec_CL
-		sec_L = AC.sec_L
-		sec_Yle = AC.sec_Yle
+		if n == 1:
+			# Plot list distribution (use AOA closest to the cruise AOA)
+			alpha = AC.alpha
+			cruise_alpha = AC.ang
+			sec_CL = AC.sec_CL
+			sec_L = AC.sec_L
+			sec_Yle = AC.sec_Yle
 
-		temp = [abs(x - cruise_alpha) for x in alpha]
-		plt_ind = temp.index(min(temp))
-		plt_secCL = sec_CL[plt_ind]
-		plt_secL = sec_L[plt_ind]
-		plt_Yle = sec_Yle[plt_ind]
+			temp = [abs(x - cruise_alpha) for x in alpha]
+			plt_ind = temp.index(min(temp))
+			plt_secCL = sec_CL[plt_ind]
+			plt_secL = sec_L[plt_ind]
+			plt_Yle = sec_Yle[plt_ind]
+			
+			# geo2.plot(  plt_Yle, plt_secCL, c1 )
+			geo2.plot(  plt_Yle, plt_secL, c1 )
+			
+			# Elliptical list distribution
+			a = plt_Yle[-1] - plt_Yle[0]; b = plt_secL[0]
+			plt_ellipCL = [ b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0]) ]
+			geo2.plot( plt_Yle, plt_ellipCL, c6 )
 		
-		geo2.plot(  plt_Yle, plt_secCL, c1 )
-		# geo2.plot(  plt_Yle, plt_secL, c1 )
-		
-		# Elliptical list distribution
-		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secCL[0]
-		plt_ellipCL = [ b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0]) ]
-		geo2.plot( plt_Yle, plt_ellipCL, c6 )
-	
-		# Automatic axis scaling
-		geo2_xlim.append([0.0, max(plt_Yle)*1.1])
-		geo2_ylim.append([min(plt_secCL)*1.2, max(plt_secCL)*1.2])
+			# Automatic axis scaling
+			geo2_xlim.append([0.0, max(plt_Yle)*1.1])
+			geo2_ylim.append([min(plt_secL)*1.2, max(plt_secL)*1.2])
 		
 		# Use other subplots in window for plotting sectional airfoils
 		for i in range (1, len(A) +1):
@@ -359,8 +360,8 @@ def plotGeoFinalDuo(in_AC, out_AC):
 	geo1.axis('equal')
 	geo1.set_ylim(min(geo1_ylim[0][0], geo1_ylim[1][0]), max(geo1_ylim[0][1], geo1_ylim[1][1]))
 
-	geo2.set_xlim(min(geo2_xlim[0][0], geo2_xlim[1][0]), max(geo2_xlim[0][1], geo2_xlim[1][1]))
-	geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
+	# geo2.set_xlim(min(geo2_xlim[0][0], geo2_xlim[1][0]), max(geo2_xlim[0][1], geo2_xlim[1][1]))
+	# geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
 
 	plt.tight_layout()
 	plt.savefig('OPT_#.pdf', bbox_inches='tight')

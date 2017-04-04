@@ -191,11 +191,11 @@ def getTail_mass(AC):
     m_tail = m_ribs_t + m_LE_t + m_TE_t + m_spar_t + m_ult
 
     print("Tail Mass = %f kg" % m_tail)
-    # print("	Mass of Tail Ribs = %f kg"% m_ribs_t)
-    # print("	Mass of LE        = %f kg"% m_LE_t)
-    # print("	Mass of TE        = %f kg"% m_TE_t)
-    # print("	Mass of Tail Spar = %f kg"% m_spar_t)
-    # print("	Mass of Tail ultrakote = %f kg"% m_ult)
+    print("	Mass of Tail Ribs = %f kg"% m_ribs_t)
+    print("	Mass of LE        = %f kg"% m_LE_t)
+    print("	Mass of TE        = %f kg"% m_TE_t)
+    print("	Mass of Tail Spar = %f kg"% m_spar_t)
+    print("	Mass of Tail ultrakote = %f kg"% m_ult)
 
     print("H_Tail")
     print("	b_htail = %f m"% b_htail)
@@ -205,14 +205,14 @@ def getTail_mass(AC):
     print("	H_Tail chord_val = " + ', '.join("%f" % n for n in C_t))
     print("	Number of Ribs in HTail = %f"% num_ribs_ht)
 
-    # prnt("V_Tail")
-    # print("	b_vtail = %f"% b_vtail)
-    # print("	Sref of VT = %f m^2"% AC.tail.sref_vt)
-    # print("	MAC of VT = %f"% MAC_vt)
-    # print("	V_Tail chord = " + ', '.join("%f" % n for n in AC.tail.vtail_chord))
-    # print("	V_Tail chord_val = " + ', '.join("%f" % n for n in C.tail.vtail_chord_vals))
-    # print("	Number of Ribs in VTail = %f"% num_ribs_vt)
-    # print("	Kg per rib = %f"% AC.k_ribs_t)
+    print("V_Tail")
+    print("	b_vtail = %f"% b_vtail)
+    print("	Sref of VT = %f m^2"% AC.tail.sref_vt)
+    print("	MAC of VT = %f"% MAC_vt)
+    print("	V_Tail chord = " + ', '.join("%f" % n for n in AC.tail.vtail_chord))
+    print("	V_Tail chord_val = " + ', '.join("%f" % n for n in AC.tail.vtail_chord_vals))
+    print("	Number of Ribs in VTail = %f"% num_ribs_vt)
+    print("	Kg per rib = %f"% AC.k_ribs_t)
 
     return m_tail 
 
@@ -260,10 +260,10 @@ def getStruct_mass(AC):
 
     print("Boom Mass = %f kg"% m_boom)
     print("	Boom Length = %f m"% boom_len)
-    # print("Landing Gear Mass = %f kg"% m_landgear)
-    # print("	Front LG Mass = %f kg"% m_landgear_front)
-    # print("	Rear LG Mass  = %f kg"% m_landgear_rear)
-    # print("	Height of LG = %f m"% height_LG)
+    print("Landing Gear Mass = %f kg"% m_landgear)
+    print("	Front LG Mass = %f kg"% m_landgear_front)
+    print("	Rear LG Mass  = %f kg"% m_landgear_rear)
+    print("	Height of LG = %f m"% height_LG)
 
     return m_boom, m_landgear, m_ballast
 
@@ -304,7 +304,7 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     C = AC.wing.chord_vals              # m | chord values of wing
     C_t = AC.tail.htail_chord_vals      # m | chord values of horitontal tail
     dist_LG = AC.dist_LG                # m | distance between LE of wing and landing gear
-    mount_len = -0.15                   # m | position of prop relative to LE of wing
+    mount_len = -0.22                   # m | position of prop relative to LE of wing
 
     # Calculate total mass
     m_total = m_wing + m_tail + m_boom + m_landgear + m_motor + m_prop + m_battery + m_electronics + m_fuselage + m_payload + m_ballast
@@ -333,9 +333,9 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     Is = ([Ixx, Iyy, Izz])
 
     print("Total Mass = %f kg"% m_total)
-    # print("	Empenage Mass = %f kg"% (m_tail + m_boom))
-    # print("	Payload Mass = %f kg"% m_payload)
-    # print("	Fuselage Mass = %f kg"% m_fuselage)
+    print("	Empenage Mass = %f kg"% (m_tail + m_boom))
+    print("	Payload Mass = %f kg"% m_payload)
+    print("	Fuselage Mass = %f kg"% m_fuselage)
     print("	X CG = %f m from LE of wing"% x_cg)
     print("	Wing loading = %f N/m^2" % (9.81*m_total/b_wing))
     # print("	Wing root chord = %f m"% C[0])

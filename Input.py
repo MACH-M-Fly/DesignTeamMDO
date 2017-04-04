@@ -40,7 +40,7 @@ num_sections_tail = 5
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-AC.is_linear = 0
+AC.is_linear = 1
 
 # Specify origin for aicraft build (root chord leading edge position)
 AC.Xo = 0
