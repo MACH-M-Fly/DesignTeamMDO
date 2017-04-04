@@ -22,7 +22,8 @@ from Performance.objPerformance import objPerformance
 from getBuildTime import getBuildTime
 # from Post_Process.postProcess import postProcess
 from Input import AC, updateAircraft
-from Post_Process.lib_plot import *
+# from Post_Process.lib_plot import *
+from Post_Process.postProcess import *
 
 
 # Animation Setup
@@ -45,21 +46,23 @@ class constrainedMDO(Group):
 		# ====================================== Params =============================================== #
 		# - Uncomment a param to add it as a design variable
 		# - Must also uncomment the param in createAC.py
-		# self.add('b_wing',IndepVarComp('b_wing', 3.2)) 								# Wingspan (m) 
+		self.add('b_wing',IndepVarComp('b_wing', 3.2)) 								# Wingspan (m) 
+		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
+		self.add('chord',IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		self.add('boom_len',IndepVarComp('boom_len', 1.60))							# Length of tailboom (m)
+		self.add('b_htail',IndepVarComp('b_htail',1.30))
+		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('b_vtail',IndepVarComp('b_vtail',0.37))
+		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
+
 		# self.add('dihedral',IndepVarComp('dihedral',1.0))							# Wing dihedral angle (degrees)
-		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
-		# self.add('chord',IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('dist_LG',IndepVarComp('dist_LG', 1.0))							# Distance between CG and landing gear (m)
-		# self.add('boom_len',IndepVarComp('boom_len', 1.60))							# Length of tailboom (m)
 		# self.add('camber',IndepVarComp('camber',np.array([1.0 , 1.0, 1.0,1.0])))# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 		# self.add('max_camber',IndepVarComp('max_camber',np.array([1.0 , 1.0, 1.0,1.0])))		# Horizontail Tail Span 
 		# self.add('thickness',IndepVarComp('thickness',np.array([1.0 , 1.0, 1.0,1.0])))		# Tail Root airfoil Cord 
 		# self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))	# Vertical Tail Span
 		# self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))	# Boom Length
-		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
-		# self.add('b_htail',IndepVarComp('b_htail',1.30))
-		# self.add('b_vtail',IndepVarComp('b_vtail',0.37))
+
 
 		# Adding components
 		# - First component to add is AC itself
@@ -73,14 +76,14 @@ class constrainedMDO(Group):
 		# ====================================== Connections ============================================ # 
 		# - Uncomment a connection to add that param as a design variable
 		# - Must also uncomment the param in createAC.py
-		# self.connect('b_wing.b_wing', 'my_comp.b_wing')
-		# self.connect('sweep.sweep', 'my_comp.sweep')
-		# self.connect('chord.chord', 'my_comp.chord')
-		# self.connect('boom_len.boom_len', 'my_comp.boom_len')
-		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord') 
-		# self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
-		# self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		self.connect('b_wing.b_wing', 'my_comp.b_wing')
+		self.connect('sweep.sweep', 'my_comp.sweep')
+		self.connect('chord.chord', 'my_comp.chord')
+		self.connect('boom_len.boom_len', 'my_comp.boom_len')
+		self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
 		# self.connect('b_vtail.b_vtail', 'my_comp.b_vtail')
+		# self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
 		
 		# self.connect('dihedral.dihedral', 'my_comp.dihedral')
 		# self.connect('dist_LG.dist_LG', 'my_comp.dist_LG')
@@ -145,18 +148,18 @@ prob.root.fd_options['step_size'] = 1.0e-6
 # ===================================== Add design Varibles and Bounds ==================================== #
 # - Uncomment any bounds as you add more design variables
 # - Must also uncomment the param in createAC.py
-# prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
-# prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
-# 													  	upper = np.array([5., 5., 5., 30.0 ]) )
-# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
-# 													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
-# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
+prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
+prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
+													  	upper = np.array([5., 5., 5., 30.0 ]) )
+prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
+													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
+prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
+prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
 prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
 													  	upper = np.array([0.1, 0.2, 0.2, 3.0]) )
+# prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 # prob.driver.add_desvar('vtail_chord.vtail_chord', 		lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
-# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
-# prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 
 # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
 # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
@@ -175,7 +178,7 @@ prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
-# prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((AC.wing.num_sections,1))*0.05  )
+prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((AC.wing.num_sections,1))*0.05  )
 prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
 prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
@@ -190,13 +193,14 @@ root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
-
+root.add('getBuildTime', getBuildTime())
 
 # Setting up the MDO run
 root.connect('my_comp.aircraft','calcWeight.in_aircraft')
 root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+root.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
 
 prob0 = Problem(root)
 prob0.setup()
@@ -214,43 +218,9 @@ prob.run()
 
 # Specify the output aircraft (final AC) from the MDO
 out_ac = prob['my_comp.aircraft']
-print('================  Final Results ===================')
-print('\n')
-print("Chord Values", out_ac.wing.chord_vals)
-print("Chord Cubic Terms", out_ac.wing.chord)
-print("Wingspan", out_ac.wing.b_wing)
-print("Boom Length", out_ac.boom_len)
-print("Sweep Cubic Terms", out_ac.wing.sweep)
-print("Sweep Values", out_ac.wing.sweep_vals)
-print("Horiz. Tail Chord Values", out_ac.tail.htail_chord_vals)
-print("Horiz. Tail  Chord Cubic Terms", out_ac.tail.htail_chord)
-print("Total Build Hours", out_ac.total_hours)
 
-print('########    Aerodynamics Analysis  #######')
-# print("CL", out_ac.CL)
-# print("CD", out_ac.CD)
-# print("CM", out_ac.CM)
+postProcess(in_ac, out_ac)
 
-print("NP", out_ac.NP)
-print("SM", out_ac.SM)
-
-print('########    Performance Metrics  #######')
-print("Number of Laps", out_ac.N)
-print("Score", out_ac.score)
-print("Total Time", out_ac.tot_time)
-
-print('########    Structural Analysis  #######')
-print('Gross Lift', out_ac.gross_F)
-print("Max Stress %.7E"% out_ac.sig_max)
-print("Max Deflection %.7E"% out_ac.y_max)
-print("Max Stress Tail %.7E"% out_ac.sig_max_tail)
-print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
-print("CG", out_ac.CG)
-
-print("#####")
-
-# Ooutput final geometry of aircraft
-plotGeoFinalDuo(in_ac, out_ac)
 
 # plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
 # 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \

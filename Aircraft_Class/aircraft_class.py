@@ -308,7 +308,7 @@ class Tail():
 
 		# Calculate leading edge coordinates
 		[self.Xle_ht, self.Yle_ht, self.Zle_ht] = self.calcHorizLeading_Edge(wing_rootchord_qrt)
-		[self.Xle_vt, self.Yle_vt, self.Zle_vt] = self.calcVertLeading_Edge()
+		[self.Xle_vt, self.Yle_vt, self.Zle_vt] = self.calcVertLeading_Edge(wing_rootchord_qrt)
 		# print("Tail Leading Edge: X, Y, Z", self.Xle_ht, self.Yle_ht, self.Zle_ht)
 
 	# sref = integral (chord) dy (from 0 to bwing/2)
@@ -345,7 +345,7 @@ class Tail():
 			vtail_chord[2]*span + vtail_chord[3]
 		return self.vtail_chord_vals
 
-		# Calculate horiz. tail leading edge coordinates
+	# Function: Calculate horiz. tail leading edge coordinates
 	def calcHorizLeading_Edge(self, wing_rootchord_qrt):
 		# Build leading edge coordinates
 		self.Xle_ht = np.zeros(self.num_sections)
@@ -368,13 +368,15 @@ class Tail():
 		return np.array([self.Xle_ht,
 						 self.Yle_ht,
 						 self.Zle_ht])
-		# Calculate vert. tail leading edge coordinates
-	def calcVertLeading_Edge(self):
+
+	# Function: Calculate vert. tail leading edge coordinates
+	def calcVertLeading_Edge(self, wing_rootchord_qrt):
 		# Build leading edge coordinates
 		self.Xle_vt = np.zeros(self.num_sections)
 		self.Yle_vt = np.zeros(self.num_sections)
 		self.Zle_vt = np.zeros(self.num_sections)
-		self.Xle_vt[0] = self.Xo + self.boom_len + self.vtail_chord_vals[0]
+		
+		self.Xle_vt[0] = self.Xo + wing_rootchord_qrt + self.boom_len - self.vtail_chord_vals[0]/4.
 		# print("Xle_ht HERE", self.Xle_ht)
 		self.Yle_vt[0] = self.Yo
 		self.Zle_vt[0] = self.Zo

@@ -277,11 +277,6 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		score = AC.score
 		mount_len = AC.mount_len
 
-		alpha = AC.alpha
-		cruise_alpha = AC.ang
-		secCL = AC.secCL
-		sec_Yle = AC.sec_Yle
-		
 		# Plot aircraft geometry
 		wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 		wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
@@ -312,20 +307,29 @@ def plotGeoFinalDuo(in_AC, out_AC):
 			geo1.add_artist(at)
 
 		# Plot list distribution (use AOA closest to the cruise AOA)
-		temp = [abs(np.pi/180.*x - cruise_alpha) for x in alpha]
+		alpha = AC.alpha
+		cruise_alpha = AC.ang
+		sec_CL = AC.sec_CL
+		sec_L = AC.sec_L
+		sec_Yle = AC.sec_Yle
+
+		temp = [abs(x - cruise_alpha) for x in alpha]
 		plt_ind = temp.index(min(temp))
-		plt_secCL = secCL[plt_ind]
+		plt_secCL = sec_CL[plt_ind]
+		plt_secL = sec_L[plt_ind]
 		plt_Yle = sec_Yle[plt_ind]
-		geo2.plot(  plt_Yle, plt_secCL, c1 )
+		
+		# geo2.plot(  plt_Yle, plt_secCL, c1 )
+		geo2.plot(  plt_Yle, plt_secL, c1 )
 		
 		# Elliptical list distribution
-		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secCL[0]
-		plt_ellipCL = [b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0])]
+		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secL[0]
+		plt_ellipCL = [ b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0]) ]
 		geo2.plot( plt_Yle, plt_ellipCL, c6 )
 	
 		# Automatic axis scaling
-		geo2_xlim.append([0.0, max(plt_Yle)*1.2])
-		geo2_ylim.append([min(plt_secCL)*1.2, max(plt_secCL)*1.2])
+		geo2_xlim.append([0.0, max(plt_Yle)*1.1])
+		geo2_ylim.append([min(plt_secL)*1.2, max(plt_secL)*1.2])
 		
 		# Use other subplots in window for plotting sectional airfoils
 		for i in range (1, len(A) +1):

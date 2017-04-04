@@ -9,6 +9,7 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 from time import localtime, strftime, time
 from xfoil_lib import xfoilAlt, getDataXfoil
@@ -67,7 +68,7 @@ class aeroAnalysis(Component):
 		# print("Horiz. Tail  Chord Cubic Terms", AC.tail.htail_chord)
 	
 		# Call aero analysis to get CL, CD, CM and NP - Add to class
-		AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.secCL, AC.sec_Yle = getAeroCoef()
+		AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.sec_CL, AC.sec_Yle, sec_Chord, velocity = getAeroCoef()
 
 		# Static Margine calculation
 		SM = (AC.NP - AC.CG[0])/AC.wing.MAC
@@ -79,6 +80,8 @@ class aeroAnalysis(Component):
 		# Get gross lift
 		flapped = False
 		AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref, flapped, AC.CL)
+
+		AC.sec_L = calcSecLift(velocity, AC.sec_CL, sec_Chord)
 
 		# print('Wing Lift = %f' % AC.wing_f)
 		# print('Tail Lift = %f' % AC.tail_f)
@@ -141,9 +144,12 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	# Create a sweep over angle of attack
 	# case.alphaSweep(-15, 30, 2)
 	case.alphaSweep(-15, 15, 4)
+
 	alpha = case.alpha
-	secCL = case.sec_CL
+	sec_CL = case.sec_CL
 	sec_Yle = case.sec_Yle
+	sec_Chord = case.sec_Chord
+	velocity = case.velocity
 
 	# get func for aero coeificent
 	CL = np.poly1d(np.polyfit(case.alpha,case.CL, 1))
@@ -178,7 +184,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	print("NP = %f"% NP)
 	print("Max Elevator deflection = %f deg" % max(case.elev_def))
 
-	return (alpha, CL, CD, CM, NP, secCL, sec_Yle)
+	return (alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity)
 
 # Declare Constants (global)
 Rho = 1.225 
@@ -232,7 +238,6 @@ def getThrust(vel, ang):
 	X_comp = np.cos(ang)*T
 	Y_comp = np.sin(ang)*T
 	return (X_comp, Y_comp)
-
 
 def getTailCL(ang, flapped):
 	"""
@@ -296,7 +301,6 @@ def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
 
 	return gross_F, wing_f, tail_f
 
-
 def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 	"""
 	Calculate the cruise velocity of a configuration
@@ -346,3 +350,12 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
 	ang = Z[1]
 	vel =  Z[0]
 	return (vel, ang)
+
+def calcSecLift(velocity, sec_CL, sec_Chord):
+	# sec_L = copy.copy(sec_CL)
+	sec_L = []
+	for n in range(len(sec_CL)):
+		# sec_L[n] = [0.5*Rho*velocity[n][0]**2*sec_CL[n][x]*sec_Chord[n][x] for x in range(len(sec_CL[n]))]
+		sec_L.append( [0.5*Rho*velocity[n][0]**2*sec_CL[n][x]*sec_Chord[n][x] for x in range(len(sec_CL[n]))] )
+
+	return sec_L

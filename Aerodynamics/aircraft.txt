@@ -11,9 +11,9 @@ MACH MDAO AVL
 #IYsym   IZsym   Zsym
  0       0       0
 #Sref    Cref    b_wing
-2.304  0.72  3.2
+0.921513540597  0.262173778607  3.79316190018
 #Xref    Yref    Zref
-0.18 0.0 0.0
+0.0787063467285 0.0 0.0
 # CDp
 0.0
 
@@ -36,33 +36,39 @@ ANGLE
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.0    0       0.72     0      5      3
+0.0    0.0    0       0.314825386914     0.0      5      3
 AFILE
-airfoils/A_1.dat
+airfoils/E420.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.4    0       0.72     0      5      3
+0.000141399794727    0.379316190018    0       0.257213640697     0.0      5      3
 AFILE
-airfoils/A_2.dat
+airfoils/E420.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    0.8    0       0.72     0      5      3
+0.000873046987247    0.758632380036    0       0.208636722301     0.0      5      3
 AFILE
-airfoils/A_3.dat
+airfoils/E420.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    1.2    0       0.72     0      5      3
+0.00292150243634    1.13794857005    0       0.169094631727     0.0      5      3
 AFILE
-airfoils/A_4.dat
+airfoils/E420.dat
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.0    1.6    0       0.72     0      5      3
+0.00730530104282    1.51726476007    0       0.138587368975     0.0      5      3
 AFILE
-airfoils/A_5.dat
+airfoils/E420.dat
+
+SECTION
+#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
+0.0153350640417    1.89658095009    0       0.117114934044     0.0      5      3
+AFILE
+airfoils/E420.dat
 
 
 #======================================================
@@ -84,7 +90,7 @@ ANGLE
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.56749047301    0.0    0       0.850038107941     0.0       
+1.49037276336    0.0    0       0.115495897404     0.0       
 NACA
 0012
 CLAF
@@ -96,7 +102,7 @@ Elevator -1.00 0.5 0 1 0 1.00
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.56749047301    0.52    0       0.850038107941     0.0       
+1.49037276336    0.586767878322    0       0.0996366465969     0.0       
 NACA
 0012
 CLAF
@@ -130,7 +136,7 @@ INDEX
 #----------------------ROOT/RUDDER---------------------
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.925 0 0.0  0.325     0.0       
+1.43799673771 0 0.0  0.325     0.0       
 NACA
 0012
 CLAF
@@ -142,7 +148,7 @@ Rudder 1.00 0.5 0 0 1 -1.00
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-1.925 0 0.296  0.325     0.0       
+1.43799673771 0 0.296  0.325     0.0       
 NACA
 0012
 CLAF

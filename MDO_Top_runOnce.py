@@ -22,7 +22,7 @@ from Performance.objPerformance import objPerformance
 from getBuildTime import getBuildTime
 # from Post_Process.postProcess import postProcess
 from Post_Process.lib_plot import *
-
+from Post_Process.postProcess import *
 
 # Animation Setup
 # FFMpegWriter = animation.writers['ffmpeg']
@@ -197,6 +197,7 @@ root.add('calcWeight', calcWeight())
 root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
+root.add('getBuildTime', getBuildTime())
 # root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 
@@ -207,6 +208,7 @@ root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 # root.connect('my_comp.aircraft','aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
+root.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
 # root.connect('objPerformance.out_aircraft','Plot.in_aircraft')
 
 prob = Problem(root)
@@ -221,39 +223,48 @@ prob.run()
 # lib_plot(prob)
 
 out_ac = prob['my_comp.aircraft']
-print('================  Final Results ===================')
-print('\n')
-print(out_ac.wing.chord_vals)
-print('Wing Span', out_ac.wing.b_wing)
-print("CL", out_ac.CL)
-print("CD", out_ac.CD)
-print("CM", out_ac.CM)
-print("NP", out_ac.NP)
-print('########    Performance Metrics  #######')
-print("Number of Laps", out_ac.N)
+# print('================  Final Results ===================')
+# print(out_ac.wing.chord_vals)
+# print('Wing Span', out_ac.wing.b_wing)
+# # print("CL", out_ac.CL)
+# # print("CD", out_ac.CD)
+# # print("CM", out_ac.CM)
+# print("CL", out_ac.CL(out_ac.ang))
+# print("CD", out_ac.CD(out_ac.ang))
+# print("NP", out_ac.NP)
+# print("SM", out_ac.SM)
 
+# print('\n########    Performance Metrics  #######')
+# print("Number of Laps", out_ac.N)
 
-print('########    Structural Analysis  #######')
-print('Gross Lift', out_ac.gross_F)
-print('Max Stress ', out_ac.sig_max)
-print("Max Deflection %.7f"% out_ac.y_max)
-print('Max Stress Tail ', out_ac.sig_max_tail)
-print("Max Deflection Tail %.7E"% out_ac.y_max_tail)
+# print('\n########      Weight Breakdown   #######')
+# print('Aircraft Mass %f kg' % out_ac.mass)
+# print('Wing Mass %f kg' % out_ac.mass_wing)
+# print('Tail Mass %f kg' % out_ac.mass_tail)
+
+# print('\n########    Structural Analysis  #######')
+# print('Gross Lift %f N (%f kg)' % (out_ac.gross_F, out_ac.gross_F/9.81))
+# print("Wing Max Stress %.3f MPa" % (out_ac.sig_max/1.E6))
+# print("Wing Max Deflection %.3f mm" % (out_ac.y_max*1.E3))
+# print("Tail Max Stress %.3f MPa" % (out_ac.sig_max_tail/1.E6))
+# print("Tail Max Deflection %.3f mm" % (out_ac.y_max_tail*1.E3))
+# print("CG", out_ac.CG)
+
+# print("\n#####\n")
 
 # Ooutput final geometry of aircraft
-print("in_AC.wing.Yle = ", in_ac.wing.Yle)
-print("out_AC.wing.Yle = ", out_ac.wing.Yle)
-
 in_ac.score = 10
 in_ac.CG = ([0.1, 0, 0])
 in_ac.NP = 0.1
 in_ac.mount_len = -0.15
+in_ac.total_hours = 325
+in_ac.N = 6
+in_ac.tot_time = 35
 out_ac.score = 12
 out_ac.wing.Yle[-1] = 2.
+out_ac.total_hours = 35
 
-print("in_AC.wing.Yle = ", in_ac.wing.Yle)
-print("out_AC.wing.Yle = ", out_ac.wing.Yle)
-plotGeoFinalDuo(in_ac, out_ac)
+postProcess(in_ac, out_ac)
 
 
 # plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \

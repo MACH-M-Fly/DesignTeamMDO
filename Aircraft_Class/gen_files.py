@@ -68,7 +68,7 @@ def genGeo(AC):
 	C_vt = AC.tail.vtail_chord_vals
 
 	# print("Chords", C)
-	incAng = [0,   0,    0,  0,   0  ]
+	incAng = np.zeros((1, AC.wing.num_sections))[0]
 
 	try:
 		os.remove('./Aerodynamics/aircraft.txt')
@@ -122,7 +122,8 @@ def genGeo(AC):
 		out('#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace')
 		out(str(Xle[i]) + '    ' + str(Yle[i]) + '    0       '+ str(C[i]) + '     '+ str(incAng[i])+'      '+ '5      3')
 		out('AFILE')
-		out('airfoils/A_'+str(i+1) + '.dat')
+		# out('airfoils/A_'+str(i+1) + '.dat')
+		out('airfoils/E420.dat')
 		out('')
 
 

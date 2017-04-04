@@ -34,13 +34,13 @@ AC.booms = 1
 AC.mission = 2
 
 # Number of wing sections (per half-span for wing and tail)
-num_sections_wing = 5
+num_sections_wing = 6
 num_sections_tail = 5
 
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-AC.is_linear = 1
+AC.is_linear = 0
 
 # Specify origin for aicraft build (root chord leading edge position)
 AC.Xo = 0

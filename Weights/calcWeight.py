@@ -382,6 +382,7 @@ def calcWeight_process(AC):
     AC.Izz = Is[2]
 
     AC.mass = m_total
+    AC.mass_wing = m_wing
     AC.mass_tail = m_tail
     AC.mass_boom = m_boom
     AC.weight = m_total*9.81
