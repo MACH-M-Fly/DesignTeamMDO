@@ -131,7 +131,7 @@ def printParameters(AC, param_str):
 
 	print("\n#####\n")
 
-def postProcess(in_ac, out_ac):
+def postProcess_Main(in_ac, out_ac):
 	# Print starting parameters
 	printParameters(in_ac, 'Initial')
 

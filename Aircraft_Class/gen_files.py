@@ -122,8 +122,8 @@ def genGeo(AC):
 		out('#Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace')
 		out(str(Xle[i]) + '    ' + str(Yle[i]) + '    0       '+ str(C[i]) + '     '+ str(incAng[i])+'      '+ '5      3')
 		out('AFILE')
-		# out('airfoils/A_'+str(i+1) + '.dat')
-		out('airfoils/E420.dat')
+		out('Aerodynamics/airfoils/A_'+str(i+1) + '.dat')
+		# out('airfoils/E420.dat')
 		out('')
 
 

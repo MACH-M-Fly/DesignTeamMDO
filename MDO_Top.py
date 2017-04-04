@@ -47,11 +47,11 @@ class constrainedMDO(Group):
 		# - Uncomment a param to add it as a design variable
 		# - Must also uncomment the param in createAC.py
 		self.add('b_wing',IndepVarComp('b_wing', 3.2)) 								# Wingspan (m) 
-		self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
-		self.add('chord',IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
-		self.add('boom_len',IndepVarComp('boom_len', 1.60))							# Length of tailboom (m)
-		self.add('b_htail',IndepVarComp('b_htail',1.30))
-		self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))		# Quarter Chord Sweep in degrees (cubic)
+		# self.add('chord',IndepVarComp('chord', np.array([0.0, 0.0, 0.0, 0.72])))	# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
+		# self.add('boom_len',IndepVarComp('boom_len', 1.60))							# Length of tailboom (m)
+		# self.add('b_htail',IndepVarComp('b_htail',1.30))
+		# self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325]))) # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)		
 		# self.add('b_vtail',IndepVarComp('b_vtail',0.37))
 		# self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
 
@@ -77,11 +77,11 @@ class constrainedMDO(Group):
 		# - Uncomment a connection to add that param as a design variable
 		# - Must also uncomment the param in createAC.py
 		self.connect('b_wing.b_wing', 'my_comp.b_wing')
-		self.connect('sweep.sweep', 'my_comp.sweep')
-		self.connect('chord.chord', 'my_comp.chord')
-		self.connect('boom_len.boom_len', 'my_comp.boom_len')
-		self.connect('b_htail.b_htail', 'my_comp.b_htail')
-		self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
+		# self.connect('sweep.sweep', 'my_comp.sweep')
+		# self.connect('chord.chord', 'my_comp.chord')
+		# self.connect('boom_len.boom_len', 'my_comp.boom_len')
+		# self.connect('b_htail.b_htail', 'my_comp.b_htail')
+		# self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
 		# self.connect('b_vtail.b_vtail', 'my_comp.b_vtail')
 		# self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
 		
@@ -149,14 +149,14 @@ prob.root.fd_options['step_size'] = 1.0e-6
 # - Uncomment any bounds as you add more design variables
 # - Must also uncomment the param in createAC.py
 prob.driver.add_desvar('b_wing.b_wing',   				lower = 0.25,    upper = 6. )
-prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
-													  	upper = np.array([5., 5., 5., 30.0 ]) )
-prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
-													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
-prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
-prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
-prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
-													  	upper = np.array([0.1, 0.2, 0.2, 3.0]) )
+# prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
+# 													  	upper = np.array([5., 5., 5., 30.0 ]) )
+# prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0.4, 0.01]),\
+# 													  	upper = np.array([0.3, 0.3, 0.3, 2.0]) )
+# prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
+# prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
+# prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
+# 													  	upper = np.array([0.1, 0.2, 0.2, 3.0]) )
 # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
 # prob.driver.add_desvar('vtail_chord.vtail_chord', 		lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
@@ -178,8 +178,8 @@ prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0
 # ======================================== Add Objective Function and Constraints========================== 
 prob.driver.add_objective('objPerformance.score')
 # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
-prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((AC.wing.num_sections,1))*0.05  )
-prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
+# prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((AC.wing.num_sections,1))*0.05  )
+# prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
 prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
 # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
@@ -219,7 +219,7 @@ prob.run()
 # Specify the output aircraft (final AC) from the MDO
 out_ac = prob['my_comp.aircraft']
 
-postProcess(in_ac, out_ac)
+postProcess_Main(in_ac, out_ac)
 
 
 # plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \

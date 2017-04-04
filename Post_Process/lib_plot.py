@@ -319,21 +319,21 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		plt_secL = sec_L[plt_ind]
 		plt_Yle = sec_Yle[plt_ind]
 		
-		# geo2.plot(  plt_Yle, plt_secCL, c1 )
-		geo2.plot(  plt_Yle, plt_secL, c1 )
+		geo2.plot(  plt_Yle, plt_secCL, c1 )
+		# geo2.plot(  plt_Yle, plt_secL, c1 )
 		
 		# Elliptical list distribution
-		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secL[0]
+		a = plt_Yle[-1] - plt_Yle[0]; b = plt_secCL[0]
 		plt_ellipCL = [ b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0]) ]
 		geo2.plot( plt_Yle, plt_ellipCL, c6 )
 	
 		# Automatic axis scaling
 		geo2_xlim.append([0.0, max(plt_Yle)*1.1])
-		geo2_ylim.append([min(plt_secL)*1.2, max(plt_secL)*1.2])
+		geo2_ylim.append([min(plt_secCL)*1.2, max(plt_secCL)*1.2])
 		
 		# Use other subplots in window for plotting sectional airfoils
 		for i in range (1, len(A) +1):
-			f = open('./airfoils/A_' + str(i) + '.dat', 'r')
+			f = open('Aerodynamics/airfoils/A_' + str(i) + '.dat', 'r')
 			flines = f.readlines()
 
 			X = []
@@ -363,4 +363,5 @@ def plotGeoFinalDuo(in_AC, out_AC):
 	geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
 
 	plt.tight_layout()
+	plt.savefig('OPT_#.pdf', bbox_inches='tight')
 	plt.show()

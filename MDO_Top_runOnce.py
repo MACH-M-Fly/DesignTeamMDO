@@ -264,7 +264,7 @@ out_ac.score = 12
 out_ac.wing.Yle[-1] = 2.
 out_ac.total_hours = 35
 
-postProcess(in_ac, out_ac)
+postProcess_Main(in_ac, out_ac)
 
 
 # plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \

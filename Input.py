@@ -34,7 +34,7 @@ AC.booms = 1
 AC.mission = 2
 
 # Number of wing sections (per half-span for wing and tail)
-num_sections_wing = 6
+num_sections_wing = 5
 num_sections_tail = 5
 
 
