@@ -40,7 +40,7 @@ num_sections_tail = 5
 
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
-AC.is_linear = 1
+AC.is_linear = 0
 
 # Specify origin for aicraft build (root chord leading edge position)
 AC.Xo = 0
@@ -137,10 +137,14 @@ AC.bank_angle = 20
 #       =========================================================================
 # density of aluminum (kg/m^3)
 AC.spar_den = 2700.0
+# Linear density of wooden spar (kg/m)
+AC.spar_lindens = 0.15361
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
 AC.TE_lindens = 5*0.453592*0.3048/4./4.
+# Linear density of wooden tail spar (kg/m)
+AC.spar_lindens_t = 0.15361/2.
 # Tail Leading Edge (LE) density (kg/m)
 AC.LE_lindens_t = 5*0.453592*0.3048*0.25/2.
 # Tail Trailing Edge (TE) density (kg/m)
