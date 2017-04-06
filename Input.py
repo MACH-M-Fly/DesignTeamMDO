@@ -56,7 +56,6 @@ b_wing = 1.8
 # Wing dihedral angle (degrees)
 dihedral = 5.0
 
-
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
 s_a = 0; s_b = 0; s_c = 0; s_d = 0.0;
@@ -75,8 +74,6 @@ AC.boom_len = 0.75
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 1; c_b = 1; c_c = 1; c_d = 1
 camber = np.array([c_a,c_b,c_c,c_d])
-camber_max = 0.15
-camber_min = 0.1
 # Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)
 mc_a = 1; mc_b = 1; mc_c = 1; mc_d = 1;
 max_camber = np.array([mc_a,mc_b,mc_c, mc_d])
@@ -84,8 +81,6 @@ max_camber = np.array([mc_a,mc_b,mc_c, mc_d])
 # Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)
 t_a = 1; t_b = 1; t_c = 1; t_d = 1;
 thickness = np.array([t_a,t_b,t_c, t_d])
-thickness_max = 0.15
-thickness_min = 0.1
 
 # Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
 mt_a = 1; mt_b = 1; mt_c = 1; mt_d = 1;
@@ -140,16 +135,12 @@ AC.bank_angle = 20
 #       =========================================================================
 #		Weights
 #       =========================================================================
-# Spar density (kg/m)
-AC.spar_lindens = 5*0.453592*0.3048/3/1.5
 # density of aluminum (kg/m^3)
 AC.spar_den = 2700.0
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5*0.453592*0.3048/4
 # Trailing Edge (TE) density (kg/m)
 AC.TE_lindens = 5*0.453592*0.3048/4./4.
-# Spar density (kg/m)
-AC.spar_lindens_t = 5*0.453592*0.3048/3/1.5/2.
 # Tail Leading Edge (LE) density (kg/m)
 AC.LE_lindens_t = 5*0.453592*0.3048*0.25/2.
 # Tail Trailing Edge (TE) density (kg/m)
@@ -170,8 +161,6 @@ AC.m_battery = 0.427
 AC.m_propeller = 0.15
 # Electronics mass (kg)
 AC.m_electronics = 0.381
-# Fuselage mass (kg)
-# AC.m_fuselage = 0.83
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
 
