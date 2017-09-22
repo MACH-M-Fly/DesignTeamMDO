@@ -3,7 +3,7 @@ from __future__ import division
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
+#from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
 
 from scipy.optimize import *

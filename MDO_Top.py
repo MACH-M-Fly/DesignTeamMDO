@@ -11,7 +11,7 @@ import copy
 #open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
+# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
 
 # Import self-created components
 from CreateAC import createAC
