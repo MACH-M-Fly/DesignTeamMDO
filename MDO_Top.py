@@ -183,6 +183,8 @@ prob.driver.add_constraint('objPerformance.chord_vals', lower = np.ones((AC.wing
 prob.driver.add_constraint('aeroAnalysis.SM', lower = 0.05, upper = 0.4)
 # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
 # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
+#SAE Regular Class constraint
+prob.driver.add_constraint('b_wing.b_wing', lower = 1.0, upper = 3.6576)
 
 
 # ======================================== Post-Processing ============================================== #
