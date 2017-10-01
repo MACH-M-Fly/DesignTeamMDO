@@ -21,3 +21,12 @@ Modules:
 
 
 
+Version 2:
+- Aero structural optimization 
+	- pros cons of switching to openaerostruct 
+- move away from classed based model for moving information around 
+	- easier to implement derivaties some components
+
+- Make the misson segments more modular 
+- compare take off simulations
+- improve post processing
