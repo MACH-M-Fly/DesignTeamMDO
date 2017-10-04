@@ -22,11 +22,21 @@ Modules:
 
 
 Version 2:
+
+- Move away from classed based model for moving information around 
+	- easier to implement derivaties some components
+- Compare take off simulations
+- Make the misson segments more modular 
+- Improve post processing
 - Aero structural optimization 
 	- pros cons of switching to openaerostruct 
-- move away from classed based model for moving information around 
-	- easier to implement derivaties some components
+- Parasitic drag calculation 
+- Resize the tail based on tail volume coefficients 
+- Dynamic Stability requirements 
 
-- Make the misson segments more modular 
-- compare take off simulations
-- improve post processing
+- Change objective functions ( MACH and Mfly )
+
+- Airfoil Optimization 
+
+- Machine Learning with Motocalc
+- Clean up what is printed to the terminal 
