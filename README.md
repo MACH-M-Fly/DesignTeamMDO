@@ -23,20 +23,26 @@ Modules:
 
 Version 2:
 
+
+- Change objective functions
+	- MACH (Kohki)
+	- Mfly (Nick)
+- Compare take off simulations (Ian)
+	- Use MFly Data
+- Parasitic drag calculation (Nick)
+- Airfoil DVs (camber, thickness, camber max loc, thickness max loc) (Josh)
+- Clean up what is printed to the terminal 
+- Improve post processing
+	- Movie (Josh)
+- Fuselage Shaping
+- Resize the tail based on tail volume coefficients (when not a DV)
+- Machine Learning with Motocalc to create a model to use in optimzation (Beldon)
 - Move away from classed based model for moving information around 
 	- easier to implement derivaties some components
-- Compare take off simulations
 - Make the misson segments more modular 
-- Improve post processing
+- Dynamic Stability requirements 
 - Aero structural optimization 
 	- pros cons of switching to openaerostruct 
-- Parasitic drag calculation 
-- Resize the tail based on tail volume coefficients 
-- Dynamic Stability requirements 
 
-- Change objective functions ( MACH and Mfly )
 
-- Airfoil Optimization 
 
-- Machine Learning with Motocalc
-- Clean up what is printed to the terminal 
