@@ -43,6 +43,9 @@ Version 2:
 - Dynamic Stability requirements 
 - Aero structural optimization 
 	- pros cons of switching to openaerostruct 
+- OpenMPI integration for parallel computing 
+- integrate PyoptSparse for gradient free optimizers 
+
 
 
 
