@@ -9,9 +9,11 @@ python get-pip.py --user
 echo $'\nPATH=$PATH:~/.local/bin' >> ~/.bash_profile
 source ~/.bash_profile
 
-# Upgrade numpy and scipy
+# Upgrade numpy, scipy, and matplotlib
 pip install --user numpy --upgrade
 pip install --user scipy --upgrade
+# pip install --user matplotlib --upgrade 
+
 
 # Install OpenMDAO
 pip install --user openmdao
