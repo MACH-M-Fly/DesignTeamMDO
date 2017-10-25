@@ -176,12 +176,17 @@ def getThrust(vel, ang):
 	"""
 
 	# Thrust data (from dynamic thrust testing)
-	T_0 = 53.29
+	# T_0 = 53.29
+	# T_1 = -1.02
+	# T_2 = -0.05008
+	# T_3 = 0
+	# T_4 = 0
+
+	T_0 = 26.29
 	T_1 = -1.02
 	T_2 = -0.05008
 	T_3 = 0
 	T_4 = 0
-
 	# Thrust available
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
 
@@ -457,6 +462,10 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	"""
 	Runway simulation to find maximum payload
 
+	TODO 
+	add Thrust Coef, landing gear height as an input 
+	group inputs 
+
 	Inputs
 	-------
 	CL 			: 	function
@@ -494,6 +503,8 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	time 		: 	float
 					time to takeoff
 	"""
+
+
 
 	# Speify no flaps used for takeoff
 	Flapped = 0
@@ -538,8 +549,12 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 		q = 0.5*Rho*vel**2
 		moment_tail = - q*getTailCL(ang, Flapped)*sref_tail*(boom_len - dist_LG)
 		moment_wing = q*(CM(ang)*sref_wing*MAC + CL(ang)*sref_wing*dist_LG)
+		moment_weight = -dist_LG*weight
+
+		# print('moment_tail ', moment_tail , 'moment_wing', moment_wing, 'moment_weight', moment_weight)
+
 		# damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*sref_wing
-		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail) # +damping_moment
+		ang_accel = 1.0/(Iyy + (weight/g)*dist_LG**2)*(moment_wing + moment_tail + moment_weight) # +damping_moment
 
 		if (ang <= 0.0 and ang_accel < 0.0) :
 			ang_accel = 0
@@ -571,7 +586,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 
 	time = [0.0]
-	dt = 0.05
+	dt = 0.005
 	time_elap = 0.0
 
 	DT =[dt]
@@ -624,9 +639,9 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 		# Change time step as pilot deflect elevator, safe bet to just use the small timestep
 		if (vel[i] < 0.92*(v_stall+2.0)) or (abs(ang_vel[i]) == 0.0 and (ang[i] < 10**-10 or ang[i] >=max_rot_ang)) :
-			dt = 0.05
+			dt = 0.005
 		else:
-			dt = 0.05
+			dt = 0.005
 		DT.append(dt)
 
 		time.append(time[i -1] + dt)
@@ -635,8 +650,10 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 		sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL)[0] - weight
 
 
-		if vel[i] > v_stall+2.0:
+		if vel[i] > v_stall*1.1**2:
 			Flapped = 1
+
+		# print(sum_y)
 
 
 	# # 400 ft runway length in meters
@@ -651,41 +668,41 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
 	# ============== Ploting ===============
 
-	plt.figure(1)
-	plt.subplot(611)
-	plt.ylabel('Angle)')
-	plt.xlabel('time')
-	plt.plot(time, ang, 'b')
+	# plt.figure(1)
+	# plt.subplot(611)
+	# plt.ylabel('Angle)')
+	# plt.xlabel('time')
+	# plt.plot(time, ang, 'b')
 
-	plt.subplot(612)
-	plt.ylabel('ang velocity')
-	plt.xlabel('time')
-	plt.plot(time, ang_vel, 'b')
+	# plt.subplot(612)
+	# plt.ylabel('ang velocity')
+	# plt.xlabel('time')
+	# plt.plot(time, ang_vel, 'b')
 
-	plt.subplot(613)
-	plt.ylabel('ang acceleration')
-	plt.xlabel('time')
-	plt.plot(time, ang_accel, 'b')
+	# plt.subplot(613)
+	# plt.ylabel('ang acceleration')
+	# plt.xlabel('time')
+	# plt.plot(time, ang_accel, 'b')
 
-	plt.subplot(614)
-	plt.ylabel('distance')
-	plt.xlabel('time')
-	plt.plot(time, dist, 'b')
+	# plt.subplot(614)
+	# plt.ylabel('distance')
+	# plt.xlabel('time')
+	# plt.plot(time, dist, 'b')
 
-	plt.subplot(615)
-	plt.ylabel('Velocity')
-	plt.xlabel('time')
-	plt.plot(time, vel, 'b')
+	# plt.subplot(615)
+	# plt.ylabel('Velocity')
+	# plt.xlabel('time')
+	# plt.plot(time, vel, 'b')
 
-	plt.subplot(616)
-	plt.ylabel('Acceleration')
-	plt.xlabel('time')
-	plt.plot(time, accel, 'b')
+	# plt.subplot(616)
+	# plt.ylabel('Acceleration')
+	# plt.xlabel('time')
+	# plt.plot(time, accel, 'b')
 
-	plt.subplot(717)
-	plt.ylabel('dt')
-	plt.xlabel('time')
-	plt.plot(time, DT, 'b')
+	# plt.subplot(717)
+	# plt.ylabel('dt')
+	# plt.xlabel('time')
+	# plt.plot(time, DT, 'b')
 
 	print('weight: ' + str(weight))
 	print('Sum Y:' + str(sum_y))

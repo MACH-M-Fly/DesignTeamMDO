@@ -128,7 +128,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 
 
 	# Steady level flight contraints
-	case.addConstraint('elevator', 0.00)
+	# case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
 	# Execute the case
@@ -180,8 +180,8 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	# plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
 
 	# plt.show()
-	print("NP = %f"% NP)
-	print("Max Elevator deflection = %f deg" % max(case.elev_def))
+	# print("NP = %f"% NP)
+	# print("Max Elevator deflection = %f deg" % max(case.elev_def))
 
 	return (alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity)
 

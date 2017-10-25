@@ -8,7 +8,7 @@ mx-2.03
 0     0     0.0              | iYsym  iZsym  Zsym
 
   17.080      1.423     12.900  | Sref   Cref   Bref
-   0.000    0.000     0.000          | Xref   Yref   Zref
+   5    0.000     0.000          | Xref   Yref   Zref
  0.00                        | CDp  (optional)
 
 
@@ -121,8 +121,8 @@ INDEX
 SECTION
 #Xle   Yle      Zle   Chord  Ain    [ Nspan Sspace ]
 7.00     0.0     0    0.75     0.0  7    1
-AFILE
-e654-il.dat
+NACA
+0012
 
 CONTROL
 #surface    gain  xhinge hvec	SgnDup
@@ -132,8 +132,8 @@ Elevator     -1.00   0.5  0 1 0       1.00
 SECTION
 #Xle   Yle      Zle   Chord  Ainc    [ Nspan Sspace ]
 7.00    1.03    0     0.75     0.0       7    1
-AFILE
-e654-il.dat
+NACA
+0012
 
 CONTROL
 #surface	gain	xhinge	hvec	SgnDup
