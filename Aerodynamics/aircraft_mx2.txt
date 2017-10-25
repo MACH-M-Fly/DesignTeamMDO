@@ -1,0 +1,187 @@
+#
+# Note : check consistency of area unit and length units in this file
+# Note : check consistency with inertia units of the .mass file
+#
+#
+mx-2.03
+0.0                          | Mach
+0     0     0.0              | iYsym  iZsym  Zsym
+
+  17.080      1.423     12.900  | Sref   Cref   Bref
+   0.000    0.000     0.000          | Xref   Yref   Zref
+ 0.00                        | CDp  (optional)
+
+
+
+#=================================================
+SURFACE                      | (keyword)
+Main Wing
+#Nchord    Cspace   [ Nspan Sspace ]
+13        1.0
+
+INDEX                        | (keyword)
+17192                          | Lsurf
+
+YDUPLICATE
+0.0
+
+SCALE
+1.0  1.0  1.0
+
+TRANSLATE
+0.0  0.0  0.0
+
+ANGLE
+   0.000                         | dAinc
+
+#Body
+
+
+#______________
+SECTION                                                     |  (keyword)
+  -0.1891    0.0000    0.0352    2.6900   3.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+AK-198.dat
+
+#______________
+SECTION                                                     |  (keyword)
+  -0.1391    0.1250    0.0345    2.6400   3.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+AK-198.dat
+
+#______________
+SECTION                                                     |  (keyword)
+   0.0009    0.2500    0.0327    2.5000   3.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+AK-198.dat
+
+#______________
+SECTION                                                     |  (keyword)
+   0.7506    0.4500    0.0222    1.7000   3.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+AK-198.dat
+
+#Wing
+
+#______________
+SECTION                                                     |  (keyword)
+   0.8350    0.5830    0.0000    1.5850   0.000    8    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+ch10sm.dat
+
+#______________
+SECTION                                                     |  (keyword)
+   1.1850    3.6120    0.0000    1.2240   0.000    10    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+ch10sm.dat
+
+
+#______________
+SECTION                                                     |  (keyword)
+   1.4090    5.5470    0.0000    0.9930   0.000    10   1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+ch10sm.dat
+
+
+#______________
+SECTION                                                     |  (keyword)
+   1.5350    6.4500    0.0000    0.8850   0.000    10    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+ch10sm.dat
+
+
+
+#===========================
+#    Horizontal Tail
+#==========================
+SURFACE
+Horizontal Tail
+10     1.0      20     2.0
+YDUPLICATE
+0.0
+#Xscale Yscale Zscale
+SCALE
+1.0     1.0       1.0
+ANGLE
+0.0
+TRANSLATE
+0.0   0.0    0.0
+INDEX
+2
+
+#-------------------Tail ROOT/ELEVATOR------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ain    [ Nspan Sspace ]
+7.00     0.0     0    0.75     0.0  7    1
+AFILE
+e654-il.dat
+
+CONTROL
+#surface    gain  xhinge hvec	SgnDup
+Elevator     -1.00   0.5  0 1 0       1.00
+
+#-------------------TAIL TIP/ELEVATOR---------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ainc    [ Nspan Sspace ]
+7.00    1.03    0     0.75     0.0       7    1
+AFILE
+e654-il.dat
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Elevator     -1.00   0.5  0 1 0        1.00
+
+
+
+#===========================
+#    Vertical Tail
+#===========================
+SURFACE
+Vertical Tail
+#Nchordwise Cspace Nspanwise Sspace
+10     1.0      15      1.0
+
+INDEX                        | (keyword)
+4861                          | Lsurf
+
+SCALE
+1.0  1.0  1.0
+
+TRANSLATE
+0.0  0.0  0.0
+
+ANGLE
+   0.000                         | dAinc
+
+#----------------------ROOT/RUDDER---------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ainc
+7.00    0     0     0.75     0
+NACA
+0012
+CLAF
+1.1078
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Rudder       1.00     0.5    0 0 1    -1.00
+
+#-----------------------TIP/RUDDER-----------------------------
+SECTION
+7.00   0    1.25  0.75    0
+NACA
+0012
+CLAF
+1.1078
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Rudder      1.00     0.5    0 0 1     -1.00
