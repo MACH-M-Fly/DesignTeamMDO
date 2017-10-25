@@ -12,8 +12,10 @@ source ~/.bash_profile
 # Upgrade numpy, scipy, and matplotlib
 pip install --user numpy --upgrade
 pip install --user scipy --upgrade
-# pip install --user matplotlib --upgrade 
 
 
 # Install OpenMDAO
 pip install --user openmdao
+
+# Copy ffmpeg to the users local directory 
+cp ./Resources/ffmpeg ~/.local/bin/

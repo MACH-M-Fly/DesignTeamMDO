@@ -474,7 +474,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	boom_len    :	float
 					length of tailboom
 	dist_LG 	: 	float
-					distance between leading edge and CG
+					distance between landing gear and CG
 	MAC 		: 	float
 					MAC of wing
 	Iyy 		:  	float

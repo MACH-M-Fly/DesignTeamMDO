@@ -39,48 +39,44 @@ def str2bool(v):
 
 
 
-
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('movie', metavar='N', type=int, default=0,
-                    help='an integer for the accumulator')
-parser.add_argument("nice", type=str2bool, nargs='?',
-                        const=True, default='True',
-                        help="Activate nice mode.")
+parser.add_argument('--movie',  type=str, default='F',
+                    help='toggle movie genration')
 
 
 
 args = parser.parse_args()
-args.movie = str2bool(movie)
-print(args.nice)
-quit()
+
+args.movie = str2bool(args.movie)
+
 
 # ==================================== Initailize plots for animation ===================================== #
+if args.movie:
+	fig = plt.figure(figsize=[12,8])
 
-fig = plt.figure(figsize=[12,8])
+	geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
+	geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
+	geo1.set_xlim([-2, 2])
+	geo1.set_ylim([-0.5, 2])
+	geo2.set_xlim([-2, 2])
+	geo2.set_ylim([-0.5,0.5])
 
-geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
-geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
-geo1.set_xlim([-2, 2])
-geo1.set_ylim([-0.5, 2])
-geo2.set_xlim([-2, 2])
-geo2.set_ylim([-0.5,0.5])
+	A = []
+	A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
+	A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
+	A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
+	A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
+	A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
+	for i in range(0,5):
+		A[i].set_xlim([0, 0.7])
+		A[i].set_ylim([-0.1, 0.2])
 
-A = []
-A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
-A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
-for i in range(0,5):
-	A[i].set_xlim([0, 0.7])
-	A[i].set_ylim([-0.1, 0.2])
+	plt.tight_layout()
 
-plt.tight_layout()
-
-# Animation Setup
-FFMpegWriter = animation.writers['ffmpeg']
-metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
-writer = FFMpegWriter(fps=15, metadata=metadata)
+	# Animation Setup
+	FFMpegWriter = animation.writers['ffmpeg']
+	metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
+	writer = FFMpegWriter(fps=15, metadata=metadata)
 
 class constrainedMDO(Group):
 	"""
@@ -123,7 +119,8 @@ class constrainedMDO(Group):
 		self.add('structAnalysis',structAnalysis())
 		self.add('objPerformance', objPerformance())
 		self.add('getBuildTime', getBuildTime())
-		self.add('Plot', Plot(geo1, geo2, A, writer, fig))
+		if args.movie:
+			self.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 		# ====================================== Connections ============================================ # 
 		# - Uncomment a connection to add that param as a design variable
@@ -152,7 +149,9 @@ class constrainedMDO(Group):
 		self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 		self.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 		self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-		self.connect('objPerformance.out_aircraft', 'Plot.in_aircraft')
+		if args.movie:
+			self.connect('objPerformance.out_aircraft', 'Plot.in_aircraft')
+
 
 
 # ============================================== Create Problem ============================================ #
@@ -224,7 +223,8 @@ root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis',structAnalysis())
 root.add('objPerformance', objPerformance())
 root.add('getBuildTime', getBuildTime())
-root.add('Plot', Plot(geo1, geo2, A, writer, fig))
+if args.movie:
+	root.add('Plot', Plot(geo1, geo2, A, writer, fig))
 
 # Setting up the MDO run
 root.connect('my_comp.aircraft','calcWeight.in_aircraft')
@@ -232,7 +232,8 @@ root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft','objPerformance.in_aircraft')
 root.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-root.connect('objPerformance.out_aircraft', 'Plot.in_aircraft')
+if args.movie:
+	root.connect('objPerformance.out_aircraft', 'Plot.in_aircraft')
 
 # prob0 = Problem(root)
 # prob0.setup()
@@ -242,10 +243,12 @@ prob.setup()
 # prob.run()
 in_ac = copy.deepcopy(prob['my_comp.aircraft'])
 
-# Animation settings
-with writer.saving(fig, "OPT_#.mp4", 100):
+if args.movie:
+	# Animation settings
+	with writer.saving(fig, "OPT_#.mp4", 100):
+		prob.run()
+else:
 	prob.run()
-
 # lib_plot(prob)
 
 # Specify the output aircraft (final AC) from the MDO
