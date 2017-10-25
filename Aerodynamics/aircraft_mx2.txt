@@ -3,13 +3,13 @@
 # Note : check consistency with inertia units of the .mass file
 #
 #
-mx-2.03
+mx-2.26
 0.0                          | Mach
 0     0     0.0              | iYsym  iZsym  Zsym
 
-  17.080      1.423     12.900  | Sref   Cref   Bref
-   5    0.000     0.000          | Xref   Yref   Zref
- 0.00                        | CDp  (optional)
+  20.536      1.630     14.092  | Sref   Cref   Bref
+   1.386    0.000     0.11          | Xref   Yref   Zref
+ 0.03015                       | CDp  (optional)
 
 
 
@@ -39,63 +39,78 @@ ANGLE
 
 #______________
 SECTION                                                     |  (keyword)
-  -0.1891    0.0000    0.0352    2.6900   3.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+  0.0000    0.0000    0.0000    3.6130   0.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-AK-198.dat
+airfoils/E435.dat
 
 #______________
 SECTION                                                     |  (keyword)
-  -0.1391    0.1250    0.0345    2.6400   3.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+  0.0500    0.1250    0.0000    3.5550   0.000    3    3   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-AK-198.dat
+airfoils/E435.dat
 
 #______________
 SECTION                                                     |  (keyword)
-   0.0009    0.2500    0.0327    2.5000   3.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+  0.1900    0.2500    0.0000    3.270   0.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-AK-198.dat
+airfoils/E435.dat
 
 #______________
 SECTION                                                     |  (keyword)
-   0.7506    0.4500    0.0222    1.7000   3.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+   0.4200    0.3750    0.0000    2.8750   0.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-AK-198.dat
+airfoils/E435.dat
+
+#______________
+SECTION                                                     |  (keyword)
+   0.7510    0.4500    0.0000    2.4200   0.000    3    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+airfoils/E435.dat
 
 #Wing
 
 #______________
 SECTION                                                     |  (keyword)
-   0.8350    0.5830    0.0000    1.5850   0.000    8    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+   1.5030    0.5830    0.0000    1.5680   1.000    16    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-ch10sm.dat
+airfoils/e420-il.dat
+
+CONTROL
+# surface	gain	xhinge	hvec	SgnDup
+ Aileron        -1.00   .75      0 1 0   -2.0
 
 #______________
 SECTION                                                     |  (keyword)
-   1.1850    3.6120    0.0000    1.2240   0.000    10    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+   1.7536    3.8753    0.0462    1.3174   -0.1207    8   1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-ch10sm.dat
+airfoils/e420-il.dat
+
+
+CONTROL
+# surface	gain	xhinge	hvec	SgnDup
+ Aileron        -1.00   .75      0 1 0   -2.0
+
+#______________
+SECTION                                                     |  (keyword)
+   1.9414    6.3414    0.0756    1.1296   -0.96015    8   1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+
+AFILE
+airfoils/e420-il.dat
 
 
 #______________
 SECTION                                                     |  (keyword)
-   1.4090    5.5470    0.0000    0.9930   0.000    10   1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+   1.994    7.0460    0.077    1.076   -1.200    10    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
 
 AFILE
-ch10sm.dat
-
-
-#______________
-SECTION                                                     |  (keyword)
-   1.5350    6.4500    0.0000    0.8850   0.000    10    1   | Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
-
-AFILE
-ch10sm.dat
+airfoils/e420-il.dat
 
 
 
@@ -111,7 +126,7 @@ YDUPLICATE
 SCALE
 1.0     1.0       1.0
 ANGLE
-0.0
+-1.0
 TRANSLATE
 0.0   0.0    0.0
 INDEX
@@ -120,24 +135,24 @@ INDEX
 #-------------------Tail ROOT/ELEVATOR------------------------
 SECTION
 #Xle   Yle      Zle   Chord  Ain    [ Nspan Sspace ]
-7.00     0.0     0    0.75     0.0  7    1
+7.641     0.0     0.25    .6458     0  7    1
 NACA
 0012
 
 CONTROL
 #surface    gain  xhinge hvec	SgnDup
-Elevator     -1.00   0.5  0 1 0       1.00
+Elevator     -1.00   0.5162  0 1 0       1.00
 
 #-------------------TAIL TIP/ELEVATOR---------------------------
 SECTION
 #Xle   Yle      Zle   Chord  Ainc    [ Nspan Sspace ]
-7.00    1.03    0     0.75     0.0       7    1
+7.641    1.6585    0.25     .6458     0       7    1
 NACA
 0012
 
 CONTROL
 #surface	gain	xhinge	hvec	SgnDup
-Elevator     -1.00   0.5  0 1 0        1.00
+Elevator     -1.00   0.5162  0 1 0        1.00
 
 
 
@@ -164,11 +179,10 @@ ANGLE
 #----------------------ROOT/RUDDER---------------------------
 SECTION
 #Xle   Yle      Zle   Chord  Ainc
-7.00    0     0     0.75     0
+7.6627    0     0.25     0.7500     0.0
 NACA
 0012
-CLAF
-1.1078
+
 
 CONTROL
 #surface	gain	xhinge	hvec	SgnDup
@@ -176,11 +190,10 @@ Rudder       1.00     0.5    0 0 1    -1.00
 
 #-----------------------TIP/RUDDER-----------------------------
 SECTION
-7.00   0    1.25  0.75    0
+7.6627   0    1.5085  0.7500   0
 NACA
 0012
-CLAF
-1.1078
+
 
 CONTROL
 #surface	gain	xhinge	hvec	SgnDup

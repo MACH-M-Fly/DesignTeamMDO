@@ -25,7 +25,7 @@ rho = 1.225
 #  x,y,z system here must be exactly the same one used in the .avl input file
 #     (same orientation, same origin location, same length units)
 #
-#     mass          x          y          z        Ixx        Iyy        Izz        Ixy        Ixz        Iyz 
+#     mass          x          y          z        Ixx        Iyy        Izz        Ixy        Ixz        Iyz
       33.5       1.386  -2.64e-16       0.11        253       7.95        261          0      0.231          0 ! Main Wing
          0       7.44   6.26e-17    0.00774          0          0          0          0          0          0 ! Elevator
          0       7.42  -8.08e-16        0.5          0          0          0          0          0          0 ! Fin
