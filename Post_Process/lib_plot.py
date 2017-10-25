@@ -4,8 +4,9 @@ from scipy.optimize import *
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import pdb
 # plt.rcParams['animation.ffmpeg_path'] = './.local/lib/python2.7/site-packages'
-from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
+# from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
 import numpy as np
 import os
@@ -59,16 +60,22 @@ class Plot(Component):
 		AC = params['in_aircraft']
 
 		# Pull variables from AC needed for plotting
-		Xle = AC.wing.Xle
-		Yle = AC.wing.Yle
-		C = AC.wing.chord_vals
-		Xle_ht = AC.tail.Xle_ht
-		Yle_ht = AC.tail.Yle
-		C_t = AC.tail.htail_chord_vals
+		Xle = AC.wing.Xle.tolist()
+		Yle = AC.wing.Yle.tolist()
+		C = AC.wing.chord_vals.tolist()
+		Xle_ht = AC.tail.Xle_ht.tolist()
+		Yle_ht = AC.tail.Yle_ht.tolist()
+		C_t = AC.tail.htail_chord_vals.tolist()
 		x_cg = AC.x_cg
 		NP = AC.NP
 		score = AC.score
 
+		x_cg = AC.x_cg
+		NP = AC.NP
+		score = AC.score
+		mount_len = AC.mount_len
+
+		# Plot aircraft geometry
 		wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 		wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 		wing_zpos = [0.0*abs(x) for x in wing_pos]
@@ -87,9 +94,9 @@ class Plot(Component):
 		self.geo1.set_xlim([-2, 2])
 		self.geo1.set_ylim([-0.5,2])
 
-		at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
-		at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-		self.geo1.add_artist(at)
+		# at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
+		# at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+		# self.geo1.add_artist(at)
 
 
 		self.geo2.plot(  wing_pos, wing_zpos ,  'b-', tail_pos, tail_zpos, 'r-')
@@ -119,9 +126,9 @@ class Plot(Component):
 
 			self.A[i -1].plot(X, Y, 'm-')
 
-		self.writer.grab_frame(figure = self.fig)
+		self.writer.grab_frame()
 
-		at.remove()
+		# at.remove()
 		self.geo1.lines = []
 		self.geo2.lines = []
 		self.A[0].lines = []
@@ -200,9 +207,9 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 	geo1.set_ylim([0.0, (max(Xle_ht)+max(C_t))*1.2])
 
 
-	at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
-	at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-	geo1.add_artist(at)
+	# at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
+	# at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+	# geo1.add_artist(at)
 
 	geo2.plot(  wing_pos, wing_zpos ,  'b-', tail_pos, tail_zpos, 'r-')
 	geo2.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
@@ -272,7 +279,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		Xle_ht = AC.tail.Xle_ht.tolist()
 		Yle_ht = AC.tail.Yle_ht.tolist()
 		C_t = AC.tail.htail_chord_vals.tolist()
-		x_cg = AC.CG[0]
+		x_cg = AC.x_cg
 		NP = AC.NP
 		score = AC.score
 		mount_len = AC.mount_len
@@ -302,9 +309,11 @@ def plotGeoFinalDuo(in_AC, out_AC):
 
 		# Show score to plot
 		if n == 1:
-			at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
-			at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
-			geo1.add_artist(at)
+			# at = AnchoredText(str(score),prop=dict(size=17), frameon=True, loc=2 )
+			# at.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
+			# geo1.add_artist(at)
+			pass
+			
 
 		if n == 1:
 			# Plot list distribution (use AOA closest to the cruise AOA)
