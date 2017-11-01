@@ -128,7 +128,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 
 
 	# Steady level flight contraints
-	# case.addConstraint('elevator', 0.00)
+	case.addConstraint('elevator', 0.00)
 	case.addConstraint('rudder', 0.00)
 
 	# Execute the case

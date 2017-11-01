@@ -4,8 +4,8 @@ from __future__ import print_function
 import Aerodynamics.aeroAnalysis as aeroAnalysis
 import Performance.objPerformance as objPerformance
 
-geo_filename = './Aerodynamics/aircraft_mx2.txt'
-mass_filename = './Aerodynamics/aircraft_mx2.mass'
+geo_filename = 'Aerodynamics/aircraft_mx2.txt'
+mass_filename = 'Aerodynamics/aircraft_mx2.mass'
 
 print('Running AVL Analysis')
 
@@ -23,6 +23,6 @@ print('Running Takeoff Sim')
 
 sum_y, dist, vel, ang, ang_vel, time = objPerformance.runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
 
-print('Takeoff Distance %0.1f m' % dist)
+print('Takeoff Distance %0.1f m, %0.1f ft' % (dist, dist * 3.28084))
 print('Takeoff Time %0.2f s' % time)
 print('Takeoff Velocity %0.2f m/s' % vel)

@@ -13,6 +13,91 @@ mx-2.26
 
 
 
+#===========================
+#    Horizontal Tail
+#==========================
+SURFACE
+Horizontal Tail
+10     1.0      20     2.0
+YDUPLICATE
+0.0
+#Xscale Yscale Zscale
+SCALE
+1.0     1.0       1.0
+ANGLE
+-1.0
+TRANSLATE
+0.0   0.0    0.0
+INDEX
+2
+
+#-------------------Tail ROOT/ELEVATOR------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ain    [ Nspan Sspace ]
+7.641     0.0     0.25    .6458     0  7    1
+NACA
+0012
+
+CONTROL
+#surface    gain  xhinge hvec	SgnDup
+Elevator     -1.00   0.5162  0 1 0       1.00
+
+#-------------------TAIL TIP/ELEVATOR---------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ainc    [ Nspan Sspace ]
+7.641    1.6585    0.25     .6458     0       7    1
+NACA
+0012
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Elevator     -1.00   0.5162  0 1 0        1.00
+
+
+
+#===========================
+#    Vertical Tail
+#===========================
+SURFACE
+Vertical Tail
+#Nchordwise Cspace Nspanwise Sspace
+10     1.0      15      1.0
+
+INDEX                        | (keyword)
+4861                          | Lsurf
+
+SCALE
+1.0  1.0  1.0
+
+TRANSLATE
+0.0  0.0  0.0
+
+ANGLE
+   0.000                         | dAinc
+
+#----------------------ROOT/RUDDER---------------------------
+SECTION
+#Xle   Yle      Zle   Chord  Ainc
+7.6627    0     0.25     0.7500     0.0
+NACA
+0012
+
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Rudder       1.00     0.5    0 0 1    -1.00
+
+#-----------------------TIP/RUDDER-----------------------------
+SECTION
+7.6627   0    1.5085  0.7500   0
+NACA
+0012
+
+
+CONTROL
+#surface	gain	xhinge	hvec	SgnDup
+Rudder      1.00     0.5    0 0 1     -1.00
+
 #=================================================
 SURFACE                      | (keyword)
 Main Wing
@@ -111,90 +196,3 @@ SECTION                                                     |  (keyword)
 
 AFILE
 airfoils/e420-il.dat
-
-
-
-#===========================
-#    Horizontal Tail
-#==========================
-SURFACE
-Horizontal Tail
-10     1.0      20     2.0
-YDUPLICATE
-0.0
-#Xscale Yscale Zscale
-SCALE
-1.0     1.0       1.0
-ANGLE
--1.0
-TRANSLATE
-0.0   0.0    0.0
-INDEX
-2
-
-#-------------------Tail ROOT/ELEVATOR------------------------
-SECTION
-#Xle   Yle      Zle   Chord  Ain    [ Nspan Sspace ]
-7.641     0.0     0.25    .6458     0  7    1
-NACA
-0012
-
-CONTROL
-#surface    gain  xhinge hvec	SgnDup
-Elevator     -1.00   0.5162  0 1 0       1.00
-
-#-------------------TAIL TIP/ELEVATOR---------------------------
-SECTION
-#Xle   Yle      Zle   Chord  Ainc    [ Nspan Sspace ]
-7.641    1.6585    0.25     .6458     0       7    1
-NACA
-0012
-
-CONTROL
-#surface	gain	xhinge	hvec	SgnDup
-Elevator     -1.00   0.5162  0 1 0        1.00
-
-
-
-#===========================
-#    Vertical Tail
-#===========================
-SURFACE
-Vertical Tail
-#Nchordwise Cspace Nspanwise Sspace
-10     1.0      15      1.0
-
-INDEX                        | (keyword)
-4861                          | Lsurf
-
-SCALE
-1.0  1.0  1.0
-
-TRANSLATE
-0.0  0.0  0.0
-
-ANGLE
-   0.000                         | dAinc
-
-#----------------------ROOT/RUDDER---------------------------
-SECTION
-#Xle   Yle      Zle   Chord  Ainc
-7.6627    0     0.25     0.7500     0.0
-NACA
-0012
-
-
-CONTROL
-#surface	gain	xhinge	hvec	SgnDup
-Rudder       1.00     0.5    0 0 1    -1.00
-
-#-----------------------TIP/RUDDER-----------------------------
-SECTION
-7.6627   0    1.5085  0.7500   0
-NACA
-0012
-
-
-CONTROL
-#surface	gain	xhinge	hvec	SgnDup
-Rudder      1.00     0.5    0 0 1     -1.00
