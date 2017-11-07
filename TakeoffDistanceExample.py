@@ -13,11 +13,13 @@ alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity = aeroAnalysis.getAe
 
 sref_wing = 1.904512
 sref_tail = 0.20028347
-weight = 13.20861 * 9.81
+weight = 12.23337624 * 9.81
 boom_len = 1.392426984
 dist_LG = 0.12827
 MAC = 0.496824
 Iyy = 0.3350
+
+# Typical Micro-Class Aircraft
 
 print('Running Takeoff Sim')
 

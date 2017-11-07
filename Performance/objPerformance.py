@@ -187,6 +187,12 @@ def getThrust(vel, ang):
 	T_2 = -0.05008
 	T_3 = 0
 	T_4 = 0
+
+	T_0 = 25.027
+	T_1 = 0.1057
+	T_2 = -0.0457
+	T_3 = 0.0018
+	T_4 = 0
 	# Thrust available
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
 
@@ -462,9 +468,9 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	"""
 	Runway simulation to find maximum payload
 
-	TODO 
-	add Thrust Coef, landing gear height as an input 
-	group inputs 
+	TODO
+	add Thrust Coef, landing gear height as an input
+	group inputs
 
 	Inputs
 	-------
@@ -562,9 +568,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 			ang_accel = -30*v_ang
 			if (abs(ang_accel) < 10**-27 and Flapped):
 				ang_accel = 0
-
 		else:
-
 			pass
 
 		return ang_accel
@@ -596,7 +600,6 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 	# While loop until no more net lift at the end oft he runway
 	# -  Uses a momentum buildup
 	while ((sum_y <= 0.0) and (time_elap < 20.0)) :
-
 		# F = ma yeilds two second order equations => system of 4 first order
 		# runge Kutta 4th to approximate kinimatic varibles at time = time + dt
 		k1_dist = dt*getVelocity(vel[i])
