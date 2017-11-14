@@ -29,7 +29,7 @@ sref_wing = 0.6787083
 sref_tail = 0.0535483
 weight = 1.81437 * 9.81
 boom_len = 1.0668
-dist_LG = 0.20193
+dist_LG = 0.127
 MAC = 0.20193
 Iyy = 0.1008
 

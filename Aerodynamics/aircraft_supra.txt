@@ -21,148 +21,6 @@ Aerodynamics/fuseSupra.dat
 
 #==============================================================
 SURFACE
-Inner Wing
- 7  1.0   8 -2.9   ! Nchord  Cspace   Nspan  Sspace
-
-INDEX
-1
-
-ANGLE
-     1.0     twist angle bias for whole surface
-
-YDUPLICATE
-0.0
-
-SCALE
-1.0  1.0  0.0437         ! 2.5 deg dihedral
-
-TRANSLATE
-0.0  0.0  0.0
-
-#---------------------------------------------
-SECTION
- 0.0      0.0       0.0        9.75    0.0      1 0
-
-AFIL 0.0 1.0
-airfoils/ag40d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.00  0.75    0. 0. 0.   -1.
-
-#---------------------
-SECTION
- 0.25     31.5     31.5        8.75    0.0      1 0
-
-AFIL 0.0 1.0
-airfoils/ag41d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.00  0.75    0. 0. 0.   -1.
-
-#==============================================================
-SURFACE
-Outer Wing
- 7  1.0  18 -2.0   ! Nchord  Cspace   Nspan  Sspace
-
-INDEX
-1
-
-ANGLE
-     1.0     twist angle bias for whole surface
-
-YDUPLICATE
-0.0
-
-SCALE
-1.0   1.0  0.13165   !  7.5 deg dihedral
-
-TRANSLATE
-0.25  31.5  1.37655
-
-#---------------------------------------------
-SECTION
- 0.0          0.0         0.0          8.75       0.0       1 0
-
-AFIL 0.0 1.0
-airfoils/ag41d.dat
-
-CONTROL
-flap      1.0  0.75   0. 0. 0.    1.
-
-CONTROL
-aileron  -1.0  0.75   0. 0. 0.   -1.
-
-#---------------------
-SECTION
- 1.0          23.5        23.5         6.25       -0.5       1 0
-
-AFIL 0.0 1.0
-airfoils/ag42d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.0  0.75    0. 0. 0.   -1.
-
-DESIGN
-twist  1.0
-#---------------------
-SECTION
- 1.72         29.5        29.5         5.00       -0.5       1 0
-
-AFIL 0.0 1.0
-airfoils/ag42d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.0  0.75    0. 0. 0.   -1.
-
-DESIGN
-twist  1.0
-
-#---------------------
-SECTION
- 2.75         34.0        34.0         3.40       -0.5       1 0
-
-AFIL 0.0 1.0
-airfoils/ag43d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.0  0.75    0. 0. 0.   -1.
-
-DESIGN
-twist  1.0
-
-#---------------------
-SECTION
- 3.50         35.50       35.50        2.3        -0.5       1 0
-
-AFIL 0.0 1.0
-airfoils/ag43d.dat
-
-CONTROL
-flap      1.0  0.75    0. 0. 0.    1.
-
-CONTROL
-aileron  -1.0  0.75    0. 0. 0.   -1.
-
-DESIGN
-twist  1.0
-
-#==============================================================
-SURFACE
 Stab
  5  1.0  12 -1.0   ! Nchord  Cspace   Nspan  Sspace
 
@@ -250,3 +108,147 @@ SECTION
  2.5      0.0        12.0         2.0     0.000000
 CONTROL
 rudder   1.0  0.50    0. 0. 0.    1.
+
+
+#==============================================================
+SURFACE
+Inner Wing
+ 7  1.0   8 -2.9   ! Nchord  Cspace   Nspan  Sspace
+
+INDEX
+1
+
+ANGLE
+     1.0     twist angle bias for whole surface
+
+YDUPLICATE
+0.0
+
+SCALE
+1.0  1.0  0.0437         ! 2.5 deg dihedral
+
+TRANSLATE
+0.0  0.0  0.0
+
+#---------------------------------------------
+SECTION
+ 0.0      0.0       0.0        9.75    0.0      1 0
+
+AFIL 0.0 1.0
+airfoils/ag40d.dat
+
+
+CONTROL
+aileron  -1.00  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+#---------------------
+SECTION
+ 0.25     31.5     31.5        8.75    0.0      1 0
+
+AFIL 0.0 1.0
+airfoils/ag41d.dat
+
+CONTROL
+aileron  -1.00  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+#==============================================================
+SURFACE
+Outer Wing
+ 7  1.0  18 -2.0   ! Nchord  Cspace   Nspan  Sspace
+
+INDEX
+1
+
+ANGLE
+     1.0     twist angle bias for whole surface
+
+YDUPLICATE
+0.0
+
+SCALE
+1.0   1.0  0.13165   !  7.5 deg dihedral
+
+TRANSLATE
+0.25  31.5  1.37655
+
+#---------------------------------------------
+SECTION
+ 0.0          0.0         0.0          8.75       0.0       1 0
+
+AFIL 0.0 1.0
+airfoils/ag41d.dat
+
+CONTROL
+aileron  -1.0  0.75   0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75   0. 0. 0.    1.
+
+#---------------------
+SECTION
+ 1.0          23.5        23.5         6.25       -0.5       1 0
+
+AFIL 0.0 1.0
+airfoils/ag42d.dat
+
+CONTROL
+aileron  -1.0  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+DESIGN
+twist  1.0
+#---------------------
+SECTION
+ 1.72         29.5        29.5         5.00       -0.5       1 0
+
+AFIL 0.0 1.0
+airfoils/ag42d.dat
+
+CONTROL
+aileron  -1.0  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+DESIGN
+twist  1.0
+
+#---------------------
+SECTION
+ 2.75         34.0        34.0         3.40       -0.5       1 0
+
+AFIL 0.0 1.0
+airfoils/ag43d.dat
+
+CONTROL
+aileron  -1.0  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+DESIGN
+twist  1.0
+
+#---------------------
+SECTION
+ 3.50         35.50       35.50        2.3        -0.5       1 0
+
+AFIL 0.0 1.0
+airfoils/ag43d.dat
+
+CONTROL
+aileron  -1.0  0.75    0. 0. 0.   -1.
+
+CONTROL
+flap      1.0  0.75    0. 0. 0.    1.
+
+DESIGN
+twist  1.0
