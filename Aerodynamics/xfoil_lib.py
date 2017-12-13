@@ -33,9 +33,8 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Outputs
     -------
     Saves airfoil to airfoils directory
-
     """
-    
+
     def Cmd(cmd):
         ps.stdin.write(cmd+'\n')
 
@@ -64,12 +63,12 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd(str(camber))
     Cmd('HIGH')
     Cmd(str(max_thick_pos))
-    Cmd(str(max_camb_pos))   
+    Cmd(str(max_camb_pos))
     Cmd('x')
     Cmd(' ')
     Cmd(' ')
 
-    # Increase paneling 
+    # Increase paneling
     # Cmd('PANE')
     Cmd('PPAR')
     Cmd('N')
@@ -92,8 +91,8 @@ def xfoilAlt(name, camber, max_camb_pos, thickness, max_thick_pos, Re, alpha ):
     Cmd('SAVE')
     Cmd('./airfoils/'+name+'.dat')
     Cmd(' ')
-    Cmd(' ')          
-          
+    Cmd(' ')
+
     Cmd('quit')  # exit
 
     ps.stdout.close()
@@ -117,7 +116,7 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Outputs
     -------
     Saves all data to a .dat file
-    
+
     """
 
     def Cmd(cmd):
@@ -145,12 +144,12 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd('FLAP')
     Cmd('0.5')
     Cmd('0')
-    Cmd('-20')   
+    Cmd('-20')
     Cmd('x')
     Cmd(' ')
     Cmd(' ')
 
-    # Increase paneling 
+    # Increase paneling
     Cmd('PPAR')
     Cmd('N')
     Cmd('250')
@@ -173,10 +172,10 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd('PDEL 0')
 
     Cmd(' ')
-    Cmd(' ')  
+    Cmd(' ')
 
     Cmd(name)
-    # Increase paneling 
+    # Increase paneling
     Cmd('GDES')
     Cmd(' ')
 
@@ -191,7 +190,7 @@ def xfoilRunFlap(name, Re, alpha_start, alpha_end ):
     Cmd('PDEL 0')
 
     Cmd(' ')
-           
+
 
     Cmd('quit')  # exit
 
@@ -216,7 +215,7 @@ def xfoilRun(name, Re, alpha_start, alpha_end ):
     Outputs
     -------
     Saves all data to a .dat file
-    
+
     """
 
     def Cmd(cmd):
@@ -235,8 +234,8 @@ def xfoilRun(name, Re, alpha_start, alpha_end ):
     # Load airfoil
     Cmd('load '+name+'.dat')
 
-    
-    # Increase paneling 
+
+    # Increase paneling
     Cmd('PANE')
     Cmd('PPAR')
     Cmd('N')
@@ -256,8 +255,8 @@ def xfoilRun(name, Re, alpha_start, alpha_end ):
     Cmd('PDEL')
 
     Cmd(' ')
-    Cmd(' ')          
-          
+    Cmd(' ')
+
     Cmd('quit')  # exit
 
     ps.stdout.close()
@@ -315,7 +314,7 @@ def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
     Cmd(str(camber))
     Cmd('HIGH')
     Cmd(str(max_thick_pos))
-    Cmd(str(max_camb_pos))   
+    Cmd(str(max_camb_pos))
     Cmd('x')
     Cmd(' ')
     Cmd(' ')
@@ -324,8 +323,8 @@ def xfoilFinal(name, camber, max_camb_pos, thickness, max_thick_pos):
     Cmd('SAVE')
     Cmd('./airfoils/'+name+'.dat')
     Cmd(' ')
-    Cmd(' ')          
-          
+    Cmd(' ')
+
     Cmd('quit')  # exit
 
     ps.stdout.close()
@@ -351,12 +350,12 @@ def getDataXfoil(filename):
     Cls:        :   ndarray
                     Cl's from run
     Cds:        :   ndarray
-                    Cd's from run   
+                    Cd's from run
     Cms:        :   ndarray
                     Cm's from run
     LtoDs:      :   ndarray
-                    L/D's (Ratios) from run                 
-    """    
+                    L/D's (Ratios) from run
+    """
 
     # Open file and read in
     f = open(filename, 'r')
@@ -367,10 +366,10 @@ def getDataXfoil(filename):
     Cls = []
     Cds = []
     Cms =  []
-   
+
     # Read data
-    for i in range(12,len(flines)): 
-        words = string.split(flines[i]) 
+    for i in range(12,len(flines)):
+        words = string.split(flines[i])
         alphas.append(float(words[ 0]))
         Cls.append(float(words[ 1]))
         Cds.append(float(words[ 2]))
@@ -388,7 +387,7 @@ def getDataXfoil(filename):
 #     LDmax = 0
 #     for i in range(12,len(flines)):
 #         #print flines[i]
-#         words = string.split(flines[i]) 
+#         words = string.split(flines[i])
 #         LD = float(words[1])/float(words[2])
 #         if(LD>LDmax):
 #             LDmax = LD

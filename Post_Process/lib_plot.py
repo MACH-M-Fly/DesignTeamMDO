@@ -9,7 +9,7 @@ from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
 
 import numpy as np
 import os
-import string	
+import string
 
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
@@ -35,9 +35,9 @@ class Plot(Component):
 
 	Outputs
 	-------
-	Plots		
-	"""  
-	
+	Plots
+	"""
+
 	# Plots each iteration configuration
 	def __init__(self, geo1, geo2, A, writer, fig):
 		super(Plot,self).__init__()
@@ -103,7 +103,7 @@ class Plot(Component):
 			X = []
 			Y = []
 			for j in range(1, len(flines)):
-				words = string.split(flines[j]) 
+				words = string.split(flines[j])
 				X.append(float(words[ 0]))
 				Y.append(float(words[ 1]))
 
@@ -130,17 +130,17 @@ class Plot(Component):
 		self.A[3].lines = []
 		self.A[4].lines = []
 
-# Function: Plots a final geometry with given inputs                                      
+# Function: Plots a final geometry with given inputs
 # Inputs:
 #     	Xle: Wing leading edge at each section (x coord.)
 #		Yle: Wing leading edge at each section (y coord.)
 #  		C: Chord at each section
-#   	Xle_ht: Tail leading edge at each section (x coord.)       
-#   	Yle_ht: Tail leading edge at each section (y coord.)  
-#  		C_t: Tail chord at each section  
+#   	Xle_ht: Tail leading edge at each section (x coord.)
+#   	Yle_ht: Tail leading edge at each section (y coord.)
+#  		C_t: Tail chord at each section
 #		x_cg: CG position
 #		NP: Neutral point position
-#		Score: Objective function score                               
+#		Score: Objective function score
 def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 	"""
 	Plots the final optimized geometry
@@ -150,20 +150,20 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 		Xle: Wing leading edge at each section (x coord.)
 		Yle: Wing leading edge at each section (y coord.)
 		C: Chord at each section
-		Xle_ht: Tail leading edge at each section (x coord.)       
-		Yle_ht: Tail leading edge at each section (y coord.)  
-		C_t: Tail chord at each section  
+		Xle_ht: Tail leading edge at each section (x coord.)
+		Yle_ht: Tail leading edge at each section (y coord.)
+		C_t: Tail chord at each section
 		x_cg: CG position
 		NP: Neutral point position
-		Score: Objective function score      
-		mount_len: Motor mount length to plot the motor  
+		Score: Objective function score
+		mount_len: Motor mount length to plot the motor
 
 
 	Outputs
 	-------
 	Single plot
-	"""   
-	
+	"""
+
 	wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1*x for x in Xle[::-1]]
 	wing_pos = Yle + Yle[::-1] + [-1*x for x in Yle] + [-1*x for x in Yle[::-1]]
 	wing_zpos = [0.0*abs(x) for x in wing_pos]
@@ -208,7 +208,7 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 	geo2.set_xlim([-max(Yle)*1.2, max(Yle)*1.2])
 	# Automatic axis scaling
 	geo2.set_ylim([-1, max(Xle_ht)*2.0])
-	
+
 	# Use other subplots in window for plotting sectional airfoils
 	for i in range (1, len(A) +1):
 		f = open('./airfoils/A_' + str(i) + '.dat', 'r')
@@ -217,7 +217,7 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 		X = []
 		Y = []
 		for j in range(1, len(flines)):
-			words = str.split(flines[j]) 
+			words = str.split(flines[j])
 			X.append(float(words[ 0]))
 			Y.append(float(words[ 1]))
 
@@ -292,10 +292,10 @@ def plotGeoFinalDuo(in_AC, out_AC):
 		geo1.plot( [Yle[2], Yle[2]] , [Xle[2] ,Xle[2] + C[2]] ,  c4)
 		geo1.plot( [Yle[3], Yle[3]] , [Xle[3] ,Xle[3] + C[3]] ,  c4)
 		geo1.plot( [Yle[4], Yle[4]] , [Xle[4] ,Xle[4] + C[4]] ,  c4)
-		
+
 		if n == 1:
 			geo1.plot(0, x_cg, 'ko', 0, NP, 'cd', 0, mount_len, 'bs')
-		
+
 		# Automatic axis scaling
 		geo1_xlim.append([-max(Yle)*1.2, max(Yle)*1.2])
 		geo1_ylim.append([0.0, (max(Xle_ht) + max(C_t)*1.2)])
@@ -319,19 +319,19 @@ def plotGeoFinalDuo(in_AC, out_AC):
 			plt_secCL = sec_CL[plt_ind]
 			plt_secL = sec_L[plt_ind]
 			plt_Yle = sec_Yle[plt_ind]
-			
+
 			# geo2.plot(  plt_Yle, plt_secCL, c1 )
 			geo2.plot(  plt_Yle, plt_secL, c1 )
-			
+
 			# Elliptical list distribution
 			a = plt_Yle[-1] - plt_Yle[0]; b = plt_secL[0]
 			plt_ellipCL = [ b*np.sqrt(1 - (x/a)**2) for x in (plt_Yle - plt_Yle[0]) ]
 			geo2.plot( plt_Yle, plt_ellipCL, c6 )
-		
+
 			# Automatic axis scaling
 			geo2_xlim.append([0.0, max(plt_Yle)*1.1])
 			geo2_ylim.append([min(plt_secL)*1.2, max(plt_secL)*1.2])
-		
+
 		# Use other subplots in window for plotting sectional airfoils
 		for i in range (1, len(A) +1):
 			f = open('Aerodynamics/airfoils/A_' + str(i) + '.dat', 'r')
@@ -340,7 +340,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
 			X = []
 			Y = []
 			for j in range(1, len(flines)):
-				words = str.split(flines[j]) 
+				words = str.split(flines[j])
 				X.append(float(words[ 0]))
 				Y.append(float(words[ 1]))
 
@@ -364,5 +364,5 @@ def plotGeoFinalDuo(in_AC, out_AC):
 	# geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
 
 	plt.tight_layout()
-	plt.savefig('OPT_#.pdf', bbox_inches='tight')
+	plt.savefig(('OPT_%s.pdf' % in_AC.AC_name), bbox_inches='tight')
 	plt.show()

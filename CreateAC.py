@@ -1,8 +1,8 @@
-#python stantdard libraries 
+#python stantdard libraries
 from __future__ import division
 from time import localtime, strftime, time
 
-# addition python libraries 
+# addition python libraries
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -40,7 +40,7 @@ class createAC(Component):
 	"""
 
 	def __init__(self ):
-		super(createAC,self).__init__()
+		super(createAC, self).__init__()
 
 		# Input instance of aircraft - before modification
 		self.add_param('def_aircraft',val=AC, desc='Aircraft Class')
@@ -56,10 +56,10 @@ class createAC(Component):
 		# self.add_param('dist_LG',val = 0.0, desc = 'Distance b/w LG and CG')
 		self.add_param('boom_len',val = 1.60, desc='Length of Tailboom')
 		# self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
-		# self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')	
+		# self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')
 		# self.add_param('thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='wing thickness')
 		# self.add_param('max_thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max thickness')	# Vertical Tail Span
-		# self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')	
+		# self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')
 		self.add_param('htail_chord',val = np.array([0.0 , 0.0, 0.0,0.325]), desc = 'Horiz. tail chord')
 		self.add_param('vtail_chord',val = np.array([0.0 , 0.0, 0.0,0.325]), desc = 'Vert. tail chord')
 		self.add_param('b_htail',val = 1.30, desc = 'Horiz. tail span')
@@ -72,7 +72,7 @@ class createAC(Component):
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
 		AC = params['def_aircraft']
-	
+
 		# Uncomment to reveal more design variables for use in the MDO
 		AC.wing.b_wing = params['b_wing']
 		# AC.wing.dihedral = params['dihedral']
@@ -96,6 +96,3 @@ class createAC(Component):
 
 		# Set output to updated instance of aircraft
 		unknowns['aircraft'] = AC
-
-
-		
