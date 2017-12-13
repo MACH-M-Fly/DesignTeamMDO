@@ -52,24 +52,17 @@ class avlAnalysis():
 
         self.velocity = []
 
-
         self.sec_CL = []
         self.sec_CD = []
         self.sec_Chord = []
         self.sec_Yle = []
 
         if not(geo_file == None):
-            try:
-                # check to make sure files exist
-                file = geo_file
-                f = open(geo_file,'r')
-                f.close()
+            files_exist = os.path.exists(geo_file)
+            if not(mass_file is None):
+                files_exist = files_exist and os.path.exists(mass_file)
 
-                if not(mass_file is None):
-                    file = mass_file
-                    f = open(mass_file,'r')
-                    f.close
-            except:
+            if not files_exist:
                 print 'ERROR:  There was an error opening the file %s'%(file)
                 sys.exit(1)
 
@@ -79,11 +72,10 @@ class avlAnalysis():
 
 
         elif not(aircraft_object == None):
-            pass
+            raise ValueError('avlAnalysis does not yet support aircraft object inputs')
 
         else:
-            print 'ERROR:  neither a geometry file or aircraft object was given'
-            sys.exit(1)
+            raise ValueError('ERROR: in avlAnalysis, neither a geometry file or aircraft object was given')
 
         return
 

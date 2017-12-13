@@ -58,7 +58,7 @@ def genGeo(AC):
 	MAC = AC.wing.MAC
 	b_wing = AC.wing.b_wing
 	cg = AC.wing.CG
-	CDp = 0.0
+	CDp = AC.CD_p
 	Xle = AC.wing.Xle
 	Yle = AC.wing.Yle
 	C = AC.wing.chord_vals

@@ -15,11 +15,11 @@ class Aircraft(object):
 	"""
 	Class used as a container for aircraft computation
 	- Parasitic drag
-		
-	"""   
+
+	"""
 
 	def __init__(self):
-
+        # TODO - UPDATE PARASITIC DRAG
 		self.CD_p = 0.0					# Parasitic drag coefficient
 		self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0])
 
@@ -30,8 +30,8 @@ class Wing(object):
 	- Surface geometry
 	- Position of the wing
 	- Sectional splitting
-	- Airfoils for wing	
-	"""   
+	- Airfoils for wing
+	"""
 
 	def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber,max_camber, thickness, max_thickness, \
 	 Afiles=[], ainc=np.array([])):
@@ -54,7 +54,7 @@ class Wing(object):
 		self.Afiles = Afiles					# File for initial airfoil input
 		self.ainc = ainc						# Angle of incidence as a function of half-span (b_wing/2)
 		self.sec_span = self.b_wing/2.0/(self.num_sections-1) 			# Span of each section of wing
-		
+
 		# Check for linearly varying input
 		if self.is_linear == 1:
 			self.chord[0] = 0
@@ -113,7 +113,7 @@ class Wing(object):
 		for i in range(self.num_sections):
 			span = (i+1)*self.sec_span
 			self.sweep_vals[i] =  sweep[0]*span**3 + sweep[1]*span**2 + \
-			sweep[2]*span + sweep[3] 
+			sweep[2]*span + sweep[3]
 		return self.sweep_vals
 
 	# Function: Calculate chord at spanwise locations
@@ -165,7 +165,7 @@ class Wing(object):
 		for i in range(1, self.num_sections):
 			# print("i",i)
 			angle = self.sweep_vals[i]*math.pi/180
-			self.Xle[i] = self.sec_span*i*math.tan(angle) 
+			self.Xle[i] = self.sec_span*i*math.tan(angle)
 			self.Yle[i] = self.sec_span*i
 			self.Zle[i] = self.Zo + self.sec_span*i*math.tan(self.dihedral*math.pi/180)
 		return np.array([self.Xle,
@@ -207,7 +207,7 @@ class Wing(object):
 	# def updateAircraftWing(self):
 	# 	self.b_wing = 5.0
 	# 	# Calculate wing chord values at each section
-		
+
 	# 	self.getChord()
 	# 	# print("Chord Vals",self.chord_vals)
 
@@ -249,8 +249,8 @@ class Tail():
 	- Surface geometry
 	- Position of the wing
 	- Sectional splitting
-	- Airfoils for wing	
-	"""   
+	- Airfoils for wing
+	"""
 
 	def __init__(self, num_sections, is_linear, b_htail, htail_chord, b_vtail, vtail_chord, Xo, Yo, Zo, boom_len, wing_rootchord_qrt):
 
@@ -375,7 +375,7 @@ class Tail():
 		self.Xle_vt = np.zeros(self.num_sections)
 		self.Yle_vt = np.zeros(self.num_sections)
 		self.Zle_vt = np.zeros(self.num_sections)
-		
+
 		self.Xle_vt[0] = self.Xo + wing_rootchord_qrt + self.boom_len - self.vtail_chord_vals[0]/4.
 		# print("Xle_ht HERE", self.Xle_ht)
 		self.Yle_vt[0] = self.Yo
@@ -417,7 +417,7 @@ class Body():
 	Class used as a container for all body/fuselage information (taken from input file)
 	- Translate and scale fuselage
 	- Volume
-	"""   
+	"""
 
 	def __init__(self, Bfile, translate = [0, 0, 0], scale = [1, 1, 1] ):
 		self.Bfile
@@ -426,9 +426,5 @@ class Body():
 
 	# Calculate interior volume
 	def getVolume(self):
-		pass 
+		pass
 		return
-
-
-
-

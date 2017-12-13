@@ -216,9 +216,7 @@ def getThrust(vel, ang):
 	Y_comp 		:	float
 					Y component of thrust available
 	"""
-
-	# TODO - THIS ONLY NEEDS TO BE HERE ONCE!
-
+	
 	# Thrust data (from dynamic thrust testing)
 	T_0 = 18.00
 	T_1 = -0.060
