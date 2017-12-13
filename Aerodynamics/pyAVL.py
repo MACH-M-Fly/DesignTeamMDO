@@ -3,7 +3,7 @@ pyAVL
 
 pyAVL is a wrapper for Mark Drela's Xfoil code. The purpose of this
 class is to provide an easy to use wrapper for avl for intergration
-into other projects. 
+into other projects.
 
 Developers:
 -----------
@@ -37,7 +37,7 @@ import pyavl as avl
 
 
 class avlAnalysis():
-    def __init__(self, geo_file =None, mass_file =None,  aircraft_object = None ):
+    def __init__(self, geo_file=None, mass_file=None,  aircraft_object=None ):
 
         self.__exe = False
 
@@ -58,11 +58,9 @@ class avlAnalysis():
         self.sec_Chord = []
         self.sec_Yle = []
 
-
-    
         if not(geo_file == None):
             try:
-                # check to make sure files exist 
+                # check to make sure files exist
                 file = geo_file
                 f = open(geo_file,'r')
                 f.close()
@@ -75,13 +73,12 @@ class avlAnalysis():
                 print 'ERROR:  There was an error opening the file %s'%(file)
                 sys.exit(1)
 
-            avl.avl()   
+            avl.avl()
             avl.loadgeo(geo_file)
             avl.loadmass(mass_file)
 
 
         elif not(aircraft_object == None):
-
             pass
 
         else:
@@ -164,7 +161,7 @@ class avlAnalysis():
         self.sec_Yle.append(np.asarray(avl.strp_r.rle[1][:NS]))
 
 
-        # print 'alfa:', avl.case_r.alfa   
+        # print 'alfa:', avl.case_r.alfa
 
         # print 'CLTOT:', avl.case_r.cltot
         # print 'CdTOT:', avl.case_r.cdtot
@@ -173,12 +170,12 @@ class avlAnalysis():
         # print 'Delcon', avl.case_r.delcon
 
 
-        
 
-        return 
+
+        return
 
     def calcNP(self):
-        # executeRun must be run first 
+        # executeRun must be run first
 
         if not(self.__exe):
             print 'ERROR:  executeRun most be called first'
@@ -191,14 +188,14 @@ class avlAnalysis():
 
         return
 
-    
+
 
     def alphaSweep(self, start_alpha, end_alpha, increment=1):
 
         alphas = np.arange(start_alpha, end_alpha+increment, increment)
 
         for alf in alphas:
-            self.addConstraint('alpha',alf)  
+            self.addConstraint('alpha',alf)
             self.executeRun()
 
         return
@@ -208,7 +205,7 @@ class avlAnalysis():
         CLs = np.arange(start_CL, end_CL+increment, increment)
 
         for cl in CLs:
-            self.addTrimCondition('CL',cl)  
+            self.addTrimCondition('CL',cl)
             self.executeRun()
 
         return
@@ -246,7 +243,7 @@ class avlAnalysis():
     #         CPSCL = avl.   cpfac*  avl.case_r.cref
 
 
-    #         for 
+    #         for
 
 
     #     return
@@ -277,11 +274,11 @@ class avlAnalysis():
 #              ZAVE = RV(3,IV)
 #              DELYZ = DCP(IV) * CPSCL
 #              XLOAD = XAVE
-#              YLOAD = YAVE + DELYZ*ENSY(J) 
+#              YLOAD = YAVE + DELYZ*ENSY(J)
 #              ZLOAD = ZAVE + DELYZ*ENSZ(J)
 
-# c             XLOAD = XAVE + DELYZ*ENC(1,IV) 
-# c             YLOAD = YAVE + DELYZ*ENC(2,IV) 
+# c             XLOAD = XAVE + DELYZ*ENC(1,IV)
+# c             YLOAD = YAVE + DELYZ*ENC(2,IV)
 # c             ZLOAD = ZAVE + DELYZ*ENC(3,IV)
 
 #              IF(II.GT.1) THEN
@@ -293,7 +290,7 @@ class avlAnalysis():
 #                PTS_LINES(2,2,IP) = YLOAD
 #                PTS_LINES(3,2,IP) = ZLOAD
 #                ID_LINES(IP) = 0
-#              ENDIF             
+#              ENDIF
 #              XLOADOLD = XLOAD
 #              YLOADOLD = YLOAD
 #              ZLOADOLD = ZLOAD

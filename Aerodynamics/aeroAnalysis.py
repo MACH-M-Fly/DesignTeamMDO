@@ -101,8 +101,6 @@ class aeroAnalysis(Component):
 
 def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = './Aerodynamics/aircraft.mass'):
 	"""
-# Specify path of xfoil
-xfoil_path = 'Aerodynamics/xfoil/elev_data'
 	Using AVL, calculate the full-vehicle aerodynamic coefficients
 	*As functions of the angle of attack
 
