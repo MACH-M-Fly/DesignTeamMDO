@@ -193,8 +193,6 @@ def getThrust(vel, ang):
 	T_2 = -0.0457
 	T_3 = 0.0018
 	T_4 = 0
-
-	T_0 = 17.7929 # For Supra
 	# Thrust available
 	T = vel**4*T_4 + vel**3*T_3 + vel**2*T_2 + vel*T_1 + T_0
 

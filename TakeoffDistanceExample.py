@@ -23,6 +23,12 @@ Iyy = 0.3350
 geo_filename = 'Aerodynamics/aircraft_supra.txt'
 mass_filename = 'Aerodynamics/aircraft_supra.mass'
 
+sum_y, dist, vel, ang, ang_vel, time = objPerformance.runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy)
+
+print('Takeoff Distance %0.1f m, %0.1f ft' % (dist, dist * 3.28084))
+print('Takeoff Time %0.2f s' % time)
+print('Takeoff Velocity %0.2f m/s' % vel)
+
 alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity = aeroAnalysis.getAeroCoef(geo_filename=geo_filename, mass_filename=mass_filename)
 
 sref_wing = 0.6787083
