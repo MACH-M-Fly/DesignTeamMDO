@@ -1,6 +1,5 @@
-# Python Files Remove
 *.pyc
-__pycache__/
+
 
 # Windows image file caches
 Thumbs.db
