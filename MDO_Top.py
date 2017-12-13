@@ -93,6 +93,8 @@ class constrainedMDO(Group):
 		# self.connect('max_thickness.max_thickness', 'my_comp.max_thickness')
 		# self.connect('Ainc.Ainc', 'my_comp.Ainc')
 
+
+
 		# Connections for components
 		# - This is where you can connect additional components
 		self.connect('my_comp.aircraft','calcWeight.in_aircraft')
@@ -172,6 +174,10 @@ prob.driver.add_desvar('chord.chord',        			lower = np.array([-0.4, -0.4, -0
 # prob.driver.add_desvar('max_thickness.max_thickness', 	lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
 # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
 # prob.driver.add_desvar('Ainc.Ainc', 	  				lower = 0.15, upper = 0.3)
+#------------------------ Propulsion System Design Variables---------------------------------------
+# KV
+# Prop Radius
+#
 
 
 
