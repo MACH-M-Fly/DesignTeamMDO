@@ -1,6 +1,7 @@
 # Results files
 *.pdf
 *.mp4
+*.out
 
 # Windows image file caches
 Thumbs.db
@@ -17,6 +18,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.exe
 
 # Windows shortcuts
 *.lnk
