@@ -17,6 +17,7 @@ from sympy import Symbol, nsolve
 
 # Import self-created components
 from Input import AC
+import APCdat_parser
 
 # Change the name of your componenet here
 class propulsionAnalysis(Component):
@@ -39,6 +40,9 @@ class propulsionAnalysis(Component):
 		# Output instance of aircaft - after modification
 		self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
+		# Initialize Kriging Model
+		self.model = createKriging([8,10],[5,8],[1000, 10000])
+
 
 	def solve_nonlinear(self,params,unknowns,resids):
 		# Used passed in instance of aircraft
@@ -54,7 +58,7 @@ class propulsionAnalysis(Component):
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
 
-		## NOTE TO SELF
+		## NOTE TO BELDON
 		# Reexeceute Ok3d object to get value at specific point
 
 

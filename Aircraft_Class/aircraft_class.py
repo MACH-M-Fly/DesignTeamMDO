@@ -428,3 +428,27 @@ class Body():
 	def getVolume(self):
 		pass
 		return
+
+class Propulsion():
+	""" 
+	Class used as a container for all propulsion information (taken from input file)
+	- Thrust curve
+	- Battery # of cell
+	- Mass
+	- Propeller properties (diameter and pitch)
+	"""
+
+	def _init__(self, motorKV, diameter, pitch, cellNum):
+		self.motorKV = motorKV
+		self.diameter = diameter
+		self.pitch = pitch
+		self.cellNum = cellNum
+		self.thrustCurve = [.01, .01, .01, .01, 10]
+
+	def setThrustCurve(self, A, B, C, D, E)
+		self.thrustCurve = [A, B, C, D, E]
+
+	def getThrustCurve(self)
+		return self.thrustCurve
+
+

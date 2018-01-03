@@ -7,8 +7,8 @@ from pykrige.ok3d import OrdinaryKriging3D
 from pykrige.uk3d import UniversalKriging3D
 
 #Plotting
-from mpl_toolkits.mplot3d import axes3d
-import mayavi.mlab as mlab
+#from mpl_toolkits.mplot3d import axes3d
+#import mayavi.mlab as mlab
 
 
 
@@ -187,17 +187,17 @@ def createKriging(rangeD, rangeP, rangeRPM):
 	return krigingDict
 
 
-# Plotting
-def plotKrigGrid(krigingDict, rangeD, rangeP, rangeRPM):
+# Plotting (NOT DONE YET, DO NOT USE)
+#def plotKrigGrid(krigingDict, rangeD, rangeP, rangeRPM):
 
-	predictFig = mlab.figure(figure='predict')
+#	predictFig = mlab.figure(figure='predict')
 	#  Axis
-	x = np.arange(float(rangeD[0]), float(rangeD[1]), 1.0) # diameter
-	y = np.arange(float(rangeP[0]), float(rangeP[1]), 1.0) # pitch
-	z = np.arange(float(rangeRPM[0]), float(rangeRPM[1]), 1000.0) # RPM
+#	x = np.arange(float(rangeD[0]), float(rangeD[1]), 1.0) # diameter
+#	y = np.arange(float(rangeP[0]), float(rangeP[1]), 1.0) # pitch
+#	z = np.arange(float(rangeRPM[0]), float(rangeRPM[1]), 1000.0) # RPM
 
-	plot = mlab.contour3d(krigingDict['coeff1'][1], contours=15, transparent=True, figure=predictFig)
-	mlab.show()
+#	plot = mlab.contour3d(krigingDict['coeff1'][1], contours=15, transparent=True, figure=predictFig)
+#	mlab.show()
 
 
 
@@ -211,5 +211,5 @@ def plotKrigGrid(krigingDict, rangeD, rangeP, rangeRPM):
 
 # Test Kriging model creation function
 
-KG = createKriging([8,10],[5,8],[1000, 10000])
-plotKrigGrid(KG,[8,10],[5,8],[1000, 10000])
+#KG = createKriging([8,10],[5,8],[1000, 10000])
+#plotKrigGrid(KG,[8,10],[5,8],[1000, 10000])
