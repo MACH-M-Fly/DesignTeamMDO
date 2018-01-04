@@ -54,7 +54,7 @@ class aeroAnalysis(Component):
 		# Other outputs to be used in top_level group (e.g. constraints)
 		self.add_output('SM', val = 0.0, desc = 'static margin')
 
-	def solve_nonlinear(self,params,unknowns,resids):
+	def solve_nonlinear(self, params, unknowns, resids):
 		# Used passed in instance of aircraft
 		AC = params['in_aircraft']
 

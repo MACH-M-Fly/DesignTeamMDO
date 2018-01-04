@@ -65,8 +65,6 @@ avl_trim_options = {'bankAng':['B'],
 def set_trim_cond(variable, value):
     avl.trmset('C1','1 ', options[variable][0], (str(value) +'  \n'))
 
-avl_queue = Queue()
-
 # =============================================================================
 # Multiprocessing AVL Run Function
 # =============================================================================
