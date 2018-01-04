@@ -138,7 +138,7 @@ def getAeroCoef(geo_filename = './Aerodynamics/aircraft.txt', mass_filename = '.
 	case.executeRun()
 
 	# Calculate the neutral point
-	case.calcNP()
+	#case.calcNP()
 	NP = case.NP
 
 	case.clearVals()
@@ -196,7 +196,6 @@ CL_tail_flap = np.poly1d(np.polyfit(alphas_tail,CLs_tail_flap, 2))
 CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap,CLs_tail_noflap, 2))
 
 
-
 def getThrust(vel, ang):
 	"""
 	Calculate the thrust available at a flight condition
@@ -216,7 +215,7 @@ def getThrust(vel, ang):
 	Y_comp 		:	float
 					Y component of thrust available
 	"""
-	
+
 	# Thrust data (from dynamic thrust testing)
 	T_0 = 18.00
 	T_1 = -0.060

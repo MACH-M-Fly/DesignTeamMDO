@@ -430,7 +430,7 @@ class Body():
 		return
 
 class Propulsion():
-	""" 
+	"""
 	Class used as a container for all propulsion information (taken from input file)
 	- Thrust curve
 	- Battery # of cell
@@ -445,10 +445,8 @@ class Propulsion():
 		self.cellNum = cellNum
 		self.thrustCurve = [.01, .01, .01, .01, 10]
 
-	def setThrustCurve(self, A, B, C, D, E)
+	def setThrustCurve(self, A, B, C, D, E):
 		self.thrustCurve = [A, B, C, D, E]
 
-	def getThrustCurve(self)
+	def getThrustCurve(self):
 		return self.thrustCurve
-
-
