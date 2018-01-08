@@ -18,11 +18,11 @@ SI UNITS ONLY
 # Create initial class
 AC = Aircraft()
 
-#=========================================================================
+# =========================================================================
 # Problem Setup		
 # Define name and number of surfaces
 # 1 = 1 wing surface, 2 = 2 wing surfaces, etc.
-#=========================================================================
+# =========================================================================
 
 AC.AC_name = "M6"
 AC.wings = 1
@@ -37,7 +37,6 @@ AC.mission = 2
 num_sections_wing = 5
 num_sections_tail = 5
 
-
 # 0 = Non-Linear (cubic) varying wing values
 # 1 = Linear constant sweep leading edge, linearly varying wing values
 AC.is_linear = 0
@@ -47,10 +46,10 @@ AC.Xo = 0
 AC.Yo = 0
 AC.Zo = 0
 
-#=========================================================================
+# =========================================================================
 # Wing Parameters (Design Variables)
 # Initial Conditions for Optimizer
-#=========================================================================
+# =========================================================================
 # Wingspan (m)
 b_wing = 1.8
 # Wing dihedral angle (degrees)
@@ -58,11 +57,17 @@ dihedral = 5.0
 
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
-s_a = 0; s_b = 0; s_c = 0; s_d = 0.0;
+s_a = 0
+s_b = 0
+s_c = 0
+s_d = 0.0
 sweep = np.array([s_a, s_b, s_c, s_d])
-		
+
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = .0; ch_b = .0; ch_c = .0; ch_d = 0.35;
+ch_a = .0
+ch_b = .0
+ch_c = .0
+ch_d = 0.35
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
@@ -72,29 +77,43 @@ AC.dist_LG = 0.35
 AC.boom_len = 0.75
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
-c_a = 1; c_b = 1; c_c = 1; c_d = 1
-camber = np.array([c_a,c_b,c_c,c_d])
+c_a = 1
+c_b = 1
+c_c = 1
+c_d = 1
+camber = np.array([c_a, c_b, c_c, c_d])
 # Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)
-mc_a = 1; mc_b = 1; mc_c = 1; mc_d = 1;
-max_camber = np.array([mc_a,mc_b,mc_c, mc_d])
+mc_a = 1
+mc_b = 1
+mc_c = 1
+mc_d = 1
+max_camber = np.array([mc_a, mc_b, mc_c, mc_d])
 
 # Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)
-t_a = 1; t_b = 1; t_c = 1; t_d = 1;
-thickness = np.array([t_a,t_b,t_c, t_d])
+t_a = 1
+t_b = 1
+t_c = 1
+t_d = 1
+thickness = np.array([t_a, t_b, t_c, t_d])
 
 # Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
-mt_a = 1; mt_b = 1; mt_c = 1; mt_d = 1;
-max_thickness = np.array([mt_a,mt_b,mt_c,mt_d])
+mt_a = 1
+mt_b = 1
+mt_c = 1
+mt_d = 1
+max_thickness = np.array([mt_a, mt_b, mt_c, mt_d])
 
 # Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
-ang_a = 1; ang_b = 1; ang_c = 1; ang_d = 1;
-ainc = np.array([ang_a,ang_b, ang_c, ang_d])
+ang_a = 1
+ang_b = 1
+ang_c = 1
+ang_d = 1
+ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 
-
-#=========================================================================
+# =========================================================================
 # Tail Parameters (Design Variables)
 # Initial Conditions for Optimizer
-#=========================================================================
+# =========================================================================
 # Horizontal tail span (m)
 b_htail = 0.75
 
@@ -102,25 +121,31 @@ b_htail = 0.75
 b_vtail = 0.2
 
 # Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ht_a = 0; ht_b = 0; ht_c = 0; ht_d = 0.1;
+ht_a = 0
+ht_b = 0
+ht_c = 0
+ht_d = 0.1
 htail_chord = np.array([ht_a, ht_b, ht_c, ht_d])
 
 # Vertical Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-vt_a = 0; vt_b = 0; vt_c = 0; vt_d = 0.1;
+vt_a = 0
+vt_b = 0
+vt_c = 0
+vt_d = 0.1
 vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 
-
-
-#=========================================================================
+# =========================================================================
 # Constant Parameters
-#=========================================================================
+# =========================================================================
 
 #       =========================================================================
 #		Propulsion
 #       =========================================================================
 # Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
-a = 1; b = 1; c = 1;
-AC.thrust = {a,b,c}
+a = 1
+b = 1
+c = 1
+AC.thrust = {a, b, c}
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
@@ -140,21 +165,21 @@ AC.spar_den = 2700.0
 # Linear density of wooden spar (kg/m)
 AC.spar_lindens = 0.15361
 # Leading Edge (LE) density (kg/m)
-AC.LE_lindens = 5*0.453592*0.3048/4
+AC.LE_lindens = 5 * 0.453592 * 0.3048 / 4
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5*0.453592*0.3048/4./4.
+AC.TE_lindens = 5 * 0.453592 * 0.3048 / 4. / 4.
 # Linear density of wooden tail spar (kg/m)
-AC.spar_lindens_t = 0.15361/2.
+AC.spar_lindens_t = 0.15361 / 2.
 # Tail Leading Edge (LE) density (kg/m)
-AC.LE_lindens_t = 5*0.453592*0.3048*0.25/2.
+AC.LE_lindens_t = 5 * 0.453592 * 0.3048 * 0.25 / 2.
 # Tail Trailing Edge (TE) density (kg/m)
-AC.TE_lindens_t = 5*0.453592*0.3048*0.15/2.
+AC.TE_lindens_t = 5 * 0.453592 * 0.3048 * 0.15 / 2.
 # Rib Mass (kg/r) per meter of rib
 AC.k_ribs = 0.0203
 # Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens = 4
 # Tail Rib Mass (kg/r) per meter of rib
-AC.k_ribs_t = 0.0203/4.
+AC.k_ribs_t = 0.0203 / 4.
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
 # Motor mass (kg)
@@ -169,70 +194,69 @@ AC.m_electronics = 0.381
 AC.ultrakote_Density = 0.1318
 
 # Create an instance of AC for wing values
-AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo, \
-		AC.Yo, AC.Zo, dihedral, camber,max_camber, thickness, max_thickness)
+AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
+               AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)
 
 # Create an instance of AC for tail values
-AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail, \
-		htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo, \
-		AC.Zo, AC.boom_len, AC.wing.chord_vals[0]/4.)
+AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail,
+               htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo,
+               AC.Zo, AC.boom_len, AC.wing.chord_vals[0] / 4.)
 
 
 def updateAircraft(cur_AC):
-	"""
-	Function to update the aircraft on each iteration of MDO
+    """
+    Function to update the aircraft on each iteration of MDO
 
 
-	Inputs
-	----------
-	cur_AC          :   Class
-						Class containing all aircraft data
+    Inputs
+    ----------
+    cur_AC          :   Class
+                        Class containing all aircraft data
 
 
-	Outputs
-	----------
-	none, just updates the aircraft (AC)
-	"""
-		  
-	# Create an instance of AC for wing values
-	AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep, \
-		cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber, \
-		cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
+    Outputs
+    ----------
+    none, just updates the aircraft (AC)
+    """
 
+    # Create an instance of AC for wing values
+    AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep,
+                   cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber,
+                   cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
 
-	# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
-	AC.wing.dist_type = 'elliptical'
+    # Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
+    AC.wing.dist_type = 'elliptical'
 
-	# Add wing structural parameters ('C', R', 'I')
-	AC.wing.spar_type = 'C'
+    # Add wing structural parameters ('C', R', 'I')
+    AC.wing.spar_type = 'C'
 
-	# Add spar dimensions (m)
-	outer_radius = 0.015
-	inner_radius = outer_radius*0.75
-	AC.wing.spar_dim = [outer_radius, inner_radius]
+    # Add spar dimensions (m)
+    outer_radius = 0.015
+    inner_radius = outer_radius * 0.75
+    AC.wing.spar_dim = [outer_radius, inner_radius]
 
-	# Spar Young's Modulus
-	AC.wing.spar_E = 68.9e9
+    # Spar Young's Modulus
+    AC.wing.spar_E = 68.9e9
 
-	# Create an instance of AC for tail values
-	AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail, \
-		cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo, \
-		cur_AC.Zo, AC.boom_len, cur_AC.wing.chord_vals[0]/4.)
+    # Create an instance of AC for tail values
+    AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail,
+                   cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo,
+                   cur_AC.Zo, AC.boom_len, cur_AC.wing.chord_vals[0] / 4.)
 
-	AC.tail.boom_Type = 'C'
+    AC.tail.boom_Type = 'C'
 
-	outer_radius = 0.0381/2.
-	inner_radius = 0.0174
-	AC.tail.boom_Dim = [outer_radius, inner_radius]
+    outer_radius = 0.0381 / 2.
+    inner_radius = 0.0174
+    AC.tail.boom_Dim = [outer_radius, inner_radius]
 
-	AC.tail.boom_E = 68.9e9
-	
-	# Reset score
-	AC.score = 0
+    AC.tail.boom_E = 68.9e9
+
+    # Reset score
+    AC.score = 0
+
 
 # Call the above function to update the aircraft for this MDO iteration
 updateAircraft(AC)
-
 
 print('=============== Initial vehicle Parameters =============')
 print('CDp', AC.CD_p)

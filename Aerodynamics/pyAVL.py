@@ -40,30 +40,34 @@ import pyavl as avl
 # AVL Trim and Constraint Options
 # =============================================================================
 
-avl_const_options = {'alpha':['A', 'A '],
-                    'beta':['B', 'B '],
-                    'roll rate':['R', 'R '],
-                    'pitch rate':['P', 'P '],
-                    'yaw rate':['Y', 'Y'],
-                    'elevator':['D1', 'PM '],
-                    'rudder': ['D2', 'YM '],
-                    'aileron': ['D3', 'RM ']}
+avl_const_options = {'alpha': ['A', 'A '],
+                     'beta': ['B', 'B '],
+                     'roll rate': ['R', 'R '],
+                     'pitch rate': ['P', 'P '],
+                     'yaw rate': ['Y', 'Y'],
+                     'elevator': ['D1', 'PM '],
+                     'rudder': ['D2', 'YM '],
+                     'aileron': ['D3', 'RM ']}
+
 
 def set_constraint_cond(variable, value):
-    avl.conset(avl_const_options[variable][0],(avl_const_options[variable][1] +  str(value) + ' \n'))
+    avl.conset(avl_const_options[variable][0], (avl_const_options[variable][1] + str(value) + ' \n'))
 
-avl_trim_options = {'bankAng':['B'],
-                    'CL':['C'],
-                    'velocity':['V'],
-                    'mass':['M'],
-                    'dens':['D'],
-                    'G':['G'],
+
+avl_trim_options = {'bankAng': ['B'],
+                    'CL': ['C'],
+                    'velocity': ['V'],
+                    'mass': ['M'],
+                    'dens': ['D'],
+                    'G': ['G'],
                     'X_cg': ['X'],
                     'Y_cg': ['Y'],
                     'Z_cg': ['Z']}
 
+
 def set_trim_cond(variable, value):
-    avl.trmset('C1','1 ', options[variable][0], (str(value) +'  \n'))
+    avl.trmset('C1', '1 ', avl_trim_options[variable][0], (str(value) + '  \n'))
+
 
 # =============================================================================
 # Multiprocessing AVL Run Function
@@ -72,6 +76,7 @@ def set_trim_cond(variable, value):
 class SequenceType(Enum):
     ALFA = 'alpha'
     CL = 'CL'
+
 
 def run_avl_with_params(queue, sequence_key, sequence):
     # Get the AVL analysis object
@@ -93,7 +98,7 @@ def run_avl_with_params(queue, sequence_key, sequence):
     for key in avl_analysis.trim_conds:
         trims = avl_analysis.trim_conds[key]
         variable = trims[0]
-        value = trim[1]
+        value = trims[1]
         set_trim_cond(variable, value)
 
     # Put in a default sequence Length
@@ -106,7 +111,7 @@ def run_avl_with_params(queue, sequence_key, sequence):
             set_constraint_cond(sequence_key.value, value)
         elif sequence_key == SequenceType.CL:
             set_trim_cond(sequence_key.value, value)
-        elif sequence_key == None:
+        elif sequence_key is None:
             pass
         else:
             raise RuntimeError('Invalid type for sequence %s' % sequence_key)
@@ -120,7 +125,7 @@ def run_avl_with_params(queue, sequence_key, sequence):
         # If success, append data items
         avl_analysis.alpha.append(float(avl.case_r.alfa))  # *(180.0/np.pi) # returend in radians)
         avl_analysis.CL.append(float(avl.case_r.cltot))
-        avl_analysis.CD.append(float(avl.case_r.cdtot))   # append(avl.case_r.cdvtot)  for total viscous)
+        avl_analysis.CD.append(float(avl.case_r.cdtot))  # append(avl.case_r.cdvtot)  for total viscous)
         avl_analysis.CM.append(float(avl.case_r.cmtot))
         avl_analysis.span_eff.append(float(avl.case_r.spanef))
 
@@ -143,41 +148,39 @@ def run_avl_with_params(queue, sequence_key, sequence):
     # Put avl_analysis back into queue
     queue.put(avl_analysis)
 
+
 # =============================================================================
 # AVL Data File
 # =============================================================================
 
 class avlAnalysis():
-    def __init__(self, geo_file=None, mass_file=None,  aircraft_object=None):
+    def __init__(self, geo_file=None, mass_file=None, aircraft_object=None):
         self.clearVals()
 
         self.geo_file = geo_file
         self.mass_file = mass_file
 
-        if not(geo_file == None):
+        if geo_file is not None:
             files_exist = os.path.exists(geo_file)
-            if not(mass_file is None):
+            if not (mass_file is None):
                 files_exist = files_exist and os.path.exists(mass_file)
 
             if not files_exist:
                 raise RuntimeError('ERROR:  There was an error opening the file %s' % file)
 
-
-
-        elif not(aircraft_object == None):
+        elif aircraft_object is not None:
             raise ValueError('avlAnalysis does not yet support aircraft object inputs')
 
         else:
             raise ValueError('ERROR: in avlAnalysis, neither a geometry file or aircraft object was given')
 
-
     def clearVals(self):
-        """Resets pertinant values that can be obtained from AVL"""
+        """Resets pertinent values that can be obtained from AVL"""
         self.__exe = False
 
         self.NP = None
 
-        self.alpha =[]
+        self.alpha = []
         self.CL = []
         self.CD = []
         self.CM = []
@@ -194,26 +197,23 @@ class avlAnalysis():
         self.sec_Yle = []
 
         self.constraints = dict()
-        self.trim_conds  = dict()
-
+        self.trim_conds = dict()
 
     def addConstraint(self, variable, val):
         self.__exe = False
 
         if variable not in avl_const_options:
-            raise ValueError('ERROR:  constraint varible not a valid option')
+            raise ValueError('ERROR:  constraint variable not a valid option')
         else:
             self.constraints[variable] = (variable, val)
-
 
     def addTrimCondition(self, variable, val):
         self.__exe = False
 
         if variable not in avl_trim_options:
-            raise ValueError('ERROR:  constraint varible not a valid option')
+            raise ValueError('ERROR:  constraint variable not a valid option')
         else:
             self.trim_conds[variable] = (variable, val)
-
 
     def executeRun(self, sequence_key=None, sequence=(None,)):
         queue = Queue()
@@ -230,23 +230,18 @@ class avlAnalysis():
         else:
             self.__dict__ = queue.get().__dict__
 
-
     def calcNP(self):
         # executeRun must be run first
         if not self.__exe:
             raise RuntimeError('ERROR:  executeRun most be called first')
 
-
     def alphaSweep(self, start_alpha, end_alpha, increment=1):
-        alphas = np.arange(start_alpha, end_alpha+increment, increment)
+        alphas = np.arange(start_alpha, end_alpha + increment, increment)
         self.executeRun(SequenceType.ALFA, tuple(alphas))
 
-
     def CLSweep(self, start_CL, end_CL, increment=0.1):
-        CLs = np.arange(start_CL, end_CL+increment, increment)
-        self.executeRun(Sequencetype.CL, tuple(alphas))
-
-
+        CLs = np.arange(start_CL, end_CL + increment, increment)
+        self.executeRun(SequenceType.CL, tuple(CLs))
 
     # def calcSectionalCPDist(self):
 
@@ -258,13 +253,9 @@ class avlAnalysis():
 
     #         CPSCL = avl.   cpfac*  avl.case_r.cref
 
-
     #         for
 
-
     #     return
-
-
 
 #### fortran code
 
@@ -273,7 +264,6 @@ class avlAnalysis():
 #         J1 = JFRST(N)
 #         JN = JFRST(N) + NJ(N)-1
 #         JINC = 1
-
 
 
 #            CPSCL = CPFAC*CREF
