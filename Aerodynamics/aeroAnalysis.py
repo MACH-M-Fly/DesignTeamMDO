@@ -68,7 +68,11 @@ class aeroAnalysis(Component):
         # print("Horiz. Tail  Chord Cubic Terms", AC.tail.htail_chord)
 
         # Call aero analysis to get CL, CD, CM and NP - Add to class
-        AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.sec_CL, AC.sec_Yle, sec_Chord, velocity = getAeroCoef()
+        try:
+            AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.sec_CL, AC.sec_Yle, sec_Chord, velocity = getAeroCoef()
+        except RuntimeError as e:
+            print(e)
+            return False # TODO - FIX THIS TO PROPERLY ACCOUNT FOR NO-TRIM
 
         # Static Margine calculation
         SM = (AC.NP - AC.CG[0]) / AC.wing.MAC
@@ -123,70 +127,64 @@ def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aer
     NP : float
        X location of NP in AVL coordinate system
     """
-    try:
-        # Create the pyAVL case
-        case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file=mass_filename)
+    # Create the pyAVL case
+    case = pyAVL.avlAnalysis(geo_file=geo_filename, mass_file=mass_filename)
 
-        # Steady level flight contraints
-        case.addConstraint('elevator', 0.00)
-        case.addConstraint('rudder', 0.00)
+    # Steady level flight contraints
+    case.addConstraint('elevator', 0.00)
+    case.addConstraint('rudder', 0.00)
 
-        # Execute the case
-        case.executeRun()
+    # Execute the case
+    case.executeRun()
 
-        # Calculate the neutral point
-        # case.calcNP()
-        NP = case.NP
+    # Calculate the neutral point
+    # case.calcNP()
+    NP = case.NP
 
-        case.clearVals()
+    case.clearVals()
 
-        # Create a sweep over angle of attack
-        # case.alphaSweep(-15, 30, 2)
-        case.alphaSweep(-15, 15, 4)
+    # Create a sweep over angle of attack
+    # case.alphaSweep(-15, 30, 2)
+    case.alphaSweep(-15, 15, 4)
 
-        alpha = case.alpha
-        sec_CL = case.sec_CL
-        sec_Yle = case.sec_Yle
-        sec_Chord = case.sec_Chord
-        velocity = case.velocity
+    alpha = case.alpha
+    sec_CL = case.sec_CL
+    sec_Yle = case.sec_Yle
+    sec_Chord = case.sec_Chord
+    velocity = case.velocity
 
-        # get func for aero coeificent
-        CL = np.poly1d(np.polyfit(case.alpha, case.CL, 1))
-        CD = np.poly1d(np.polyfit(case.alpha, case.CD, 2))
-        CM = np.poly1d(np.polyfit(case.alpha, case.CM, 2))
+    # get func for aero coeificent
+    CL = np.poly1d(np.polyfit(case.alpha, case.CL, 1))
+    CD = np.poly1d(np.polyfit(case.alpha, case.CD, 2))
+    CM = np.poly1d(np.polyfit(case.alpha, case.CM, 2))
 
-        # # ----------------- Plot Outputs --------------------------
-        # plt.figure(4)
-        # plt.subplot(411)
-        # plt.ylabel('CL')
-        # plt.xlabel('Alpha')
-        # plt.plot( np.degrees(case.alpha), case.CL, 'b-o')
+    # # ----------------- Plot Outputs --------------------------
+    # plt.figure(4)
+    # plt.subplot(411)
+    # plt.ylabel('CL')
+    # plt.xlabel('Alpha')
+    # plt.plot( np.degrees(case.alpha), case.CL, 'b-o')
 
-        # plt.subplot(412)
-        # plt.xlabel('CD')
-        # plt.ylabel('CL')
-        # plt.plot( case.CD, case.CL, 'b-o')
+    # plt.subplot(412)
+    # plt.xlabel('CD')
+    # plt.ylabel('CL')
+    # plt.plot( case.CD, case.CL, 'b-o')
 
-        # plt.subplot(413)
-        # plt.ylabel('CM')
-        # plt.xlabel('Alpha')
-        # plt.plot(np.degrees(case.alpha), case.CM, 'b-o')
+    # plt.subplot(413)
+    # plt.ylabel('CM')
+    # plt.xlabel('Alpha')
+    # plt.plot(np.degrees(case.alpha), case.CM, 'b-o')
 
-        # plt.subplot(414)
-        # plt.ylabel('Elvator Deflection')
-        # plt.xlabel('Alpha')
-        # plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
+    # plt.subplot(414)
+    # plt.ylabel('Elvator Deflection')
+    # plt.xlabel('Alpha')
+    # plt.plot(np.degrees(case.alpha), case.elev_def, 'b-o')
 
-        # plt.show()
-        print("NP = %f" % NP)
-        print("Max Elevator deflection = %f deg" % max(case.elev_def))
+    # plt.show()
+    print("NP = %f" % NP)
+    print("Max Elevator deflection = %f deg" % max(case.elev_def))
 
-        return (alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity)
-    except RuntimeError as e:
-        import sys
-        print('Testing runtime error')
-        sys.stdout.flush() # TODO - NEED TO SPECIFY FAILURE HERE!
-        raise e
+    return (alpha, CL, CD, CM, NP, sec_CL, sec_Yle, sec_Chord, velocity)
 
 
 # Use xfoil to get sectional values for an airfoil
