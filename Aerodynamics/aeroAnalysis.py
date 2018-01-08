@@ -185,7 +185,7 @@ def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aer
     except RuntimeError as e:
         import sys
         print('Testing runtime error')
-        sys.stdout.flush()
+        sys.stdout.flush() # TODO - NEED TO SPECIFY FAILURE HERE!
         raise e
 
 
