@@ -71,8 +71,18 @@ class aeroAnalysis(Component):
         try:
             AC.alpha, AC.CL, AC.CD, AC.CM, AC.NP, AC.sec_CL, AC.sec_Yle, sec_Chord, velocity = getAeroCoef()
         except RuntimeError as e:
+            print('TRIM FAILED')
             print(e)
-            return False # TODO - FIX THIS TO PROPERLY ACCOUNT FOR NO-TRIM
+            AC.alpha = [ 0 ]
+            AC.CL = lambda x: 0
+            AC.CD = lambda x: 0
+            AC.CM = lambda x: 0
+            AC.NP = 0
+            AC.sec_CL = [ [ 0 ] ]
+            AC.sec_Yle = [ [ 0 ] ]
+            sec_Chord = [ [ 0 ] ]
+            velocity = [ [ 0 ] ]
+            #return False # TODO - FIX THIS TO PROPERLY ACCOUNT FOR NO-TRIM
 
         # Static Margine calculation
         SM = (AC.NP - AC.CG[0]) / AC.wing.MAC
