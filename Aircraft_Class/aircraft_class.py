@@ -438,15 +438,16 @@ class Propulsion():
 	- Propeller properties (diameter and pitch)
 	"""
 
-	def _init__(self, motorKV, diameter, pitch, cellNum):
+	def _init__(self, motorKV, diameter, pitch, cellNum, thrustCurve, escCur):
 		self.motorKV = motorKV
 		self.diameter = diameter
 		self.pitch = pitch
 		self.cellNum = cellNum
-		self.thrustCurve = [.01, .01, .01, .01, 10]
+		self.thrustCurve = thrustCurve
+		self.escCur = escCur
 
-	def setThrustCurve(self, A, B, C, D, E):
-		self.thrustCurve = [A, B, C, D, E]
+	def setThrustCurve(self, thrustCurve):
+		self.thrustCurve = thrustCurve
 
 	def getThrustCurve(self):
 		return self.thrustCurve

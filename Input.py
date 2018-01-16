@@ -138,18 +138,30 @@ vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 # Constant Parameters
 # =========================================================================
 
-#       =========================================================================
-#		Propulsion
-#       =========================================================================
+# =========================================================================
+# Propulsion
+# =========================================================================
 # Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
-a = 1
-b = 1
-c = 1
-AC.thrust = {a, b, c}
+a = 0
+b = 0
+c = 0
+d = 0
+e = 1
+AC.thrust = {a, b, c, d, e}
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
+# Number of battery cells
+AC.cell_Num = 2
+# Motor KV
+AC.motor_KV = 300
+# Propeller Diameter
+AC.prop_diam = 6
+# Propeller Pitch
+AC.prop_pitch = 4
+# ESC max current
+AC.esc_max = 100
 # Runway length (m)
 AC.runway_length = 200
 # Desired climb rate (for carpet plot, m/s)
@@ -202,6 +214,9 @@ AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail,
                htail_chord, b_vtail, vtail_chord, AC.Xo, AC.Yo,
                AC.Zo, AC.boom_len, AC.wing.chord_vals[0] / 4.)
 
+# Create an instance of AC for propulsion values
+AC.propulsion = Propulsion(AC.motor_KV, AC.prop_diam, AC.prop_pitch, AC.cell_Num, AC.thrust, AC.esc_max)
+
 
 def updateAircraft(cur_AC):
     """
@@ -238,6 +253,9 @@ def updateAircraft(cur_AC):
     # Spar Young's Modulus
     AC.wing.spar_E = 68.9e9
 
+    # Add propulsion system
+    AC.propulsion = Propulsion(cur_AC.motor_KV, cur_AC.prop_diam, cur_AC.prop_pitch, cur_AC.cell_Num, cur_AC.thrust, cur_AC.esc_max)
+
     # Create an instance of AC for tail values
     AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail,
                    cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo,
@@ -253,6 +271,8 @@ def updateAircraft(cur_AC):
 
     # Reset score
     AC.score = 0
+
+
 
 
 # Call the above function to update the aircraft for this MDO iteration

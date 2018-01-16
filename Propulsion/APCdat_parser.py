@@ -40,6 +40,7 @@ def propDataParse(filename):
 	perfArray = []
 	velArray = []
 	thrustArray = []
+	torqueArray = []
 	dataMode = 0
 	dataIndex = 0
 	dictKey = ''
@@ -65,14 +66,19 @@ def propDataParse(filename):
 			if not isfloat(data[i]):
 				dataMode = 0
 				#Put into dictionary
-				perfDict[dictKey] = [np.array(velArray), np.array(thrustArray)]
+				perfDict[dictKey] = [np.array(velArray), np.array(thrustArray), np.array(torqueArray)]
 				velArray = []
 				thrustArray = []
+				torqueArray = []
 
 			else:
 				# Read in velocity
 				if dataIndex == 0:
 					velArray.append(float(data[i]))
+					dataIndex = dataIndex + 1
+
+				elif dataIndex == 6:
+					torqueArray.append(float(data[i]))
 					dataIndex = dataIndex + 1
 				# Read in Thrust and put into array
 				elif dataIndex == 7:
@@ -86,28 +92,36 @@ def propDataParse(filename):
 	for key in perfDict:
 		velNan = []
 		tNan = []
+		qNan = []
 		for num in range(perfDict[key][0].size):
 			if math.isnan(perfDict[key][0][num]) or math.isnan(perfDict[key][1][num])  :
 				velNan.append(num)
 				tNan.append(num)
+				qNan.append(num)
 		newVel = np.delete(perfDict[key][0], velNan)
 		newT = np.delete(perfDict[key][1], tNan)
-		perfDict[key] = [newVel, newT]
+		newQ = np.delete(perfDict[key][2], qNan)
+		perfDict[key] = [newVel, newT, newQ]
 
 
 	# Iterate through each thrust curve and interpolate 4 degree polynomial
-	coeffDict = {}
+	coeffDictThrust = {}
+	coeffDictTorque = {}
 	for key in perfDict:
 		# Convert MPH to m/s
 		vel = perfDict[key][0] * 0.44704 
 		# Convert lbf to N
 		T = perfDict[key][1] * 4.44822
+		# Convert in-lbf to N-m
+		Q = perfDict[key][2] * .112985
 		# Polyfit
 		coeff = np.polyfit(vel, T, 4)
-		coeffDict[key] = coeff
+		coeffQ = np.polyfit(vel,Q,4)
+		coeffDictThrust[key] = coeff
+		coeffDictTorque[key] = coeffQ
 
 	# print(coeffDict)
-	return [data,perfDict, coeffDict]
+	return [data,perfDict, coeffDictThrust, coeffDictTorque]
 
 
 # Creates a Kriging model
@@ -126,6 +140,7 @@ def createKriging(rangeD, rangeP, rangeRPM):
 	# Collect Data
 	#================
 	dataDict = {}
+	dataDictQ = {}
 	for i in range(5):
 		dataDict[str(i)] = []
 	for d in range(rangeD[0],rangeD[1]+1):
@@ -133,7 +148,8 @@ def createKriging(rangeD, rangeP, rangeRPM):
 			filestring = 'PER3_'+str(d)+'x'+str(p)+'.dat'
 			print('Reading in '+filestring)
 			output = propDataParse(filestring)
-			coeffDict = output[2]
+			coeffDictT = output[2]
+			coeffDictQ = output[3]
 			print('Success reading in '+filestring)
 			# Only keep the values within the RPM range
 			for rpm in range(rangeRPM[0], rangeRPM[1]+1000, 1000):
@@ -141,6 +157,8 @@ def createKriging(rangeD, rangeP, rangeRPM):
 				for i in range(5):
 					# print(str(rpm))
 					dataDict[str(i)].append([float(d), float(p), float(rpm), float(coeffDict[str(rpm)][i])])
+					dataDictQ[str(i)].append([float(d), float(p), float(rpm), float(coeffDictQ[str(rpm)][i])])
+
 
 
 	#======================
@@ -182,7 +200,47 @@ def createKriging(rangeD, rangeP, rangeRPM):
 	k3d5, ss3d5 = ok3d5.execute('grid', x, y, z)
 	krigingDict['coeff5'] = [ok3d5, k3d5, ss3d5]
 
-	print('Success creating Kriging Model for Propulsion Component')
+	print('Success creating Kriging Model for Propulsion Component: Thrust')
+
+	#=============
+	# Torque
+	#=============
+	data = np.array(dataDictQ[str(0)])
+	ok3d1 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
+                                                 variogram_model='linear')
+	k3d1, ss3d1 = ok3d1.execute('grid', x, y, z)
+	krigingDict['coeff1Q'] = [ok3d1, k3d1, ss3d1]
+
+	# Coeff 2
+	data = np.array(dataDictQ[str(1)])
+	ok3d2 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
+                                                 variogram_model='linear')
+	k3d2, ss3d2 = ok3d2.execute('grid', x, y, z)
+	krigingDict['coeff2Q'] = [ok3d2, k3d2, ss3d2]
+
+	# Coeff 3
+	data = np.array(dataDictQ[str(2)])
+	ok3d3 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
+                                                 variogram_model='linear')
+	k3d3, ss3d3 = ok3d3.execute('grid', x, y, z)
+	krigingDict['coeff3Q'] = [ok3d3, k3d3, ss3d3]
+
+	# Coeff 4
+	data = np.array(dataDictQ[str(3)])
+	ok3d4 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
+                                                 variogram_model='linear')
+	k3d4, ss3d4 = ok3d4.execute('grid', x, y, z)
+	krigingDict['coeff4Q'] = [ok3d4, k3d4, ss3d4]
+
+	# Coeff 5
+	data = np.array(dataDictQ[str(4)])
+	ok3d5 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
+                                                 variogram_model='linear')
+	k3d5, ss3d5 = ok3d5.execute('grid', x, y, z)
+	krigingDict['coeff5Q'] = [ok3d5, k3d5, ss3d5]
+
+	print('Success creating Kriging Model for Propulsion Component: Torque')
+
 
 	return krigingDict
 
