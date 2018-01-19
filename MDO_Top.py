@@ -20,6 +20,7 @@ from Aerodynamics.aeroAnalysis import aeroAnalysis
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
 from getBuildTime import getBuildTime
+from Propulsion.propulsionAnalysis import propulsionAnalysis
 # from Post_Process.postProcess import postProcess
 from Input import AC, updateAircraft
 # from Post_Process.lib_plot import *
@@ -71,6 +72,7 @@ class constrainedMDO(Group):
         self.add('structAnalysis', structAnalysis())
         self.add('objPerformance', objPerformance())
         self.add('getBuildTime', getBuildTime())
+        self.add('propulsionAnalysis', propulsionAnalysis())
 
         # ====================================== Connections ============================================ #
         # - Uncomment a connection to add that param as a design variable
@@ -99,6 +101,7 @@ class constrainedMDO(Group):
         self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
         self.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
         self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
+        self.connect('getBuildTime.out_aircraft','propulsionAnalysis.in_aircraft')
 
 
 # ==================================== Initailize plots for animation ===================================== #
@@ -197,6 +200,7 @@ root.add('aeroAnalysis', aeroAnalysis())
 root.add('structAnalysis', structAnalysis())
 root.add('objPerformance', objPerformance())
 root.add('getBuildTime', getBuildTime())
+root.add('propulsionAnalysis', propulsionAnalysis())
 
 # Setting up the MDO run
 root.connect('my_comp.aircraft', 'calcWeight.in_aircraft')
@@ -204,6 +208,7 @@ root.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
 root.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
 root.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
 root.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
+root.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
 
 prob0 = Problem(root)
 prob0.setup()

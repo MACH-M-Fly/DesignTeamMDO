@@ -19,6 +19,7 @@ from time import localtime, strftime, time
 from Aerodynamics.xfoil_lib import xfoilAlt, getDataXfoil
 
 from Aerodynamics.aeroAnalysis import getThrust
+from Weights.calcWeight import calcWeight
 
 from Input import AC
 
@@ -95,10 +96,14 @@ class objPerformance(Component):
 
         # Run M-Fly maximum payload mission
         if AC.mission == 1:
-            # Not yet filled in
-            # Will work on this with Beldon when the time comes
-            raise ValueError('M-Fly Mission Not Yet Supported')
+                
+                # Need to modify it so that payload weight is being determined
+                sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(C.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
+                                          AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
+                AC.actual_takeoff = dist
+                unknowns['out_aircraft'] = AC
+                unknowns['score'] = score
         # Run MACH lap-time objective
         elif AC.mission == 2:
 
@@ -119,6 +124,17 @@ class objPerformance(Component):
         # print(
         # print('Score: ' + str(score))
         # print('\n')
+            AC.N = N
+            AC.tot_time = tot_time
+            AC.score = score
+            AC.tot_time = tot_time
+
+            # Set output to updated instance of aircraft
+            unknowns['out_aircraft'] = AC
+            unknowns['score'] = score
+            unknowns['sum_y'] = sum_y
+            unknowns['chord_vals'] = AC.wing.chord_vals
+            unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
 
 
         # Faulty mision input
@@ -127,19 +143,11 @@ class objPerformance(Component):
             print('Error: Mission select must be 1 (M-Fly) or 2 (MACH)')
             print('###################################################')
 
+            unknowns['out_aircraft'] = AC
+
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
-        AC.N = N
-        AC.tot_time = tot_time
-        AC.score = score
-        AC.tot_time = tot_time
-
-        # Set output to updated instance of aircraft
-        unknowns['out_aircraft'] = AC
-        unknowns['score'] = score
-        unknowns['sum_y'] = sum_y
-        unknowns['chord_vals'] = AC.wing.chord_vals
-        unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
+        
 
 
 alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path + '_flap.dat')[0:2]

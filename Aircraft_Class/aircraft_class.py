@@ -429,7 +429,7 @@ class Body():
 		pass
 		return
 
-class Propulsion():
+class Propulsion(object):
 	"""
 	Class used as a container for all propulsion information (taken from input file)
 	- Thrust curve
@@ -437,8 +437,7 @@ class Propulsion():
 	- Mass
 	- Propeller properties (diameter and pitch)
 	"""
-
-	def _init__(self, motorKV, diameter, pitch, cellNum, thrustCurve, escCur):
+	def __init__(self, motorKV, diameter, pitch, cellNum, thrustCurve, escCur):
 		self.motorKV = motorKV
 		self.diameter = diameter
 		self.pitch = pitch
