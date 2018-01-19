@@ -29,7 +29,7 @@ class calcWeight(Component):
     stress_wing     :   float
                         stress in wing spar
     stress_tail     :   float
-                        stress in tail boom 
+                        stress in tail boom
 
 
     Version 2 Implementation
