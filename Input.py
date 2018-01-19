@@ -163,11 +163,13 @@ AC.prop_pitch = 4
 # ESC max current
 AC.esc_max = 100
 # Runway length (m)
-AC.runway_length = 200
+AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)
 AC.climb_rate = 0.4
 # Desired bank angle (sustained load factor turn, steady level, degrees)
 AC.bank_angle = 20
+
+AC.actual_takeoff = 200
 
 #       =========================================================================
 #		Weights
@@ -204,7 +206,8 @@ AC.m_propeller = 0.15
 AC.m_electronics = 0.381
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
-
+# Payload
+AC.m_payload = 1
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
                AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)

@@ -96,13 +96,9 @@ class propulsionAnalysis(Component):
 		maxTorque = np.amax(torqueActual)
 		KT = 1.0/KV
 		maxCurrent = maxTorque/KV
-		AC.esc_max = maxCurrent
+		AC.esc_max = maxCurrent *1.3 # Provide 30% margin
 
 		# Set output to updated instance of aircraft
 		unknowns['out_aircraft'] = AC
-
-		## NOTE TO BELDON
-		# Reexeceute Ok3d object to get value at specific point
-
 
 

@@ -290,13 +290,13 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
                         motor mount length
     """
 
-    m_motor = AC.m_motor                # kg | motor mass
-    m_prop = AC.m_propeller             # kg | propeller mass
-    m_battery = AC.m_battery            # kg | battery mass
-    m_electronics = AC.m_electronics    # kg | electronics mass
+    m_motor = 10**4.0499*AC.motor_KV**-0.5329/1000.0               # kg | motor mass
+    m_prop = 0.1178*(AC.prop_diam)^2+(-0.3887)*AC.prop_diam             # kg | propeller mass, assume plastic propeller
+    m_battery = (0.026373*AC.m_battery+2.0499e-5)*(AC.esc_max/1.3/30)            # kg | battery mass, assume 30C, 5min max amp
+    m_electronics = 0.8431*AC.esc_max/1000.0   # kg | electronics mass
 
     m_fuselage = 0.83                    # kg | fuselage mass (assume constant for now)
-    m_payload = 15.55                     # kg | payload mass (assume constant for now)
+    m_payload = AC.m_payload
 
     MAC = AC.wing.MAC                   # m | mean aerodynamic chord of wing
     b_wing = AC.wing.b_wing             # m | wing span
