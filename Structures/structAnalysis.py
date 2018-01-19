@@ -1,7 +1,7 @@
 # python stantdard libraries
 from __future__ import division
 
-# addition python libraries 
+# addition python libraries
 import numpy as np
 from scipy.integrate import cumtrapz
 
@@ -141,15 +141,19 @@ def distLoad(x, gross_F, dist_type):
 
     # uniformly distributed load
     elif dist_type == 'uniform':
+        # TODO - Define mag
         w = mag * np.ones(len(x))
 
     # linearly decreasing distributed load
     elif dist_type == 'lin_decrease':
+        # TODO - Define mag
         w = mag - mag / x[-1] * x
 
     # linearly increasing distributed load
     elif dist_type == 'lin_increase':
+        # TODO - Define mag
         w = mag / x[-1] * x
+
     else:
         raise ValueError('Invalid distribution type provided to structAnalysis.py')
 

@@ -41,7 +41,7 @@ class calcWeight(Component):
         upper_Fuselage_Length = AC.payload;
     """
 
-# set up interface to the framework
+    # set up interface to the framework
     def __init__(self): 
         super(calcWeight, self).__init__()
         
