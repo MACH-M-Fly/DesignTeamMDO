@@ -314,7 +314,7 @@ class Tail():
 	# sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefHTail(self):
 		self.sref = 0
-		self.sref = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 + \
+		self.sref = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 +
 			self.htail_chord[2]*y + self.htail_chord[3] ), 0., self.b_htail/2.)
 		self.sref = self.sref[0]*2.
 		return self.sref
@@ -322,7 +322,7 @@ class Tail():
 	# sref = integral (chord) dy (from 0 to bwing/2)
 	def calcSrefVTail(self):
 		self.sref = 0
-		self.sref = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 + \
+		self.sref = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 +
 			self.vtail_chord[2]*y + self.vtail_chord[3] ), 0., self.b_vtail)
 		self.sref = self.sref[0]
 		return self.sref
@@ -397,7 +397,7 @@ class Tail():
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC_ht(self):
 		self.MAC_ht = 0
-		self.MAC_ht = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 + \
+		self.MAC_ht = integrate.quad(lambda y: (self.htail_chord[0]*y**3 + self.htail_chord[1]*y**2 +
 			self.htail_chord[2]*y + self.htail_chord[3] )**2, 0, self.b_htail/2.)
 		self.MAC_ht = self.MAC_ht[0]*2.0/self.sref_ht
 		return self.MAC_ht
@@ -406,7 +406,7 @@ class Tail():
 	# MAC = 2/Sref * integral chord^2 dy (from 0 to b_wing/2)
 	def calcMAC_vt(self):
 		self.MAC_vt = 0
-		self.MAC_vt = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 + \
+		self.MAC_vt = integrate.quad(lambda y: (self.vtail_chord[0]*y**3 + self.vtail_chord[1]*y**2 +
 			self.vtail_chord[2]*y + self.vtail_chord[3] )**2, 0, self.b_vtail)
 		self.MAC_vt = self.MAC_vt[0]/self.sref_vt
 		return self.MAC_vt
@@ -420,14 +420,13 @@ class Body():
 	"""
 
 	def __init__(self, Bfile, translate = [0, 0, 0], scale = [1, 1, 1] ):
-		self.Bfile
-		self.translate
-		self.scale
+		self.Bfile = Bfile
+		self.translate = translate
+		self.scale = scale
 
 	# Calculate interior volume
 	def getVolume(self):
 		pass
-		return
 
 class Propulsion(object):
 	"""
