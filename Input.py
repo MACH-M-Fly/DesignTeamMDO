@@ -155,13 +155,13 @@ AC.mu = 0.8
 # Number of battery cells
 AC.cell_Num = 2
 # Motor KV
-AC.motor_KV = 300
+AC.motor_KV = 300.0
 # Propeller Diameter
-AC.prop_diam = 6
+AC.prop_diam = 6.0
 # Propeller Pitch
-AC.prop_pitch = 4
+AC.prop_pitch = 4.0
 # ESC max current
-AC.esc_max = 100
+AC.esc_max = 100.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)

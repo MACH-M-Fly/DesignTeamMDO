@@ -69,16 +69,16 @@ class propulsionAnalysis(Component):
         coeff4ModelQ = self.model['coeff4Q'][0]
         coeff5ModelQ = self.model['coeff5Q'][0]
 
-        coeff1T = coeff1Model.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff2T = coeff2Model.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff3T = coeff3Model.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff4T = coeff4Model.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff5T = coeff5Model.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff1Q = coeff1ModelQ.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff2Q = coeff2ModelQ.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff3Q = coeff3ModelQ.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff4Q = coeff4ModelQ.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff5Q = coeff5ModelQ.exceute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff1T, ss = coeff1Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff2T, ss = coeff2Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff3T, ss = coeff3Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff4T, ss = coeff4Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff5T, ss = coeff5Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff1Q, ss = coeff1ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff2Q, ss = coeff2ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff3Q, ss = coeff3ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff4Q, ss = coeff4ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff5Q, ss = coeff5ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
 
         thrust_Curve = [coeff1T, coeff2T, coeff3T, coeff4T, coeff5T]
         torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
@@ -87,15 +87,17 @@ class propulsionAnalysis(Component):
         AC.thrust = thrust_Curve
 
         # Calculate max current
-        speeds = np.linspace(0.0, 50.0, 0.5)
+        speeds = np.linspace(0.0, 50.0,100)
         torqueActual = []
         for speed in speeds:
-            torqueActual.append(math.abs(
+            torqueActual.append(abs(
+                speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
+            print(abs(
                 speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
 
         maxTorque = np.amax(torqueActual)
-        KT = 1.0 / KV
-        maxCurrent = maxTorque / KV
+        KT = 1.0 / AC.motor_KV
+        maxCurrent = maxTorque / AC.motor_KV
         AC.esc_max = maxCurrent * 1.3  # Provide 30% margin
 
         # Set output to updated instance of aircraft
