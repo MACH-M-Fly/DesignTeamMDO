@@ -90,7 +90,7 @@ class propulsionAnalysis(Component):
         speeds = np.linspace(0.0, 50.0, 0.5)
         torqueActual = []
         for speed in speeds:
-            torqueActual.append(math.abs(
+            torqueActual.append(abs(
                 speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
 
         maxTorque = np.amax(torqueActual)
