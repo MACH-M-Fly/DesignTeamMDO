@@ -1,21 +1,15 @@
 #Input  Python Libraries
 from __future__ import division
 
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-#from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-
-from scipy.optimize import *
+from openmdao.api import Component
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import os
 
 import math
 
 from Aircraft_Class.gen_files import genMass, genGeo
 from Input import AC
+
+from Constants import rib_dens, rib_dens_t
 
 class calcWeight(Component):
     """
@@ -82,9 +76,6 @@ def getWing_mass(AC):
     m_wing          :   float
                         Mass of wing
     """
-
-    rib_dens = 7.                          # ribs/ meter wing (current stats are based off of M-9)
-
     sref_wing = AC.wing.sref                # m^2 | reference area of wing
     b_wing = AC.wing.b_wing                 # m | wing span
     MAC = AC.wing.MAC                       # m | mean aerodynamic chord of wing
@@ -154,9 +145,6 @@ def getTail_mass(AC):
     m_tail          :   float
                         Mass of tail
     """
-
-    rib_dens_t = 10.                        # ribs/ meter tail (current stats are based off of M-9)
-
     # Get variables from AC
     b_htail = AC.tail.b_htail               # m | span of vertical tail
     b_vtail = AC.tail.b_vtail               # m | span of vertical tail

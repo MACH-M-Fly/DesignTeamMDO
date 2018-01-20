@@ -3,28 +3,12 @@ from __future__ import print_function
 from time import localtime, strftime, time
 
 # addition python libraries 
-import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
+#import numpy as np
+#import matplotlib.animation as animation
+#import matplotlib.pyplot as plt
 import copy
 
-# open MDAO libraries
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-
-# Import self-created components
-from CreateAC import createAC
-from Weights.calcWeight import calcWeight
-from Aerodynamics.aeroAnalysis import aeroAnalysis
-from Structures.structAnalysis import structAnalysis
-from Performance.objPerformance import objPerformance
-from getBuildTime import getBuildTime
-from Propulsion.propulsionAnalysis import propulsionAnalysis
-# from Post_Process.postProcess import postProcess
-from Input import AC, updateAircraft
-# from Post_Process.lib_plot import *
-from Post_Process.postProcess import *
+from Post_Process.postProcess import postProcess_Main
 
 import CreateProblem
 
@@ -69,7 +53,7 @@ prob = CreateProblem.CreateOptimizationProblem()
 prob.run()
 
 # Animation settings
-# with writer.saving(fig, "OPT_#.mp4", 100):
+# with writer.saving(fig, "OPT_M.mp4", 100):
 # 	prob.run()
 
 # lib_plot(prob)

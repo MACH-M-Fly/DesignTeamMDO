@@ -225,7 +225,6 @@ def updateAircraft(cur_AC):
     """
     Function to update the aircraft on each iteration of MDO
 
-
     Inputs
     ----------
     cur_AC          :   Class

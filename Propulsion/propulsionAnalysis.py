@@ -92,8 +92,6 @@ class propulsionAnalysis(Component):
         for speed in speeds:
             torqueActual.append(abs(
                 speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
-            print(abs(
-                speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
 
         maxTorque = np.amax(torqueActual)
         KT = 1.0 / AC.motor_KV
