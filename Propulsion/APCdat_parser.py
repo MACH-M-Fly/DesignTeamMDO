@@ -141,6 +141,7 @@ def createKriging(rangeD, rangeP, rangeRPM):
     dataDictQ = {}
     for i in range(5):
         dataDict[str(i)] = []
+        dataDictQ[str(i)] = []
     for d in range(rangeD[0], rangeD[1] + 1):
         for p in range(rangeP[0], rangeP[1] + 1):
             filestring = 'PER3_' + str(d) + 'x' + str(p) + '.dat'
