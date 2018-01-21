@@ -3,6 +3,13 @@
 *.mp4
 *.out
 
+
+# Ignore the output aircraft files
+/Aerodynamics/aircraft.mass
+/Aerodynamics/aircraft.txt
+
+
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
