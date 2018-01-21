@@ -19,7 +19,7 @@ SI UNITS ONLY
 AC = Aircraft()
 
 # =========================================================================
-# Problem Setup		
+# Problem Setup
 # Define name and number of surfaces
 # 1 = 1 wing surface, 2 = 2 wing surfaces, etc.
 # =========================================================================
@@ -157,9 +157,9 @@ AC.cell_Num = 2
 # Motor KV
 AC.motor_KV = 300.0
 # Propeller Diameter
-AC.prop_diam = 6.0
+AC.prop_diam = 8.0
 # Propeller Pitch
-AC.prop_pitch = 4.0
+AC.prop_pitch = 5.0
 # ESC max current
 AC.esc_max = 100.0
 # Runway length (m)
