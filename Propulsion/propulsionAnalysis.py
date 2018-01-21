@@ -69,22 +69,21 @@ class propulsionAnalysis(Component):
         coeff4ModelQ = self.model['coeff4Q'][0]
         coeff5ModelQ = self.model['coeff5Q'][0]
 
-        coeff1T, ss = coeff1Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff2T, ss = coeff2Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff3T, ss = coeff3Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff4T, ss = coeff4Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff5T, ss = coeff5Model.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff1Q, ss = coeff1ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff2Q, ss = coeff2ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff3Q, ss = coeff3ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff4Q, ss = coeff4ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
-        coeff5Q, ss = coeff5ModelQ.execute('points', AC.prop_diam, AC.prop_pitch, RPM)
+        coeff1T, ss = coeff1Model.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff2T, ss = coeff2Model.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff3T, ss = coeff3Model.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff4T, ss = coeff4Model.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff5T, ss = coeff5Model.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff1Q, ss = coeff1ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff2Q, ss = coeff2ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff3Q, ss = coeff3ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff4Q, ss = coeff4ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        coeff5Q, ss = coeff5ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
 
         thrust_Curve = [coeff1T, coeff2T, coeff3T, coeff4T, coeff5T]
         torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
 
         AC.propulsion.setThrustCurve(thrust_Curve)
-        AC.thrust = thrust_Curve
 
         # Calculate max current
         speeds = np.linspace(0.0, 50.0,100)
@@ -94,9 +93,16 @@ class propulsionAnalysis(Component):
                 speed ** 4 * coeff1Q + speed ** 3 * coeff2Q + speed ** 2 * coeff3Q + speed * coeff4Q + coeff5Q))
 
         maxTorque = np.amax(torqueActual)
-        KT = 1.0 / AC.motor_KV
-        maxCurrent = maxTorque / AC.motor_KV
-        AC.esc_max = maxCurrent * 1.3  # Provide 30% margin
+        KT = 1.0 / AC.propulsion.motorKV
+        maxCurrent = maxTorque / AC.propulsion.motorKV
+        AC.propulsion.escCur = maxCurrent * 1.3  # Provide 30% margin
+
+        print('\n######  Propulsion Analysis #######')
+        print('Motor KV: %.3f ' % (AC.propulsion.motorKV))
+        print('Prop Diam: %.3f In' % (AC.propulsion.diameter))
+        print('Prop Pitch: %.3f In' % (AC.propulsion.pitch))
+        print('Thrust Curve: ' + ','.join("%f" % n for n in AC.propulsion.thrustCurve))
+        print('RPM: %.3f' % (AC.motor_KV * (AC.propulsion.cellNum * 3.7)))
 
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = AC
