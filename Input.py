@@ -153,13 +153,13 @@ AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
 # Number of battery cells
-AC.cell_Num = 2
+AC.cell_Num = 2.0
 # Motor KV
-AC.motor_KV = 300.0
+AC.motor_KV = 900.0
 # Propeller Diameter
-AC.prop_diam = 6.0
+AC.prop_diam = 9.0
 # Propeller Pitch
-AC.prop_pitch = 4.0
+AC.prop_pitch = 9.0
 # ESC max current
 AC.esc_max = 100.0
 # Runway length (m)

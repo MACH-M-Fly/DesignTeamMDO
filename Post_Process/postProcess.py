@@ -129,6 +129,14 @@ def printParameters(AC, param_str):
 	print("Tail Max Deflection:	%.3f mm" % (AC.y_max_tail*1.E3))
 	print("CG:						" + ', '.join("%f" % n for n in AC.CG))
 
+	print('\n######  Propulsion Analysis #######')
+	print('Motor KV: %.3f ' % (AC.motor_KV))
+	print('Prop Diam: %.3f In' % (AC.prop_diam))
+	print('Prop Pitch: %.3f In' % (AC.prop_pitch))
+	print('Thrust Curve: '+','.join("%f" % n for n in AC.thrust))
+	print('RPM: %.3f' % (AC.motor_KV*(AC.cell_Num * 3.7)))
+
+
 	print("\n#####\n")
 
 def postProcess_Main(in_ac, out_ac):

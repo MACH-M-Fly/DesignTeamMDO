@@ -46,7 +46,7 @@ class propulsionAnalysis(Component):
         self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
 
         # Initialize Kriging Model
-        self.model = createKriging([8, 10], [5, 8], [1000, 10000])
+        self.model = createKriging([8, 11], [5, 9], [1000, 10000], 'exponential')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
@@ -54,9 +54,9 @@ class propulsionAnalysis(Component):
 
         # Calculate battery parameters
         # Set it such that the only in increments of 3.7 V
-        total_Voltage = AC.cell_Num * 3.7
+        total_Voltage = AC.cell_Num * 3.7 * .8
 
-        RPM = AC.motor_KV / total_Voltage
+        RPM = AC.motor_KV * total_Voltage
         # Calcualte thrust curve
         coeff1Model = self.model['coeff1'][0]
         coeff2Model = self.model['coeff2'][0]
