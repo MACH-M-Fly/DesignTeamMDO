@@ -326,6 +326,7 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     print("	Fuselage Mass = %f kg"% m_fuselage)
     print("	X CG = %f m from LE of wing"% x_cg)
     print("	Wing loading = %f N/m^2" % (9.81*m_total/b_wing))
+    print(" Motor Weight = %f kg" % (m_motor))
     # print("	Wing root chord = %f m"% C[0])
     # print("	Tail root chord = %f m"% C_t[0])
     

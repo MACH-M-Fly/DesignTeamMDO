@@ -124,7 +124,7 @@ def propDataParse(filename):
 
 
 # Creates a Kriging model
-def createKriging(rangeD, rangeP, rangeRPM):
+def createKriging(rangeD, rangeP, rangeRPM, vario):
     ''' Creates the Kriging model with diameter, pitch, and rpm as inputs (3D) '''
     # rangeD = [min diameter, max diameter]
     # rangeP = [min pitch, max diameter]
@@ -165,35 +165,35 @@ def createKriging(rangeD, rangeP, rangeRPM):
     # Coeff 1
     data = np.array(dataDict[str(0)])
     ok3d1 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d1, ss3d1 = ok3d1.execute('grid', x, y, z)
     krigingDict['coeff1'] = [ok3d1, k3d1, ss3d1]
 
     # Coeff 2
     data = np.array(dataDict[str(1)])
     ok3d2 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d2, ss3d2 = ok3d2.execute('grid', x, y, z)
     krigingDict['coeff2'] = [ok3d2, k3d2, ss3d2]
 
     # Coeff 3
     data = np.array(dataDict[str(2)])
     ok3d3 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d3, ss3d3 = ok3d3.execute('grid', x, y, z)
     krigingDict['coeff3'] = [ok3d3, k3d3, ss3d3]
 
     # Coeff 4
     data = np.array(dataDict[str(3)])
     ok3d4 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d4, ss3d4 = ok3d4.execute('grid', x, y, z)
     krigingDict['coeff4'] = [ok3d4, k3d4, ss3d4]
 
     # Coeff 5
     data = np.array(dataDict[str(4)])
     ok3d5 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d5, ss3d5 = ok3d5.execute('grid', x, y, z)
     krigingDict['coeff5'] = [ok3d5, k3d5, ss3d5]
 
@@ -204,35 +204,35 @@ def createKriging(rangeD, rangeP, rangeRPM):
     # =============
     data = np.array(dataDictQ[str(0)])
     ok3d1 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d1, ss3d1 = ok3d1.execute('grid', x, y, z)
     krigingDict['coeff1Q'] = [ok3d1, k3d1, ss3d1]
 
     # Coeff 2
     data = np.array(dataDictQ[str(1)])
     ok3d2 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d2, ss3d2 = ok3d2.execute('grid', x, y, z)
     krigingDict['coeff2Q'] = [ok3d2, k3d2, ss3d2]
 
     # Coeff 3
     data = np.array(dataDictQ[str(2)])
     ok3d3 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d3, ss3d3 = ok3d3.execute('grid', x, y, z)
     krigingDict['coeff3Q'] = [ok3d3, k3d3, ss3d3]
 
     # Coeff 4
     data = np.array(dataDictQ[str(3)])
     ok3d4 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d4, ss3d4 = ok3d4.execute('grid', x, y, z)
     krigingDict['coeff4Q'] = [ok3d4, k3d4, ss3d4]
 
     # Coeff 5
     data = np.array(dataDictQ[str(4)])
     ok3d5 = OrdinaryKriging3D(data[:, 0], data[:, 1], data[:, 2], data[:, 3],
-                              variogram_model='linear')
+                              variogram_model=vario)
     k3d5, ss3d5 = ok3d5.execute('grid', x, y, z)
     krigingDict['coeff5Q'] = [ok3d5, k3d5, ss3d5]
 
