@@ -34,8 +34,8 @@ class Wing(object):
     """
 
     def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber, max_camber,
-                 thickness, max_thickness, \
-                 Afiles=[], ainc=np.array([])):
+                 thickness, max_thickness,
+                 Afiles=(), ainc=np.array([])):
 
         # Assign Inputs to aircraft object
         self.num_sections = num_sections  # Number of sections per half-wing
@@ -66,7 +66,7 @@ class Wing(object):
             self.sweep[2] = 0
 
         # If no starting airfoil given, default airfoil to start is NACA2412
-        if Afiles == []:
+        if len(Afiles) == 0:
             self.Afiles = ['NACA2412'] * self.num_sections
 
         # If no starting inclination angle given, default is zero

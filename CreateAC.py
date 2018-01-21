@@ -51,7 +51,6 @@ class createAC(Component):
         # - I.e. design variables
         # - Uncomment the variables to be used
         self.add_param('b_wing', val=AC.wing.b_wing, desc='wing span')
-        # self.add_param('b_wing',val = 6.0, desc='wing span')
         # self.add_param('dihedral',val = 0.0, desc='wing dihedral')
         self.add_param('sweep', val=AC.wing.sweep, desc='wing sweep')
         self.add_param('chord', val=AC.wing.chord, desc='wing chord')
@@ -66,6 +65,10 @@ class createAC(Component):
         self.add_param('vtail_chord', val=AC.tail.vtail_chord, desc='Vert. tail chord')
         self.add_param('b_htail', val=AC.tail.b_htail, desc='Horiz. tail span')
         self.add_param('b_vtail', val=AC.tail.b_vtail, desc='Vert. tail span')
+
+        self.add_param('motor_KV', val=AC.propulsion.motorKV, desc='Motor KV')
+        self.add_param('prop_diam', val=AC.propulsion.diameter, desc='Propeller Diameter')
+        self.add_param('prop_pitch', val=AC.propulsion.pitch, desc='Propeller Pitch')
 
         # Output instance of aircaft - after modification
         self.add_output('aircraft', val=AC, desc='score')
@@ -90,6 +93,10 @@ class createAC(Component):
         AC.tail.vtail_chord = params['vtail_chord']
         AC.tail.b_htail = params['b_htail']
         AC.tail.b_vtail = params['b_vtail']
+
+        AC.propulsion.motorKV = params['motor_KV']
+        AC.propulsion.diameter = params['prop_diam']
+        AC.propulsion.pitch = params['prop_pitch']
 
         # Update aircraft before analysis
         updateAircraft(AC)

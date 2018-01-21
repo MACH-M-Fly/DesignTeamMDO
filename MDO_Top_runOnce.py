@@ -2,9 +2,7 @@
 from __future__ import print_function
 
 import copy
-
 from Post_Process.postProcess import postProcess_Main
-
 import CreateProblem
 
 # ============================================== Create Problem ============================================ #
@@ -12,7 +10,6 @@ import CreateProblem
 prob0 = CreateProblem.CreateRunOnceProblem()
 prob0.run()
 in_ac = copy.deepcopy(prob0['my_comp.aircraft'])
-
 
 # ============================================== Post-Processing ============================================ #
 

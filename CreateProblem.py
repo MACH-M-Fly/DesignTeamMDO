@@ -50,25 +50,34 @@ class constrainedMDO(Group):
         # - Must also uncomment the param in createAC.py
 
         # Wingspan (m)
-        self.add_design_variable('b_wing', 3.2)
-        #self.add('b_wing', IndepVarComp('b_wing', 3.2))
-
-        # Quarter Chord Sweep in degrees (cubic)
-        # self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))
+        self.add_design_variable('b_wing', AC.wing.b_wing)
 
         # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('chord', np.array([0.0, 0.0, 0.0, 0.72]))
-        #self.add('chord', IndepVarComp('chord', np.array(
-        #    [0.0, 0.0, 0.0, 0.72])))
+        self.add_design_variable('chord', AC.wing.chord)
+
+        # Motor parameters
+        self.add_design_variable('motor_KV', AC.propulsion.motorKV)
+        self.add_design_variable('prop_diam', AC.propulsion.diameter)
+        self.add_design_variable('prop_pitch', AC.propulsion.pitch)
+
+        # Length of tailboom (m)
+        self.add_design_variable('boom_len', AC.tail.boom_len)
 
         # Length of tailboom (m)
         # self.add('boom_len',IndepVarComp('boom_len', 1.60))
         # self.add('b_htail',IndepVarComp('b_htail',1.30))
 
+        # Horizontal tail span (m)
+        self.add_design_variable('b_htail', AC.tail.b_htail)
+
         # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        # self.add('htail_chord',IndepVarComp('htail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
-        # self.add('b_vtail',IndepVarComp('b_vtail',0.37))
-        # self.add('vtail_chord',IndepVarComp('vtail_chord',np.array([0.0 , 0.0, 0.0,0.325])))
+        self.add_design_variable('htail_chord', AC.tail.htail_chord)
+
+        # Vertical Tail Values
+        self.add_design_variable('b_vtail', AC.tail.b_vtail)
+
+        # Vert. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
+        self.add_design_variable('vtail_chord', AC.tail.vtail_chord)
 
         # Wing dihedral angle (degrees)
         # self.add('dihedral',IndepVarComp('dihedral',1.0))
@@ -88,59 +97,21 @@ class constrainedMDO(Group):
         # Vertical Tail Span
         # self.add('max_thickness',IndepVarComp('max_thickness',np.array([1.0 , 1.0, 1.0,1.0])))
 
-        # Boom Length
+        # Ainc
         # self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))
 
         # Adding components
-        connections = ('chord', 'b_wing')
+        connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
+                       'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
+                       'b_vtail', 'vtail_chord')
         CreateAddModules(self, connections)
-
-        ##### No need for the below components...
-
-        # - First component to add is AC itself
-        #self.add('my_comp', createAC())
-        #self.add('calcWeight', calcWeight())
-        #self.add('aeroAnalysis', aeroAnalysis())
-        #self.add('structAnalysis', structAnalysis())
-        #self.add('objPerformance', objPerformance())
-        #self.add('getBuildTime', getBuildTime())
-        #self.add('propulsionAnalysis', propulsionAnalysis())
-
-        # ====================================== Connections ============================================ #
-        # - Uncomment a connection to add that param as a design variable
-        # - Must also uncomment the param in createAC.py
-        #self.connect('b_wing.b_wing', 'my_comp.b_wing')
-        # self.connect('sweep.sweep', 'my_comp.sweep')
-        #self.connect('chord.chord', 'my_comp.chord')
-        # self.connect('boom_len.boom_len', 'my_comp.boom_len')
-        # self.connect('b_htail.b_htail', 'my_comp.b_htail')
-        # self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
-        # self.connect('b_vtail.b_vtail', 'my_comp.b_vtail')
-        # self.connect('vtail_chord.vtail_chord', 'my_comp.vtail_chord')
-
-        # self.connect('dihedral.dihedral', 'my_comp.dihedral')
-        # self.connect('dist_LG.dist_LG', 'my_comp.dist_LG')
-        # self.connect('camber.camber', 'my_comp.camber')
-        # self.connect('max_camber.max_camber', 'my_comp.max_camber')
-        # self.connect('thickness.thickness', 'my_comp.thickness')
-        # self.connect('max_thickness.max_thickness', 'my_comp.max_thickness')
-        # self.connect('Ainc.Ainc', 'my_comp.Ainc')
-
-        # Connections for components
-        # - This is where you can connect additional components
-        #self.connect('my_comp.aircraft', 'calcWeight.in_aircraft')
-        #self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-        #self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
-        #self.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
-        #self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-        #self.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
 
     def add_design_variable(self, var, init_val):
         """Adds an independent design variable to the current model"""
         self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item, connections=[]):
+def CreateAddModules(item, connections=()):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -157,7 +128,7 @@ def CreateAddModules(item, connections=[]):
     item.add('getBuildTime', getBuildTime())
     item.add('propulsionAnalysis', propulsionAnalysis())
 
-    # Connect different variables
+    # Connect different variables, as per the format in constrainedMDO
     for connect in connections:
         item.connect('{0:s}.{0:s}'.format(connect), 'my_comp.{:s}'.format(connect))
 
@@ -225,19 +196,51 @@ def CreateOptimizationProblem():
     # ===================================== Add design Varibles and Bounds ==================================== #
     # - Uncomment any bounds as you add more design variables
     # - Must also uncomment the param in createAC.py
-    prob.driver.add_desvar('b_wing.b_wing', lower=0.25, upper=6.)
-    # prob.driver.add_desvar('sweep.sweep',   				lower = np.array([-5., -5., -5., -20.0 ]),\
-    # upper = np.array([5., 5., 5., 30.0 ]) )
+    connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam', 'prop_pitch', 'boom_len')
+
+    prob.driver.add_desvar('b_wing.b_wing',
+                           lower=0.25,
+                           upper=6.)
+
+    # prob.driver.add_desvar('sweep.sweep',
+    #                        lower = np.array([-5., -5., -5., -20.0 ]),
+    #                        upper = np.array([5., 5., 5., 30.0 ]))
+
     prob.driver.add_desvar('chord.chord',
                            lower=np.array([-0.4, -0.4, -0.4, 0.01]),
                            upper=np.array([0.3, 0.3, 0.3, 2.0]))
-    # prob.driver.add_desvar('boom_len.boom_len', 			lower = 0.1,  upper = 10)
-    # prob.driver.add_desvar('b_htail.b_htail', 				lower = 0.2,  upper = 4.0)
-    # prob.driver.add_desvar('htail_chord.htail_chord', 	 	lower = np.array([-0.05, -0.3, -0.4, 0.01]),\
-    # upper = np.array([0.1, 0.2, 0.2, 3.0]) )
-    # prob.driver.add_desvar('b_vtail.b_vtail', 				lower = 0.2,  upper = 1.2)
-    # prob.driver.add_desvar('vtail_chord.vtail_chord', 		lower = np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),\
-    # 													  	upper = np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+
+    prob.driver.add_desvar('boom_len.boom_len',
+                           lower=0.1,
+                           upper=10.)
+
+    prob.driver.add_desvar('motor_KV.motor_KV',
+                           lower=300.,
+                           upper=900.)
+
+    prob.driver.add_desvar('prop_diam.prop_diam',
+                           lower=8.,
+                           upper=11.)
+
+    prob.driver.add_desvar('prop_pitch.prop_pitch',
+                           lower=5.,
+                           upper=9.)
+
+    prob.driver.add_desvar('b_htail.b_htail',
+                           lower=0.2,
+                           upper=4.0)
+
+    prob.driver.add_desvar('htail_chord.htail_chord',
+                           lower=np.array([-0.05, -0.3, -0.4, 0.01]),
+                           upper=np.array([0.1, 0.2, 0.2, 3.0]) )
+
+    prob.driver.add_desvar('b_vtail.b_vtail',
+                           lower=0.2,
+                           upper=1.2)
+
+    prob.driver.add_desvar('vtail_chord.vtail_chord',
+                           lower=np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),
+                           upper=np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
 
     # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
     # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
