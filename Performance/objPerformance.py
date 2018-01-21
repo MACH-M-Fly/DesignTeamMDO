@@ -21,7 +21,7 @@ from Aerodynamics.xfoil_lib import xfoilAlt, getDataXfoil
 from Aerodynamics.aeroAnalysis import getThrust
 from Weights.calcWeight import calcWeight
 
-from Input import AC
+import math
 
 from Constants import Rho, g, mu_k, inced_ang
 from Constants import xfoil_path
@@ -64,6 +64,8 @@ class objPerformance(Component):
     def __init__(self):
         super(objPerformance, self).__init__()
 
+        from Input import AC
+
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
 
@@ -71,13 +73,14 @@ class objPerformance(Component):
         self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
 
         # Other outputs to be used in top_level group (e.g. constraints)
-        self.add_output('score', val=0.0, desc='score ')
+        self.add_output('score', val=0.0, desc='score')
         self.add_output('sum_y', val=0.0, desc='Net Lift at End of Runway')
         self.add_output('N', val=0.0, desc='number of laps')
         self.add_output('NP', val=0.0, desc='Netual point')
         self.add_output('tot_time', val=0.0, desc='time')
         self.add_output('chord_vals', val=np.zeros((AC.wing.num_sections, 1)), desc='chord values')
         self.add_output('htail_chord_vals', val=np.zeros((AC.tail.num_sections, 1)), desc='tail chord values')
+        self.add_output('takeoff_distance', val=0.0, desc='Takeoff Distance')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
@@ -96,14 +99,16 @@ class objPerformance(Component):
 
         # Run M-Fly maximum payload mission
         if AC.mission == 1:
-                
+
                 # Need to modify it so that payload weight is being determined
-                sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(C.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
+                sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
                                           AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
                 AC.actual_takeoff = dist
+                unknowns['takeoff_distance'] = dist
                 unknowns['out_aircraft'] = AC
-                unknowns['score'] = score
+                unknowns['score'] = -AC.m_payload / math.sqrt(AC.mass_empty)
+                unknowns['sum_y'] = sum_y
         # Run MACH lap-time objective
         elif AC.mission == 2:
 
@@ -136,7 +141,6 @@ class objPerformance(Component):
             unknowns['chord_vals'] = AC.wing.chord_vals
             unknowns['htail_chord_vals'] = AC.tail.htail_chord_vals
 
-
         # Faulty mision input
         else:
             print('###################################################')
@@ -147,7 +151,7 @@ class objPerformance(Component):
 
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
-        
+
 
 
 alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path + '_flap.dat')[0:2]

@@ -24,10 +24,10 @@ from Performance.objPerformance import objPerformance
 from Propulsion.propulsionAnalysis import propulsionAnalysis
 from getBuildTime import getBuildTime
 # from Post_Process.postProcess import postProcess
-from Input import AC, updateAircraft
 # from Post_Process.lib_plot import *
 from Post_Process.postProcess import *
 
+from Input import AC
 
 # Animation Setup
 # FFMpegWriter = animation.writers['ffmpeg']
@@ -48,6 +48,11 @@ class constrainedMDO(Group):
         # ====================================== Params =============================================== #
         # - Uncomment a param to add it as a design variable
         # - Must also uncomment the param in createAC.py
+
+        ac = AC
+
+        # Mass Payload
+        self.add_design_variable('m_payload', AC.m_payload)
 
         # Wingspan (m)
         self.add_design_variable('b_wing', AC.wing.b_wing)
@@ -103,7 +108,7 @@ class constrainedMDO(Group):
         # Adding components
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
-                       'b_vtail', 'vtail_chord')
+                       'b_vtail', 'vtail_chord', 'm_payload')
         CreateAddModules(self, connections)
 
     def add_design_variable(self, var, init_val):
@@ -120,7 +125,7 @@ def CreateAddModules(item, connections=()):
         item - MUST be an OpenMDAO group
     """
     # Create modules
-    item.add('my_comp', createAC())
+    item.add('createAC', createAC())
     item.add('calcWeight', calcWeight())
     item.add('aeroAnalysis', aeroAnalysis())
     item.add('structAnalysis', structAnalysis())
@@ -130,10 +135,10 @@ def CreateAddModules(item, connections=()):
 
     # Connect different variables, as per the format in constrainedMDO
     for connect in connections:
-        item.connect('{0:s}.{0:s}'.format(connect), 'my_comp.{:s}'.format(connect))
+        item.connect('{0:s}.{0:s}'.format(connect), 'createAC.{:s}'.format(connect))
 
     # Setting up the MDO run by connecting all modules
-    item.connect('my_comp.aircraft', 'calcWeight.in_aircraft')
+    item.connect('createAC.aircraft', 'calcWeight.in_aircraft')
     item.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
     item.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
     item.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
@@ -196,7 +201,10 @@ def CreateOptimizationProblem():
     # ===================================== Add design Varibles and Bounds ==================================== #
     # - Uncomment any bounds as you add more design variables
     # - Must also uncomment the param in createAC.py
-    connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam', 'prop_pitch', 'boom_len')
+
+    prob.driver.add_desvar('m_payload.m_payload',
+                           lower=0.0,
+                           upper=4.53592)
 
     prob.driver.add_desvar('b_wing.b_wing',
                            lower=0.25,
@@ -260,12 +268,16 @@ def CreateOptimizationProblem():
 
     # ======================================== Add Objective Function and Constraints========================== #
     prob.driver.add_objective('objPerformance.score')
-    # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+    prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
     prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
+
+    prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
+
+    prob.driver.add_constraint('calcWeight.ac_mass', lower=0.0, upper=4.53592)
 
     # ======================================== Post-Processing ============================================== #
     prob.setup()
