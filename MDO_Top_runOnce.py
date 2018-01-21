@@ -9,7 +9,7 @@ import CreateProblem
 
 prob0 = CreateProblem.CreateRunOnceProblem()
 prob0.run()
-in_ac = copy.deepcopy(prob0['my_comp.aircraft'])
+in_ac = copy.deepcopy(prob0['createAC.aircraft'])
 
 # ============================================== Post-Processing ============================================ #
 

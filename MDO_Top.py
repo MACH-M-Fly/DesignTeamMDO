@@ -45,16 +45,14 @@ import CreateProblem
 
 # ============================================== Create Problem ============================================ #
 
-prob0 = CreateProblem.CreateRunOnceProblem()
-prob0.run()
-in_ac = copy.deepcopy(prob0['my_comp.aircraft'])
-# Specify the output aircraft (final AC) from the MDO
-out_ac = prob0['my_comp.aircraft']
+# prob0 = CreateProblem.CreateRunOnceProblem()
+# prob0.run()
+# in_ac = copy.deepcopy(prob0['createAC.aircraft'])
 
 prob = CreateProblem.CreateOptimizationProblem()
 prob.run()
 # Specify the output aircraft (final AC) from the MDO
-out_ac = prob['my_comp.aircraft']
+out_ac = prob['createAC.aircraft']
 
 # Animation settings
 # with writer.saving(fig, "OPT_M.mp4", 100):

@@ -107,7 +107,7 @@ class objPerformance(Component):
                 AC.actual_takeoff = dist
                 unknowns['takeoff_distance'] = dist
                 unknowns['out_aircraft'] = AC
-                unknowns['score'] = AC.m_payload / math.sqrt(AC.mass_empty)
+                unknowns['score'] = -AC.m_payload / math.sqrt(AC.mass_empty)
                 unknowns['sum_y'] = sum_y
         # Run MACH lap-time objective
         elif AC.mission == 2:

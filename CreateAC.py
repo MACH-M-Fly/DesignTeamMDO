@@ -70,12 +70,16 @@ class createAC(Component):
         self.add_param('prop_diam', val=AC.propulsion.diameter, desc='Propeller Diameter')
         self.add_param('prop_pitch', val=AC.propulsion.pitch, desc='Propeller Pitch')
 
+        self.add_param('m_payload', val=AC.m_payload, desc='Mass Payload')
+
         # Output instance of aircaft - after modification
         self.add_output('aircraft', val=AC, desc='score')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         AC = params['def_aircraft']
+
+        AC.m_payload = params['m_payload']
 
         # Uncomment to reveal more design variables for use in the MDO
         AC.wing.b_wing = params['b_wing']

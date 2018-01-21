@@ -147,23 +147,23 @@ b = 0
 c = 0
 d = 0
 e = 1
-AC.thrust = {a, b, c, d, e}
+thrust = {a, b, c, d, e}
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
 # Number of battery cells
-AC.cell_Num = 2.0
+cell_Num = 2.0
 # Motor KV
-AC.motor_KV = 900.0
+motor_KV = 900.0
 # Propeller Diameter
 
-AC.prop_diam = 8.0
+prop_diam = 8.0
 # Propeller Pitch
-AC.prop_pitch = 5.0
+prop_pitch = 5.0
 
 # ESC max current
-AC.esc_max = 100.0
+esc_max = 100.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)
@@ -209,7 +209,7 @@ AC.m_electronics = 0.381
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
 # Payload
-AC.m_payload = 1
+AC.m_payload = 1.
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
                AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)
@@ -220,7 +220,7 @@ AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail,
                AC.Zo, AC.boom_len, AC.wing.chord_vals[0] / 4.)
 
 # Create an instance of AC for propulsion values
-AC.propulsion = Propulsion(AC.motor_KV, AC.prop_diam, AC.prop_pitch, AC.cell_Num, AC.thrust, AC.esc_max)
+AC.propulsion = Propulsion(motor_KV, prop_diam, prop_pitch, cell_Num, thrust, esc_max)
 
 
 def updateAircraft(cur_AC):
@@ -258,7 +258,8 @@ def updateAircraft(cur_AC):
     AC.wing.spar_E = 68.9e9
 
     # Add propulsion system
-    AC.propulsion = Propulsion(cur_AC.motor_KV, cur_AC.prop_diam, cur_AC.prop_pitch, cur_AC.cell_Num, cur_AC.thrust, cur_AC.esc_max)
+    AC.propulsion = Propulsion(cur_AC.propulsion.motorKV, cur_AC.propulsion.diameter, cur_AC.propulsion.pitch,
+                               cur_AC.propulsion.cellNum, cur_AC.propulsion.thrustCurve, cur_AC.propulsion.escCur)
 
     # Create an instance of AC for tail values
     AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail,

@@ -51,12 +51,17 @@ class calcWeight(Component):
         # Output instance of aircraft - after modification
         self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
 
+        # Output for Mass
+        self.add_output('ac_mass', val=0.0, desc='Output Mass of the AC')
+
 
     def solve_nonlinear(self, params, unknowns, resids):
         # make all input variables local for ease
         AC = params['in_aircraft']
 
         unknowns['out_aircraft'] = calcWeight_process(AC)
+
+        unknowns['ac_mass'] = AC.mass
 
 def getWing_mass(AC):
     """
@@ -277,10 +282,10 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     mount_len       :   float
                         motor mount length
     """
-    m_motor = 10**4.0499*AC.motor_KV**-0.5329/1000.0               # kg | motor mass
-    m_prop = 0.1178*(AC.prop_diam)**2+(-0.3887)*AC.prop_diam             # kg | propeller mass, assume plastic propeller
-    m_battery = (0.026373*AC.m_battery+2.0499e-5)*(AC.esc_max/1.3/30)            # kg | battery mass, assume 30C, 5min max amp
-    m_electronics = 0.8431*AC.esc_max/1000.0   # kg | electronics mass
+    m_motor = 10**4.0499*AC.propulsion.motorKV**-0.5329/1000.0                              # kg | motor mass
+    m_prop = 0.1178*AC.propulsion.diameter**2+(-0.3887)*AC.propulsion.diameter              # kg | propeller mass, assume plastic propeller
+    m_battery = (0.026373*AC.propulsion.cellNum+2.0499e-5)*(AC.propulsion.escCur/1.3/30)    # kg | battery mass, assume 30C, 5min max amp
+    m_electronics = 0.8431*AC.propulsion.escCur/1000.0                                      # kg | electronics mass
 
     m_fuselage = 0.83                    # kg | fuselage mass (assume constant for now)
     m_payload = AC.m_payload
