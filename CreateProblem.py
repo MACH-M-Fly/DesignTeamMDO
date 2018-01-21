@@ -203,7 +203,6 @@ def CreateOptimizationProblem():
     prob.driver.options['optimizer'] = 'SLSQP'
     prob.driver.options['tol'] = 1.0e-5
     prob.root.deriv_options['type'] = 'fd'
-    prob.root.deriv_options['force_fd'] = True
     prob.root.deriv_options['form'] = 'central'
     prob.root.deriv_options['step_size'] = 1.0e-6
 
