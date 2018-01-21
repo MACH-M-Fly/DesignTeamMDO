@@ -31,7 +31,7 @@ AC.v_tails = 1
 AC.booms = 1
 
 # Select Mission (1 for M-Fly max payload, 2 for MACH lap-time)
-AC.mission = 2
+AC.mission = 1
 
 # Number of wing sections (per half-span for wing and tail)
 num_sections_wing = 5

@@ -106,14 +106,17 @@ def printParameters(AC, param_str):
     print("HT Chord Cubic Terms:	" + ', '.join("%f" % n for n in AC.tail.htail_chord))
 
     print('\n########    Performance Metrics  #######')
-    print("Number of Laps:	%d" % AC.N)
+    if AC.mission == 2:
+        print("Number of Laps:	%d" % AC.N)
+        print("Total Time:		%f" % AC.tot_time)
     print("Score:			%f" % AC.score)
-    print("Total Time:		%f" % AC.tot_time)
 
     print('\n########     Weight Breakdown    #######')
-    print('Aircraft Mass:	%f kg' % AC.mass)
-    print('Wing Mass:		%f kg' % AC.mass_wing)
-    print('Tail Mass:		%f kg' % AC.mass_tail)
+    print('Aircraft Mass:   %f kg' % AC.mass)
+    print('Empty Mass:      %f kg' % AC.mass_empty)
+    print('Wing Mass:       %f kg' % AC.mass_wing)
+    print('Tail Mass:       %f kg' % AC.mass_tail)
+    print('Payload Mass:    %f kg' % AC.m_payload)
 
     print('\n########  Aerodynamics Analysis  #######')
     print("CL: %f" % AC.CL(AC.ang))

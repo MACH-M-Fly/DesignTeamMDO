@@ -260,12 +260,14 @@ def CreateOptimizationProblem():
 
     # ======================================== Add Objective Function and Constraints========================== #
     prob.driver.add_objective('objPerformance.score')
-    # prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+    prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
     prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
+
+    prob.driver.add_constraint('objPerformance.takeoff_distance', upper=60.96)
 
     # ======================================== Post-Processing ============================================== #
     prob.setup()

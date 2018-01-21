@@ -2,7 +2,7 @@
 from __future__ import print_function
 from time import localtime, strftime, time
 
-# addition python libraries 
+# addition python libraries
 #import numpy as np
 #import matplotlib.animation as animation
 #import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ import CreateProblem
 
 # Animation Setup
 # FFMpegWriter = animation.writers['ffmpeg']
-# metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') 
+# metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation')
 # writer = FFMpegWriter(fps=15, metadata=metadata)
 
 
@@ -51,10 +51,10 @@ in_ac = copy.deepcopy(prob0['my_comp.aircraft'])
 # Specify the output aircraft (final AC) from the MDO
 out_ac = prob0['my_comp.aircraft']
 
-# prob = CreateProblem.CreateOptimizationProblem()
-# prob.run()
-# # Specify the output aircraft (final AC) from the MDO
-# out_ac = prob['my_comp.aircraft']
+prob = CreateProblem.CreateOptimizationProblem()
+prob.run()
+# Specify the output aircraft (final AC) from the MDO
+out_ac = prob['my_comp.aircraft']
 
 # Animation settings
 # with writer.saving(fig, "OPT_M.mp4", 100):

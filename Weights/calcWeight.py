@@ -33,24 +33,24 @@ class calcWeight(Component):
 
 
     Version 2 Implementation
-        
-        Payload prediction will refine the size of the fuselage. The current fuselage length is determined strictly 
-        by satisfying the static margin criteria in the input file. The payload prediction weight will define the 
+
+        Payload prediction will refine the size of the fuselage. The current fuselage length is determined strictly
+        by satisfying the static margin criteria in the input file. The payload prediction weight will define the
         upper bound length of the fuselage.
-        
+
         upper_Fuselage_Length = AC.payload;
     """
 
     # set up interface to the framework
-    def __init__(self): 
+    def __init__(self):
         super(calcWeight, self).__init__()
-        
+
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
 
         # Output instance of aircraft - after modification
         self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
-    
+
 
     def solve_nonlinear(self, params, unknowns, resids):
         # make all input variables local for ease
@@ -79,7 +79,7 @@ def getWing_mass(AC):
     sref_wing = AC.wing.sref                # m^2 | reference area of wing
     b_wing = AC.wing.b_wing                 # m | wing span
     MAC = AC.wing.MAC                       # m | mean aerodynamic chord of wing
-    
+
     linden_LE = AC.LE_lindens               # kg/m | Main Wing Leading edge mass
     linden_TE = AC.TE_lindens               # kg/m | Main Wing Trailing edge mass
     linden_spar = AC.spar_lindens           # kg/m | Main Wing Spar mass
@@ -93,7 +93,7 @@ def getWing_mass(AC):
 
     # Calculate number of ribs along the wing
     num_ribs = math.ceil(b_wing * rib_dens)
-    
+
     # Calculate mass of components in wing
     m_ribs = k_ribs * num_ribs * MAC 				# kg | total mass of ribs
     m_LE = linden_LE * b_wing                       # kg | mass of leading edge
@@ -103,7 +103,7 @@ def getWing_mass(AC):
     # kg | mass of aluminum spar of wing (asssume its length is half of wing span, hollow circular shape)
     m_wing_alum_spar = 0.5*b_wing * np.pi*(outer_r**2 - inner_r**2) * den_boom
     m_wing_alum_spar = 0.
-    
+
     # Calculate mass of ultrakote
     wet_area_w = 2*sref_wing
     m_ult = wet_area_w * ultrakote_den
@@ -127,7 +127,7 @@ def getWing_mass(AC):
     print("	Wing sweep = " + ', '.join("%f" % n for n in AC.wing.sweep))
     print("	Wing sweep vals = " + ', '.join("%f" % n for n in AC.wing.sweep_vals))
 
-    return num_ribs, m_wing 
+    return num_ribs, m_wing
 
 def getTail_mass(AC):
     """
@@ -150,7 +150,7 @@ def getTail_mass(AC):
     b_vtail = AC.tail.b_vtail               # m | span of vertical tail
     MAC_ht = AC.tail.MAC_ht                 # m | MAC of horizontal tail
     MAC_vt = AC.tail.MAC_vt                 # m | MAC of vertical tail
-    
+
     linden_spar_t = AC.spar_lindens_t       # kg/m | tail spar
     linden_LE_t = AC.LE_lindens_t           # kg/m | leading edge tail
     linden_TE_t = AC.TE_lindens_t           # kg/m | trailing edge tail
@@ -161,7 +161,7 @@ def getTail_mass(AC):
     # Calculate number of ribs along wing
     num_ribs_ht = math.ceil(b_htail * rib_dens_t)
     num_ribs_vt = math.ceil(b_vtail * rib_dens_t)
-   
+
     # Calculate mass of components in tail
     m_ribs_ht = AC.k_ribs_t * num_ribs_ht * MAC_ht
     m_ribs_vt = AC.k_ribs_t * num_ribs_vt * MAC_vt
@@ -202,7 +202,7 @@ def getTail_mass(AC):
     print("	Number of Ribs in VTail = %f"% num_ribs_vt)
     print("	Kg per rib = %f"% AC.k_ribs_t)
 
-    return m_tail 
+    return m_tail
 
 def getStruct_mass(AC):
     """
@@ -236,7 +236,7 @@ def getStruct_mass(AC):
 
     # Calculate mass of landing gears
     dist_LG = AC.dist_LG                # m | distance between LE of wing and landing gear
-    
+
     height_LG = np.sin(10 * np.pi / 180) * (boom_len - dist_LG)
     m_landgear_rear = 1.29 * height_LG * 2
     m_landgear_front = 0.27
@@ -277,7 +277,6 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     mount_len       :   float
                         motor mount length
     """
-
     m_motor = 10**4.0499*AC.motor_KV**-0.5329/1000.0               # kg | motor mass
     m_prop = 0.1178*(AC.prop_diam)**2+(-0.3887)*AC.prop_diam             # kg | propeller mass, assume plastic propeller
     m_battery = (0.026373*AC.m_battery+2.0499e-5)*(AC.esc_max/1.3/30)            # kg | battery mass, assume 30C, 5min max amp
@@ -296,7 +295,7 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
 
     # Calculate total mass
     m_total = m_wing + m_tail + m_boom + m_landgear + m_motor + m_prop + m_battery + m_electronics + m_fuselage + m_payload + m_ballast
-    
+
     # Calculate CG
     x_wing = m_wing * 0.25 * MAC
     x_tail = m_tail * ( C[0] + boom_len + C_t[0]/4. )
@@ -313,7 +312,7 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
 
     # Calculate moment of inertia
     Ixx = m_total*(.245*b_wing/2.)**2
-    Iyy = m_total*(.35*(C[0] + boom_len + C_t[0])/2.)**2 
+    Iyy = m_total*(.35*(C[0] + boom_len + C_t[0])/2.)**2
     Izz = m_total*(.393*(b_wing + C[0] + boom_len + C_t[0])/2.)**2
 
     # Create array for output
@@ -329,7 +328,7 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     print(" Motor Weight = %f kg" % (m_motor))
     # print("	Wing root chord = %f m"% C[0])
     # print("	Tail root chord = %f m"% C_t[0])
-    
+
     return cg, Is, m_total, mount_len
 
 def calcWeight_process(AC):
@@ -376,9 +375,10 @@ def calcWeight_process(AC):
     AC.mass_boom = m_boom
     AC.weight = m_total*9.81
     AC.mount_len = mount_len
+    AC.mass_empty = AC.mass - AC.m_payload
 
     # Create AVL geometry file
     genMass(AC)
     genGeo(AC)
 
-    return AC 
+    return AC
