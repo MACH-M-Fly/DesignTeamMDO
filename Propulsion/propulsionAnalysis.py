@@ -2,7 +2,7 @@
 from __future__ import division
 from time import localtime, strftime, time
 
-# addition python libraries 
+# addition python libraries
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -54,9 +54,9 @@ class propulsionAnalysis(Component):
 
         # Calculate battery parameters
         # Set it such that the only in increments of 3.7 V
-        total_Voltage = AC.cell_Num * 3.7 * .8
+        total_Voltage = AC.propulsion.cellNum * 3.7 * .8
 
-        RPM = AC.motor_KV * total_Voltage
+        RPM = AC.propulsion.motorKV * total_Voltage
         # Calcualte thrust curve
         coeff1Model = self.model['coeff1'][0]
         coeff2Model = self.model['coeff2'][0]
@@ -81,7 +81,7 @@ class propulsionAnalysis(Component):
         coeff5Q, ss = coeff5ModelQ.execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
 
         thrust_Curve = [coeff1T, coeff2T, coeff3T, coeff4T, coeff5T]
-        torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
+        #torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
 
         AC.propulsion.setThrustCurve(thrust_Curve)
 
@@ -94,7 +94,7 @@ class propulsionAnalysis(Component):
 
         maxTorque = np.amax(torqueActual)
         KT = 1.0 / AC.propulsion.motorKV
-        maxCurrent = maxTorque / AC.propulsion.motorKV
+        maxCurrent = maxTorque / KT
         AC.propulsion.escCur = maxCurrent * 1.3  # Provide 30% margin
 
         print('\n######  Propulsion Analysis #######')
@@ -102,7 +102,7 @@ class propulsionAnalysis(Component):
         print('Prop Diam: %.3f In' % (AC.propulsion.diameter))
         print('Prop Pitch: %.3f In' % (AC.propulsion.pitch))
         print('Thrust Curve: ' + ','.join("%f" % n for n in AC.propulsion.thrustCurve))
-        print('RPM: %.3f' % (AC.motor_KV * (AC.propulsion.cellNum * 3.7)))
+        print('RPM: %.3f' % (AC.propulsion.motorKV* (AC.propulsion.cellNum * 3.7)))
 
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = AC
