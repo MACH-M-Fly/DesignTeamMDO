@@ -50,13 +50,16 @@ class constrainedMDO(Group):
         # - Must also uncomment the param in createAC.py
 
         # Wingspan (m)
-        self.add('b_wing', IndepVarComp('b_wing', 3.2))
+        self.add_design_variable('b_wing', 3.2)
+        #self.add('b_wing', IndepVarComp('b_wing', 3.2))
 
         # Quarter Chord Sweep in degrees (cubic)
         # self.add('sweep',IndepVarComp('sweep', np.array([0.0, 0.0, 0.0, 0.0])))
 
-        self.add('chord', IndepVarComp('chord', np.array(
-            [0.0, 0.0, 0.0, 0.72])))  # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
+        # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
+        self.add_design_variable('chord', np.array([0.0, 0.0, 0.0, 0.72]))
+        #self.add('chord', IndepVarComp('chord', np.array(
+        #    [0.0, 0.0, 0.0, 0.72])))
 
         # Length of tailboom (m)
         # self.add('boom_len',IndepVarComp('boom_len', 1.60))
@@ -89,21 +92,26 @@ class constrainedMDO(Group):
         # self.add('Ainc',IndepVarComp('Ainc',np.array([1.0 , 1.0, 1.0,1.0])))
 
         # Adding components
+        connections = ('chord', 'b_wing')
+        CreateAddModules(self, connections)
+
+        ##### No need for the below components...
+
         # - First component to add is AC itself
-        self.add('my_comp', createAC())
-        self.add('calcWeight', calcWeight())
-        self.add('aeroAnalysis', aeroAnalysis())
-        self.add('structAnalysis', structAnalysis())
-        self.add('objPerformance', objPerformance())
-        self.add('getBuildTime', getBuildTime())
-        self.add('propulsionAnalysis', propulsionAnalysis())
+        #self.add('my_comp', createAC())
+        #self.add('calcWeight', calcWeight())
+        #self.add('aeroAnalysis', aeroAnalysis())
+        #self.add('structAnalysis', structAnalysis())
+        #self.add('objPerformance', objPerformance())
+        #self.add('getBuildTime', getBuildTime())
+        #self.add('propulsionAnalysis', propulsionAnalysis())
 
         # ====================================== Connections ============================================ #
         # - Uncomment a connection to add that param as a design variable
         # - Must also uncomment the param in createAC.py
-        self.connect('b_wing.b_wing', 'my_comp.b_wing')
+        #self.connect('b_wing.b_wing', 'my_comp.b_wing')
         # self.connect('sweep.sweep', 'my_comp.sweep')
-        self.connect('chord.chord', 'my_comp.chord')
+        #self.connect('chord.chord', 'my_comp.chord')
         # self.connect('boom_len.boom_len', 'my_comp.boom_len')
         # self.connect('b_htail.b_htail', 'my_comp.b_htail')
         # self.connect('htail_chord.htail_chord', 'my_comp.htail_chord')
@@ -120,15 +128,19 @@ class constrainedMDO(Group):
 
         # Connections for components
         # - This is where you can connect additional components
-        self.connect('my_comp.aircraft', 'calcWeight.in_aircraft')
-        self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
-        self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
-        self.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
-        self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-        self.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
+        #self.connect('my_comp.aircraft', 'calcWeight.in_aircraft')
+        #self.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
+        #self.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
+        #self.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
+        #self.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
+        #self.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
+
+    def add_design_variable(self, var, init_val):
+        """Adds an independent design variable to the current model"""
+        self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item):
+def CreateAddModules(item, connections=[]):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -144,6 +156,10 @@ def CreateAddModules(item):
     item.add('objPerformance', objPerformance())
     item.add('getBuildTime', getBuildTime())
     item.add('propulsionAnalysis', propulsionAnalysis())
+
+    # Connect different variables
+    for connect in connections:
+        item.connect('{0:s}.{0:s}'.format(connect), 'my_comp.{:s}'.format(connect))
 
     # Setting up the MDO run by connecting all modules
     item.connect('my_comp.aircraft', 'calcWeight.in_aircraft')

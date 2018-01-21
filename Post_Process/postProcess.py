@@ -1,6 +1,8 @@
 import numpy
 import math
 from lib_plot import *
+
+
 # from lib_plot import plot_geo_final
 
 # def postProcess(opt_problem):
@@ -8,7 +10,7 @@ from lib_plot import *
 #     # Not currently used
 #     # - Is an example of an all-in-one post-processing script
 
-#     # """   
+#     # """
 # 	# Remove possibility for surpressing output with ellipsis
 # 	numpy.set_printoptions(threshold='nan')
 
@@ -25,10 +27,10 @@ from lib_plot import *
 # 		 'weight.C_t', 'obj.NP','obj.SM', 'obj.score']
 
 # 	filename = 'converged.dat'
-	
+
 # 	# Open Output File
 # 	output_file = open(filename, 'w')
-	
+
 # 	# Write Header
 # 	line_header = 'Case: \n'
 # 	output_file.write(line_header)
@@ -53,7 +55,6 @@ from lib_plot import *
 # 	output_file.close()
 
 
-	
 # 	result_score = -1*opt_problem['obj.score']
 # 	result_Sref = opt_problem['weight.Sref_wing']
 
@@ -139,12 +140,14 @@ def printParameters(AC, param_str):
 
 	print("\n#####\n")
 
+
 def postProcess_Main(in_ac, out_ac):
-	# Print starting parameters
-	# printParameters(in_ac, 'Initial')
+    # Print starting parameters
+    # printParameters(in_ac, 'Initial')
 
-	# Print final parameters
-	printParameters(out_ac, 'Final')
+    # Print final parameters
+    if in_ac is not None:
+        printParameters(out_ac, 'Final')
 
-	# Output final geometry of aircraft
-	plotGeoFinalDuo(in_ac, out_ac)
+    # Output final geometry of aircraft
+    plotGeoFinalDuo(in_ac, out_ac)

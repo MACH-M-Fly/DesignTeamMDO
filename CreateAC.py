@@ -42,28 +42,30 @@ class createAC(Component):
     def __init__(self):
         super(createAC, self).__init__()
 
+        ac = AC
+
         # Input instance of aircraft - before modification
         self.add_param('def_aircraft', val=AC, desc='Aircraft Class')
 
         # Parameter(s) of aicraft to be modified within this component
         # - I.e. design variables
         # - Uncomment the variables to be used
-        self.add_param('b_wing', val=3.2, desc='wing span')
+        self.add_param('b_wing', val=AC.wing.b_wing, desc='wing span')
         # self.add_param('b_wing',val = 6.0, desc='wing span')
         # self.add_param('dihedral',val = 0.0, desc='wing dihedral')
-        self.add_param('sweep', val=np.array([0.0, 0.0, 0.0, 0.0]), desc='wing sweep')
-        self.add_param('chord', val=np.array([0.0, 0.0, 0.0, 0.72]), desc='wing chord')
+        self.add_param('sweep', val=AC.wing.sweep, desc='wing sweep')
+        self.add_param('chord', val=AC.wing.chord, desc='wing chord')
         # self.add_param('dist_LG',val = 0.0, desc = 'Distance b/w LG and CG')
-        self.add_param('boom_len', val=1.60, desc='Length of Tailboom')
+        self.add_param('boom_len', val=AC.tail.boom_len, desc='Length of Tailboom')
         # self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
         # self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')
         # self.add_param('thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='wing thickness')
         # self.add_param('max_thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max thickness')	# Vertical Tail Span
         # self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')
-        self.add_param('htail_chord', val=np.array([0.0, 0.0, 0.0, 0.325]), desc='Horiz. tail chord')
-        self.add_param('vtail_chord', val=np.array([0.0, 0.0, 0.0, 0.325]), desc='Vert. tail chord')
-        self.add_param('b_htail', val=1.30, desc='Horiz. tail span')
-        self.add_param('b_vtail', val=0.37, desc='Vert. tail span')
+        self.add_param('htail_chord', val=AC.tail.htail_chord, desc='Horiz. tail chord')
+        self.add_param('vtail_chord', val=AC.tail.vtail_chord, desc='Vert. tail chord')
+        self.add_param('b_htail', val=AC.tail.b_htail, desc='Horiz. tail span')
+        self.add_param('b_vtail', val=AC.tail.b_vtail, desc='Vert. tail span')
 
         # Output instance of aircaft - after modification
         self.add_output('aircraft', val=AC, desc='score')
