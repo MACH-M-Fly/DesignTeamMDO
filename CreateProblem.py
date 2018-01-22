@@ -208,7 +208,7 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('b_wing.b_wing',
                            lower=0.25,
-                           upper=6.)
+                           upper=1.2192)
 
     # prob.driver.add_desvar('sweep.sweep',
     #                        lower = np.array([-5., -5., -5., -20.0 ]),

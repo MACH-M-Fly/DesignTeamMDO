@@ -249,7 +249,7 @@ def getStruct_mass(AC):
     m_landgear = m_landgear_rear + m_landgear_front
 
     # Calculate mass of ballast
-    m_ballast = 1.55					# kg | ballast mass (assume constant for now)
+    m_ballast = 0.					# kg | ballast mass (assume constant for now)
 
     print("Boom Mass = %f kg"% m_boom)
     print("	Boom Length = %f m"% boom_len)
@@ -283,15 +283,16 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
                         motor mount length
     """
     m_motor = 10**4.0499*AC.propulsion.motorKV**-0.5329/1000.0                              # kg | motor mass
-    m_prop = 0.1178*AC.propulsion.diameter**2+(-0.3887)*AC.propulsion.diameter              # kg | propeller mass, assume plastic propeller
+    m_prop = (0.1178*AC.propulsion.diameter**2+(-0.3887)*AC.propulsion.diameter) / 1000.0   # kg | propeller mass, assume plastic propeller
     m_battery = (0.026373*AC.propulsion.cellNum+2.0499e-5)*(AC.propulsion.escCur/1.3/30)    # kg | battery mass, assume 30C, 5min max amp
     m_electronics = 0.8431*AC.propulsion.escCur/1000.0                                      # kg | electronics mass
 
-    m_fuselage = 0.83                    # kg | fuselage mass (assume constant for now)
+    m_fuselage = 0.25                   # kg | fuselage mass (assume constant for now)
     m_payload = AC.m_payload
 
     MAC = AC.wing.MAC                   # m | mean aerodynamic chord of wing
     b_wing = AC.wing.b_wing             # m | wing span
+    s_wing = AC.wing.calcSrefWing()
     boom_len = AC.boom_len              # m | tailboom length
     C = AC.wing.chord_vals              # m | chord values of wing
     C_t = AC.tail.htail_chord_vals      # m | chord values of horitontal tail
@@ -324,13 +325,15 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     cg = ([x_cg, y_cg, z_cg])
     Is = ([Ixx, Iyy, Izz])
 
-    print("Total Mass = %f kg"% m_total)
-    print("	Empenage Mass = %f kg"% (m_tail + m_boom))
-    print("	Payload Mass = %f kg"% m_payload)
-    print("	Fuselage Mass = %f kg"% m_fuselage)
-    print("	X CG = %f m from LE of wing"% x_cg)
-    print("	Wing loading = %f N/m^2" % (9.81*m_total/b_wing))
-    print(" Motor Weight = %f kg" % (m_motor))
+    print("Total Mass = %f kg" % m_total)
+    print(" Empty Mass = %f kg" % (m_total - m_payload))
+    print("	Empenage Mass = %f kg" % (m_tail + m_boom))
+    print("	Payload Mass = %f kg" % m_payload)
+    print("	Fuselage Mass = %f kg" % m_fuselage)
+    print("	X CG = %f m from LE of wing" % x_cg)
+    print("	Wing loading = %f N/m^2" % (9.81 * m_total / s_wing))
+    print(" Motor Weight = %f kg" % m_motor)
+    print(" Ballast Mass = %f kg" % m_ballast)
     # print("	Wing root chord = %f m"% C[0])
     # print("	Tail root chord = %f m"% C_t[0])
 

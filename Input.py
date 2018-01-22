@@ -24,7 +24,7 @@ AC = Aircraft()
 # 1 = 1 wing surface, 2 = 2 wing surfaces, etc.
 # =========================================================================
 
-AC.AC_name = "M6"
+AC.AC_name = "405"
 AC.wings = 1
 AC.h_tails = 1
 AC.v_tails = 1
@@ -51,7 +51,7 @@ AC.Zo = 0
 # Initial Conditions for Optimizer
 # =========================================================================
 # Wingspan (m)
-b_wing = 1.8
+b_wing = 1.0
 # Wing dihedral angle (degrees)
 dihedral = 5.0
 
@@ -115,7 +115,7 @@ ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 # Initial Conditions for Optimizer
 # =========================================================================
 # Horizontal tail span (m)
-b_htail = 0.75
+b_htail = 0.25
 
 # Vertical tail span (m)
 b_vtail = 0.2
@@ -163,7 +163,7 @@ prop_diam = 8.0
 prop_pitch = 5.0
 
 # ESC max current
-esc_max = 100.0
+esc_max = 30.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)
