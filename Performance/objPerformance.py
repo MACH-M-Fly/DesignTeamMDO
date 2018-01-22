@@ -15,11 +15,9 @@ import sys
 
 sys.path.insert(0, 'Aerodynamics/xfoil/')
 
-from time import localtime, strftime, time
-from Aerodynamics.xfoil_lib import xfoilAlt, getDataXfoil
+from Aerodynamics.xfoil_lib import getDataXfoil
 
 from Aerodynamics.aeroAnalysis import getThrust
-from Weights.calcWeight import calcWeight
 
 import math
 
@@ -104,11 +102,14 @@ class objPerformance(Component):
                 sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
                                           AC.dist_LG, AC.wing.MAC, AC.Iyy)
 
-                AC.actual_takeoff = dist
+                #AC.actual_takeoff = dist
                 unknowns['takeoff_distance'] = dist
                 unknowns['out_aircraft'] = AC
-                unknowns['score'] = -AC.m_payload / math.sqrt(AC.mass_empty)
+                score = -100. * AC.m_payload / math.sqrt(AC.mass_empty)
+                unknowns['score'] = score
+                AC.score = score
                 unknowns['sum_y'] = sum_y
+
         # Run MACH lap-time objective
         elif AC.mission == 2:
 

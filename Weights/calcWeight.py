@@ -7,7 +7,6 @@ import numpy as np
 import math
 
 from Aircraft_Class.gen_files import genMass, genGeo
-from Input import AC
 
 from Constants import rib_dens, rib_dens_t
 
@@ -44,6 +43,9 @@ class calcWeight(Component):
     # set up interface to the framework
     def __init__(self):
         super(calcWeight, self).__init__()
+
+        # Import the starting aircraft
+        from Input import AC
 
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')

@@ -140,7 +140,7 @@ def printParameters(AC, param_str):
     print('Thrust Curve: ' + ','.join("%f" % n for n in AC.thrust))
     print('RPM: %.3f' % (AC.motor_KV * (AC.cell_Num * 3.7)))
 
-    print("\n#####\n")
+    print('\n#####\n')
 
 
 def postProcess_Main(in_ac, out_ac):

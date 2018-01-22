@@ -357,7 +357,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
 
         # Use other subplots in window for plotting sectional airfoils
         for i in range(1, len(A) + 1):
-            f = open('Aerodynamics/airfoils/A_' + str(i) + '.dat', 'r')
+            f = open('Aerodynamics/airfoils/A_{:s}.dat'.format(str(i)), 'r')
             flines = f.readlines()
 
             X = []
