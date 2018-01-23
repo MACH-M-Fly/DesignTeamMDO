@@ -218,8 +218,8 @@ def CreateOptimizationProblem():
     #                        upper = np.array([5., 5., 5., 30.0 ]))
 
     prob.driver.add_desvar('chord.chord',
-                           lower=np.array([-0.4, -0.4, -0.4, 0.01]),
-                           upper=np.array([0.3, 0.3, 0.3, 2.0]))
+                           lower=np.array([0.0, 0.0, 0.0, 0.01]),
+                           upper=np.array([0.0, 0.0, 0.0, 2.0]))
 
     prob.driver.add_desvar('boom_len.boom_len',
                            lower=0.1,
@@ -242,16 +242,16 @@ def CreateOptimizationProblem():
                            upper=4.0)
 
     prob.driver.add_desvar('htail_chord.htail_chord',
-                           lower=np.array([-0.05, -0.3, -0.4, 0.01]),
-                           upper=np.array([0.1, 0.2, 0.2, 3.0]) )
+                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
+                           upper=np.array([0.0, 0.0, 0.0, 3.0]) )
 
     prob.driver.add_desvar('b_vtail.b_vtail',
                            lower=0.2,
                            upper=1.2)
 
     prob.driver.add_desvar('vtail_chord.vtail_chord',
-                           lower=np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),
-                           upper=np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+                           lower=np.array([0., 0., 0., 0.1 ]),
+                           upper=np.array([0., 0., 0., 0.45 ]) )
 
     prob.driver.add_desvar('dist_LG.dist_LG',
                            lower=0.0,
@@ -285,6 +285,8 @@ def CreateOptimizationProblem():
     prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
 
     prob.driver.add_constraint('calcWeight.ac_mass', lower=0.0, upper=4.53592)
+
+    prob.driver.add_constraint('aeroAnalysis.cruise_AoA', upper=10.)
 
     # ======================================== Post-Processing ============================================== #
     prob.setup()

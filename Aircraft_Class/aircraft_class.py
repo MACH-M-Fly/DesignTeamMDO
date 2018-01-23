@@ -332,6 +332,8 @@ class Tail():
         self.sref = integrate.quad(lambda y: (self.vtail_chord[0] * y ** 3 + self.vtail_chord[1] * y ** 2 +
                                               self.vtail_chord[2] * y + self.vtail_chord[3]), 0., self.b_vtail)
         self.sref = self.sref[0]
+        if abs(self.sref) < 1e-3:
+            print("Sref 0")
         return self.sref
 
     # Function: Calculate horiz. tail chord at sectional chord locations

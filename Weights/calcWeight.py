@@ -248,7 +248,7 @@ def getStruct_mass(AC):
     m_landgear_rear = 1.29 * height_LG * 2
     m_landgear_front = 0.27
 
-    m_landgear = m_landgear_rear + m_landgear_front
+    m_landgear = 0.25#m_landgear_rear + m_landgear_front
 
     # Calculate mass of ballast
     m_ballast = 0.					# kg | ballast mass (assume constant for now)
