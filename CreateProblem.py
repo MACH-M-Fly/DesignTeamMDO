@@ -84,6 +84,9 @@ class constrainedMDO(Group):
         # Vert. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
         self.add_design_variable('vtail_chord', AC.tail.vtail_chord)
 
+        # Distance from the CG to the landing gear
+        self.add_design_variable('dist_LG', AC.dist_LG)
+
         # Wing dihedral angle (degrees)
         # self.add('dihedral',IndepVarComp('dihedral',1.0))
 
@@ -108,7 +111,7 @@ class constrainedMDO(Group):
         # Adding components
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
-                       'b_vtail', 'vtail_chord', 'm_payload')
+                       'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG')
         CreateAddModules(self, connections)
 
     def add_design_variable(self, var, init_val):
@@ -196,7 +199,7 @@ def CreateOptimizationProblem():
     prob.driver.options['tol'] = 1.0e-5
     prob.root.deriv_options['type'] = 'fd'
     prob.root.deriv_options['form'] = 'central'
-    prob.root.deriv_options['step_size'] = 1.0e-6
+    prob.root.deriv_options['step_size'] = 1.0e-3
 
     # ===================================== Add design Varibles and Bounds ==================================== #
     # - Uncomment any bounds as you add more design variables
@@ -249,6 +252,10 @@ def CreateOptimizationProblem():
     prob.driver.add_desvar('vtail_chord.vtail_chord',
                            lower=np.array([0.25, 0.25, 0.25, 0.25, 0.25 ]),
                            upper=np.array([0.45, 0.45, 0.45, 0.45, 0.45 ]) )
+
+    prob.driver.add_desvar('dist_LG.dist_LG',
+                           lower=0.0,
+                           upper=3.0)
 
     # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
     # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)

@@ -54,7 +54,7 @@ class createAC(Component):
         # self.add_param('dihedral',val = 0.0, desc='wing dihedral')
         self.add_param('sweep', val=AC.wing.sweep, desc='wing sweep')
         self.add_param('chord', val=AC.wing.chord, desc='wing chord')
-        # self.add_param('dist_LG',val = 0.0, desc = 'Distance b/w LG and CG')
+        self.add_param('dist_LG',val=AC.dist_LG, desc = 'Distance b/w LG and CG')
         self.add_param('boom_len', val=AC.tail.boom_len, desc='Length of Tailboom')
         # self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
         # self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')
@@ -90,7 +90,7 @@ class createAC(Component):
         # AC.wing.dihedral = params['dihedral']
         AC.wing.sweep = params['sweep']
         AC.wing.chord = params['chord']
-        # AC.dist_LG = params['dist_LG']
+        AC.dist_LG = params['dist_LG']
         AC.boom_len = params['boom_len']
         # AC.camber = params['camber']
         # AC.max_camber = params['max_camber']

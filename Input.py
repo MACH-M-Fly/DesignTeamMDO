@@ -147,7 +147,7 @@ b = 0
 c = 0
 d = 0
 e = 1
-thrust = {a, b, c, d, e}
+thrust = [a, b, c, d, e]
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
@@ -158,7 +158,7 @@ cell_Num = 2.0
 motor_KV = 900.0
 # Propeller Diameter
 
-prop_diam = 8.0
+prop_diam = 11.0
 # Propeller Pitch
 prop_pitch = 5.0
 

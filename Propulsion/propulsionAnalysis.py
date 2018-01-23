@@ -86,7 +86,7 @@ class propulsionAnalysis(Component):
         AC.propulsion.setThrustCurve(thrust_Curve)
 
         # Calculate max current
-        speeds = np.linspace(0.0, 50.0,100)
+        speeds = np.linspace(0.0, 13.0,100)
         torqueActual = []
         for speed in speeds:
             torqueActual.append(abs(
@@ -95,7 +95,7 @@ class propulsionAnalysis(Component):
         maxTorque = np.amax(torqueActual)
         KT = 1.0 / AC.propulsion.motorKV
         maxCurrent = maxTorque / KT
-        AC.propulsion.escCur = maxCurrent * 1.3  # Provide 30% margin
+        AC.propulsion.escCur = maxCurrent * 1.1  # Provide 30% margin
 
         print('\n######  Propulsion Analysis #######')
         print('Motor KV: %.3f ' % (AC.propulsion.motorKV))
