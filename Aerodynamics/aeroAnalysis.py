@@ -257,7 +257,7 @@ def getTailCL(ang, flapped):
     """
 
     # Call output data from tail
-    if (flapped):
+    if flapped:
         return CL_tail_flap(ang + inced_ang)
     else:
         return CL_tail_noflap(ang + inced_ang)
@@ -345,7 +345,7 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
         return F
 
     # Fsolve to balance lift and weight
-    Z = fsolve(sumForces, np.array([40, -10 * np.pi / 180]))
+    Z = fsolve(sumForces, np.array([40, -10 * np.pi / 180])) # TODO: Fix velocity so that fsolve doesn't start at 40?
 
     # Return cruise velocity and angle of attack
     ang = Z[1]
