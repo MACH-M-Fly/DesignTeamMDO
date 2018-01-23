@@ -163,7 +163,7 @@ prop_diam = 11.0
 prop_pitch = 5.0
 
 # ESC max current
-esc_max = 30.0
+esc_max = 50.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)

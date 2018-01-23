@@ -73,7 +73,11 @@ class createAC(Component):
         self.add_param('m_payload', val=AC.m_payload, desc='Mass Payload')
 
         # Output instance of aircaft - after modification
-        self.add_output('aircraft', val=AC, desc='score')
+        self.add_output('aircraft', val=AC, desc='Output Aircraft')
+
+        # Output the tail volume coefficients (for constraints)
+        self.add_output('cHT', val=0.0, desc='Horizontal Tail Volume Coefficient')
+        self.add_output('cVT', val=0.0, desc='Vertical Tail Volume Coefficient')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
@@ -107,3 +111,7 @@ class createAC(Component):
 
         # Set output to updated instance of aircraft
         unknowns['aircraft'] = AC
+
+        # Calculate Volume Coefficients
+        unknowns['cHT'] = AC.boom_len * AC.tail.calcSrefHTail() / (AC.wing.calcMAC() * AC.wing.calcSrefWing())
+        unknowns['cVT'] = AC.boom_len * AC.tail.calcSrefVTail() / (AC.wing.b_wing * AC.wing.calcSrefWing())

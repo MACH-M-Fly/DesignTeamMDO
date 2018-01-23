@@ -282,8 +282,10 @@ def CreateOptimizationProblem():
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
-    prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
+    prob.driver.add_constraint('createAC.cVT', lower=0.03)
+    prob.driver.add_constraint('createAC.cHT', lower=0.5)
 
+    prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
     prob.driver.add_constraint('calcWeight.ac_mass', lower=0.0, upper=4.53592)
 
     prob.driver.add_constraint('aeroAnalysis.cruise_AoA', upper=10.)
