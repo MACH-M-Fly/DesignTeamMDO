@@ -2,6 +2,7 @@ from Input import AC, updateAircraft
 
 from Aerodynamics.aeroAnalysis import aeroAnalysis
 from Structures.structAnalysis import structAnalysis
+from Propulsion.propulsionAnalysis import propulsionAnalysis
 from Weights.calcWeight import calcWeight
 
 import numpy as np
@@ -18,7 +19,7 @@ AC.wing.chord = np.array([0, 0, 0, 0.3])
 # Update the aircraft
 updateAircraft(AC)
 
-comps = [calcWeight(), aeroAnalysis(), structAnalysis()]
+comps = [propulsionAnalysis(), calcWeight(), aeroAnalysis(), structAnalysis()]
 
 for comp in comps:
     in_dict = {'in_aircraft' : AC}
