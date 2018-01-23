@@ -1,21 +1,16 @@
 from __future__ import division
 from __future__ import print_function
 
-
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
+from openmdao.api import Component
 
 from scipy.optimize import *
 import numpy as np
 
-from xfoil_lib import xfoilAlt, getDataXfoil
+from xfoil_lib import getDataXfoil
 
-from Input import AC
 import pyAVL
 
-from Constants import Rho, g, mu_k, inced_ang
+from Constants import Rho, inced_ang
 from Constants import xfoil_path
 
 
@@ -41,6 +36,8 @@ class aeroAnalysis(Component):
     """
 
     def __init__(self):
+        from Input import AC
+
         super(aeroAnalysis, self).__init__()
 
         # Input instance of aircraft - before modification
