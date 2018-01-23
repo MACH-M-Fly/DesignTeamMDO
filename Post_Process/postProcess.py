@@ -134,11 +134,11 @@ def printParameters(AC, param_str):
     print("CG:						" + ', '.join("%f" % n for n in AC.CG))
 
     print('\n######  Propulsion Analysis #######')
-    print('Motor KV: %.3f ' % (AC.motor_KV))
-    print('Prop Diam: %.3f In' % (AC.prop_diam))
-    print('Prop Pitch: %.3f In' % (AC.prop_pitch))
-    print('Thrust Curve: ' + ','.join("%f" % n for n in AC.thrust))
-    print('RPM: %.3f' % (AC.motor_KV * (AC.cell_Num * 3.7)))
+    print('Motor KV: %.3f ' % (AC.propulsion.motorKV))
+    print('Prop Diam: %.3f In' % (AC.propulsion.diameter))
+    print('Prop Pitch: %.3f In' % (AC.propulsion.pitch))
+    print('Thrust Curve: ' + ','.join("%f" % n for n in AC.propulsion.thrustCurve))
+    print('RPM: %.3f' % (AC.propulsion.motorKV * (AC.propulsion.cellNum * 3.7)))
 
     print('\n#####\n')
 

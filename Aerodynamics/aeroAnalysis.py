@@ -89,11 +89,11 @@ class aeroAnalysis(Component):
         AC.SM = SM
 
         # Calculate cruise velocity
-        AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.sref, AC.tail.sref)
+        AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.sref, AC.tail.sref, AC)
 
         # Get gross lift
         flapped = False
-        AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref, flapped, AC.CL)
+        AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref, flapped, AC.CL, AC)
 
         AC.sec_L = calcSecLift(velocity, AC.sec_CL, sec_Chord)
 
@@ -205,7 +205,7 @@ CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
 CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
 
 
-def getThrust(vel, ang):
+def getThrust(vel, ang, AC):
     """
     Calculate the thrust available at a flight condition
 
@@ -226,18 +226,20 @@ def getThrust(vel, ang):
     """
 
     # Thrust data (from dynamic thrust testing)
-    T_0 = 18.00
-    T_1 = -0.060
-    T_2 = -0.015
-    T_3 = 0
-    T_4 = 0
+    T = AC.propulsion.getThrustCurve()
+    T_0 = T[4]
+    T_1 = T[3]
+    T_2 = T[2]
+    T_3 = T[1]
+    T_4 = T[0]
 
     # Thrust available
     T = vel ** 4 * T_4 + vel ** 3 * T_3 + vel ** 2 * T_2 + vel * T_1 + T_0
-
+    if T_2 > 0:
+        A = 3
     # X and Y components of thrust available
-    X_comp = np.cos(ang) * T
-    Y_comp = np.sin(ang) * T
+    X_comp = np.cos(ang) * T * 2
+    Y_comp = np.sin(ang) * T * 2
     return (X_comp, Y_comp)
 
 
@@ -266,7 +268,7 @@ def getTailCL(ang, flapped):
         return CL_tail_noflap(ang + inced_ang)
 
 
-def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
+def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL, AC):
     """
     Calculate the gross lift of a configuration
 
@@ -300,12 +302,12 @@ def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
     wing_f = 0.5 * Rho * vel ** 2 * (CL(ang) * sref_wing)
     tail_f = 0.5 * Rho * vel ** 2 * (getTailCL(ang, flapped) * sref_tail)
     l_net = wing_f + tail_f
-    gross_F = l_net + getThrust(vel, ang)[1]
+    gross_F = l_net + getThrust(vel, ang, AC)[1]
 
     return gross_F, wing_f, tail_f
 
 
-def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
+def calcVelCruise(CL, CD, weight, sref_wing, sref_tail, AC):
     """
     Calculate the cruise velocity of a configuration
 
@@ -338,11 +340,11 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
         vel = A[0]
         ang = A[1]
 
-        gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL)
+        gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL, AC)
 
         F = np.empty(2)
 
-        F[0] = getThrust(vel, ang)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
+        F[0] = getThrust(vel, ang, AC)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
         F[1] = gross_F - weight
 
         return F

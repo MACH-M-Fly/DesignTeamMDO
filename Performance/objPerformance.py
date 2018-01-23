@@ -100,12 +100,18 @@ class objPerformance(Component):
 
                 # Need to modify it so that payload weight is being determined
                 sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
-                                          AC.dist_LG, AC.wing.MAC, AC.Iyy)
+                                          AC.dist_LG, AC.wing.MAC, AC.Iyy, AC)
 
                 #AC.actual_takeoff = dist
                 unknowns['takeoff_distance'] = dist
                 unknowns['out_aircraft'] = AC
                 score = -100. * AC.m_payload / math.sqrt(AC.mass_empty)
+                print('############')
+                print('Performance')
+                print('############')
+                print('Takeoff Dist:  %.3f m'% (dist))
+                print('Takeoff Time:  %.3f s'% (time))
+                print('Takeoff Velo:  %.3f s' % (vel))
                 unknowns['score'] = score
                 AC.score = score
                 unknowns['sum_y'] = sum_y
@@ -187,7 +193,7 @@ def getTailCL(ang, flapped):
         return CL_tail_noflap(ang + inced_ang)
 
 
-def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
+def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL, AC):
     """
     Calculate the gross lift of a configuration
 
@@ -221,7 +227,7 @@ def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL):
     wing_f = 0.5 * Rho * vel ** 2 * (CL(ang) * sref_wing)
     tail_f = 0.5 * Rho * vel ** 2 * (getTailCL(ang, flapped) * sref_tail)
     l_net = wing_f + tail_f
-    gross_F = l_net + getThrust(vel, ang)[1]
+    gross_F = l_net + getThrust(vel, ang, AC)[1]
 
     return gross_F, wing_f, tail_f
 
@@ -259,17 +265,17 @@ def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
         vel = A[0]
         ang = A[1]
 
-        gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL)
+        gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL, AC)
 
         F = np.empty(2)
 
-        F[0] = getThrust(vel, ang)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
+        F[0] = getThrust(vel, ang, AC)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
         F[1] = gross_F - weight
 
         return F
 
     # Fsolve to balance lift and weight
-    Z = fsolve(sumForces, np.array([40, -10 * np.pi / 180]))
+    Z = fsolve(sumForces, np.array([20, -10 * np.pi / 180]))
 
     # Return cruise velocity and angle of attack
     ang = Z[1]
@@ -427,7 +433,7 @@ def calcTurn_time(bank_angle, velocity, weight, Sref_wing, turn_angle):
     return time
 
 
-def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC):
     """
     Runway simulation to find maximum payload
 
@@ -491,7 +497,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
     # Get acceleration
     def getAcceleration(vel, ang):
         # Calculate the normal force from the runway (weight - lift)
-        N = weight - grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL)[0]
+        N = weight - grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL, AC)[0]
         # If N < 0, N = 0 (no normal force)
         if N < 0:
             N = 0
@@ -499,7 +505,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
         # Calculate the acceleration as thrust - drag - runway friction
         mass = weight / g
         drag = 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
-        accel = (getThrust(vel, ang)[0] - drag - mu_k * N) / mass
+        accel = (getThrust(vel, ang, AC)[0] - drag - mu_k * N) / mass
 
         # Return acceleration
         return accel
@@ -567,11 +573,11 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
     DT = [dt]
 
-    sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL)[0] - weight
+    sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
 
     # While loop until no more net lift at the end oft he runway
     # -  Uses a momentum buildup
-    while ((sum_y <= 0.0) and (time_elap < 20.0)):
+    while ((sum_y <= 0.0) and (time_elap < 60.0)):
         # F = ma yeilds two second order equations => system of 4 first order
         # runge Kutta 4th to approximate kinimatic varibles at time = time + dt
         k1_dist = dt * getVelocity(vel[i])
@@ -624,7 +630,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
         time.append(time[i - 1] + dt)
         time_elap = time[i]
 
-        sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL)[0] - weight
+        sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
 
         if vel[i] > v_stall + 2.0:
             Flapped = 1

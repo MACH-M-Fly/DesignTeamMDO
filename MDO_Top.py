@@ -45,9 +45,9 @@ import CreateProblem
 
 # ============================================== Create Problem ============================================ #
 
-# prob0 = CreateProblem.CreateRunOnceProblem()
-# prob0.run()
-# in_ac = copy.deepcopy(prob0['createAC.aircraft'])
+prob0 = CreateProblem.CreateRunOnceProblem()
+prob0.run()
+in_ac = copy.deepcopy(prob0['createAC.aircraft'])
 
 prob = CreateProblem.CreateOptimizationProblem()
 prob.run()
