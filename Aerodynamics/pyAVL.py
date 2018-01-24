@@ -123,7 +123,7 @@ def run_avl_with_params(queue, sequence_key, sequence):
         avl_analysis.__exe = True
 
         # If success, append data items
-        avl_analysis.alpha.append(float(avl.case_r.alfa))  # *(180.0/np.pi) # returend in radians)
+        avl_analysis.alpha.append(float(avl.case_r.alfa)*(180.0/np.pi))  # *(180.0/np.pi) # returend in radians)
         avl_analysis.CL.append(float(avl.case_r.cltot))
         avl_analysis.CD.append(float(avl.case_r.cdtot))  # append(avl.case_r.cdvtot)  for total viscous)
         avl_analysis.CM.append(float(avl.case_r.cmtot))

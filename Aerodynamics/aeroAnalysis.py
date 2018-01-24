@@ -49,6 +49,9 @@ class aeroAnalysis(Component):
         # Other outputs to be used in top_level group (e.g. constraints)
         self.add_output('SM', val=0.0, desc='static margin')
 
+        # Cruise AoA
+        self.add_output('cruise_AoA', val = 0., desc='Cruise Angle of Attack')
+
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
@@ -106,6 +109,7 @@ class aeroAnalysis(Component):
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = AC
         unknowns['SM'] = AC.SM
+        unknowns['cruise_AoA'] = AC.ang
 
 
 def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aerodynamics/aircraft.mass'):
@@ -164,6 +168,12 @@ def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aer
     CL = np.poly1d(np.polyfit(case.alpha, case.CL, 1))
     CD = np.poly1d(np.polyfit(case.alpha, case.CD, 2))
     CM = np.poly1d(np.polyfit(case.alpha, case.CM, 2))
+
+    print('CL Line:')
+    print(CL)
+
+    if CL(.71) > 7:
+        A = 3
 
     # # ----------------- Plot Outputs --------------------------
     # plt.figure(4)
