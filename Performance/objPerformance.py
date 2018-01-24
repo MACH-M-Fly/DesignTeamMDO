@@ -17,7 +17,7 @@ sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from Aerodynamics.xfoil_lib import getDataXfoil
 
-from Aerodynamics.aeroAnalysis import getThrust
+from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCruise
 
 import math
 
@@ -166,121 +166,6 @@ alphas_tail_noflap, CLs_tail_noflap = getDataXfoil(xfoil_path + '.dat')[0:2]
 alphas_tail = [x * np.pi / 180 for x in alphas_tail]
 CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
 CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
-
-
-def getTailCL(ang, flapped):
-    """
-    Get the new CL of the tail if elevator is deflected
-
-    Inputs
-    -------
-    ang 		:	float
-                    angle of elevator deflection
-    flapped		:	bool ('True' or 'False')
-                    If elevator is deflected
-
-
-    Outputs
-    -------
-    CL 			:	float
-                    CL of the tail with/without deflection
-    """
-
-    # Call output data from tail
-    if flapped:
-        return CL_tail_flap(ang + inced_ang)
-    else:
-        return CL_tail_noflap(ang + inced_ang)
-
-
-def grossLift(vel, ang, sref_wing, sref_tail, flapped, CL, AC):
-    """
-    Calculate the gross lift of a configuration
-
-    Inputs
-    -------
-    vel 		:	float
-                    velocity
-    ang 		:	float
-                    angle of attack
-    sref_wing   :	float
-                    wing surface area
-    sref_tail 	: 	float
-                    tail surface area
-    flapped		:	bool ('True' or 'False')
-                    If elevator is deflected
-    CL 			: 	function
-                    CL function from AVL run
-
-
-    Outputs
-    -------
-    gross_F 	:	float
-                    gross lift of vehicle
-    wing_F 		:	float
-                    wing lift of vehicle
-    tail_F 		:	float
-                    tail lift of vehicle
-    """
-
-    # Calculate lifts using CL functions
-    wing_f = 0.5 * Rho * vel ** 2 * (CL(ang) * sref_wing)
-    tail_f = 0.5 * Rho * vel ** 2 * (getTailCL(ang, flapped) * sref_tail)
-    l_net = wing_f + tail_f
-    gross_F = l_net + getThrust(vel, ang, AC)[1]
-
-    return gross_F, wing_f, tail_f
-
-
-def calcVelCruise(CL, CD, weight, sref_wing, sref_tail):
-    """
-    Calculate the cruise performance of a configuration
-
-    Inputs
-    -------
-    CL 			: 	function
-                    CL function from AVL run
-    CD 			: 	function
-                    CD function from AVL run
-    weight 		: 	float
-                    weight of vehicle
-    sref_wing   :	float
-                    wing surface area
-    sref_tail 	: 	float
-                    tail surface area
-
-
-    Outputs
-    -------
-    vel  		:	float
-                    cruise velocity
-    ang 		:	float
-                    cruise angle of attack
-    """
-
-    def sumForces(A):
-        """
-        Get sum of the forces, used for fsolve
-        """
-        vel = A[0]
-        ang = A[1]
-
-        gross_F, wing_f, tail_f = grossLift(vel, ang, sref_wing, sref_tail, 0, CL, AC)
-
-        F = np.empty(2)
-
-        F[0] = getThrust(vel, ang, AC)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing
-        F[1] = gross_F - weight
-
-        return F
-
-    # Fsolve to balance lift and weight
-    Z = fsolve(sumForces, np.array([20, -10 * np.pi / 180]))
-
-    # Return cruise velocity and angle of attack
-    ang = Z[1]
-    vel = Z[0]
-    return (vel, ang)
 
 
 def calcClimb(CL, CD, weight, sref_wing, sref_tail):
@@ -488,7 +373,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
     # exit()
     # max_rot_ang = 10*np.pi/180.0
 
-    # Declare functions for kinematic varibles (F = ma and M = I*ang_a)
+    # Declare functions for kinematic variables (F = ma and M = I*ang_a)
 
     # Get velocity
     def getVelocity(vel):
@@ -537,8 +422,6 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
         mass = weight / g
         ang_accel = 1.0 / (Iyy + (weight / g) * dist_LG ** 2) * (moment_wing + moment_tail)  # +damping_moment
 
-        # TODO - Check the above weight for the landing gear?
-
         # Ensure that the angular acceleration is 0 so nose doesn't rotate into ground
         if (ang <= 0.0 and ang_accel < 0.0):
             ang_accel = 0
@@ -577,7 +460,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
     # While loop until no more net lift at the end oft he runway
     # -  Uses a momentum buildup
-    while sum_y <= 0.0 and time_elap < 60.0 and dist < 70.0:
+    while sum_y <= 0.0 and time_elap < 60.0 and dist < AC.runway_length:
         # F = ma yeilds two second order equations => system of 4 first order
         # runge Kutta 4th to approximate kinimatic varibles at time = time + dt
         k1_dist = dt * getVelocity(vel)
