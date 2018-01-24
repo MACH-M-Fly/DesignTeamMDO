@@ -99,7 +99,7 @@ class objPerformance(Component):
         if AC.mission == 1:
 
                 # Need to modify it so that payload weight is being determined
-                sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
+                sum_y, dist, vel, ang, ang_vel, time = runwaySim_small(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref_ht, AC.weight, AC.boom_len,
                                           AC.dist_LG, AC.wing.MAC, AC.Iyy, AC)
 
                 #AC.actual_takeoff = dist
@@ -611,16 +611,16 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
         i = i + 1
 
-        if abs(ang_vel[i]) < 10 ** -8 and Flapped:
-            ang_vel[i] = 0.0
+        if abs(ang_vel) < 10 ** -8 and Flapped:
+            ang_vel = 0.0
 
-        if ang[i] > max_rot_ang:
-            ang[i] = max_rot_ang
-        elif ang[i] < 0.0:
-            ang[i] = 0.0
+        if ang > max_rot_ang:
+            ang = max_rot_ang
+        elif ang < 0.0:
+            ang = 0.0
 
         # Change time step as pilot deflect elevator, safe bet to just use the small timestep
-        if (vel[i] < 0.92 * (v_stall + 2.0)) or (
+        if (vel < 0.92 * (v_stall + 2.0)) or (
                 abs(ang_vel) == 0.0 and (ang < 10 ** -10 or ang >= max_rot_ang)):
             dt = 0.05
         else:
@@ -632,7 +632,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
         sum_y = grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
 
-        if vel[i] > v_stall + 2.0:
+        if vel > v_stall + 2.0:
             Flapped = 1
 
     # # 400 ft runway length in meters

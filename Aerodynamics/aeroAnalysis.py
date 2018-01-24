@@ -89,11 +89,11 @@ class aeroAnalysis(Component):
         AC.SM = SM
 
         # Calculate cruise velocity
-        AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.sref, AC.tail.sref, AC)
+        AC.vel, AC.ang = calcVelCruise(AC.CL, AC.CD, AC.weight, AC.wing.sref, AC.tail.sref_ht, AC)
 
         # Get gross lift
         flapped = False
-        AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref, flapped, AC.CL, AC)
+        AC.gross_F, AC.wing_f, AC.tail_f = grossLift(AC.vel, AC.ang, AC.wing.sref, AC.tail.sref_ht, flapped, AC.CL, AC)
 
         AC.sec_L = calcSecLift(velocity, AC.sec_CL, sec_Chord)
 
