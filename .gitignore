@@ -2,7 +2,7 @@
 *.pdf
 *.mp4
 *.out
-
+xplot*
 
 # Ignore the output aircraft files
 /Aerodynamics/aircraft.mass
