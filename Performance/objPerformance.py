@@ -557,57 +557,57 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
     # Main loop
     i = 0
 
-    dist = [0.0]
-    vel = [0.0]
-    ang = [0.0]
-    ang_vel = [0.0]
+    dist = 0.0
+    vel = 0.0
+    ang = 0.0
+    ang_vel = 0.0
 
-    accel = [getAcceleration(vel[i], ang[i])]
-    ang_accel = [getAcceleration_ang(vel[i], ang[i], ang_vel[i])]
+    #accel = getAcceleration(vel, ang)
+    #ang_accel = getAcceleration_ang(vel, ang, ang_vel)
 
     v_stall = np.sqrt(2 * weight / (Rho * sref_wing * 1.7))
 
-    time = [0.0]
+    time = 0.0
     dt = 0.05
     time_elap = 0.0
 
     DT = [dt]
 
-    sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
+    sum_y = grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
 
     # While loop until no more net lift at the end oft he runway
     # -  Uses a momentum buildup
-    while ((sum_y <= 0.0) and (time_elap < 60.0)):
+    while sum_y <= 0.0 and time_elap < 60.0 and dist < 70.0:
         # F = ma yeilds two second order equations => system of 4 first order
         # runge Kutta 4th to approximate kinimatic varibles at time = time + dt
-        k1_dist = dt * getVelocity(vel[i])
-        k1_vel = dt * getAcceleration(vel[i], ang[i])
-        k1_ang = dt * getVelocity_ang(ang[i], ang_vel[i])
-        k1_ang_vel = dt * getAcceleration_ang(vel[i], ang[i], ang_vel[i])
+        k1_dist = dt * getVelocity(vel)
+        k1_vel = dt * getAcceleration(vel, ang)
+        k1_ang = dt * getVelocity_ang(ang, ang_vel)
+        k1_ang_vel = dt * getAcceleration_ang(vel, ang, ang_vel)
 
-        k2_dist = dt * getVelocity(vel[i] + 0.5 * k1_vel)
-        k2_vel = dt * getAcceleration(vel[i] + 0.5 * k1_vel, ang[i] + 0.5 * k1_ang)
-        k2_ang = dt * getVelocity_ang(ang_vel[i] + 0.5 * k1_ang, ang[i] + 0.5 * k1_ang)
-        k2_ang_vel = dt * getAcceleration_ang(vel[i] + 0.5 * k1_vel, ang[i] + 0.5 * k1_ang,
-                                              ang_vel[i] + 0.5 * k1_ang_vel)
+        k2_dist = dt * getVelocity(vel + 0.5 * k1_vel)
+        k2_vel = dt * getAcceleration(vel + 0.5 * k1_vel, ang + 0.5 * k1_ang)
+        k2_ang = dt * getVelocity_ang(ang_vel + 0.5 * k1_ang, ang + 0.5 * k1_ang)
+        k2_ang_vel = dt * getAcceleration_ang(vel + 0.5 * k1_vel, ang + 0.5 * k1_ang,
+                                              ang_vel + 0.5 * k1_ang_vel)
 
-        k3_dist = dt * getVelocity(vel[i] + 0.5 * k2_vel)
-        k3_vel = dt * getAcceleration(vel[i] + 0.5 * k2_vel, ang[i] + 0.5 * k2_ang)
-        k3_ang = dt * getVelocity_ang(ang_vel[i] + 0.5 * k2_ang, ang[i] + 0.5 * k2_ang)
-        k3_ang_vel = dt * getAcceleration_ang(vel[i] + 0.5 * k2_vel, ang[i] + 0.5 * k2_ang,
-                                              ang_vel[i] + 0.5 * k2_ang_vel)
+        k3_dist = dt * getVelocity(vel + 0.5 * k2_vel)
+        k3_vel = dt * getAcceleration(vel + 0.5 * k2_vel, ang + 0.5 * k2_ang)
+        k3_ang = dt * getVelocity_ang(ang_vel + 0.5 * k2_ang, ang + 0.5 * k2_ang)
+        k3_ang_vel = dt * getAcceleration_ang(vel + 0.5 * k2_vel, ang + 0.5 * k2_ang,
+                                              ang_vel + 0.5 * k2_ang_vel)
 
-        k4_dist = dt * getVelocity(vel[i] + k3_vel)
-        k4_vel = dt * getAcceleration(vel[i] + k3_vel, ang[i] + k3_ang)
-        k4_ang = dt * getVelocity_ang(ang_vel[i] + k3_ang, ang[i] + k3_ang)
-        k4_ang_vel = dt * getAcceleration_ang(vel[i] + k3_vel, ang[i] + k3_ang, ang_vel[i] + k3_ang_vel)
+        k4_dist = dt * getVelocity(vel + k3_vel)
+        k4_vel = dt * getAcceleration(vel + k3_vel, ang + k3_ang)
+        k4_ang = dt * getVelocity_ang(ang_vel + k3_ang, ang + k3_ang)
+        k4_ang_vel = dt * getAcceleration_ang(vel + k3_vel, ang + k3_ang, ang_vel + k3_ang_vel)
 
-        dist.append(dist[i] + 1.0 / 6 * (k1_dist + 2 * k2_dist + 2 * k3_dist + k4_dist))
-        vel.append(vel[i] + 1.0 / 6 * (k1_vel + 2 * k2_vel + 2 * k3_vel + k4_vel))
-        ang.append(ang[i] + 1.0 / 6 * (k1_ang + 2 * k2_ang + 2 * k3_ang + k4_ang))
-        ang_vel.append(ang_vel[i] + 1.0 / 6 * (k1_ang_vel + 2 * k2_ang_vel + 2 * k3_ang_vel + k4_ang_vel))
-        accel.append(getAcceleration(vel[i + 1], ang[i + 1]))
-        ang_accel.append(getAcceleration_ang(vel[i + 1], ang[i + 1], ang_vel[i + 1]))
+        dist = dist + 1.0 / 6 * (k1_dist + 2 * k2_dist + 2 * k3_dist + k4_dist)
+        vel = vel + 1.0 / 6 * (k1_vel + 2 * k2_vel + 2 * k3_vel + k4_vel)
+        ang = ang + 1.0 / 6 * (k1_ang + 2 * k2_ang + 2 * k3_ang + k4_ang)
+        ang_vel = ang_vel + 1.0 / 6 * (k1_ang_vel + 2 * k2_ang_vel + 2 * k3_ang_vel + k4_ang_vel)
+        #accel = getAcceleration(vel, ang)
+        #ang_accel = getAcceleration_ang(vel, ang, ang_vel)
 
         i = i + 1
 
@@ -621,16 +621,16 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
         # Change time step as pilot deflect elevator, safe bet to just use the small timestep
         if (vel[i] < 0.92 * (v_stall + 2.0)) or (
-                abs(ang_vel[i]) == 0.0 and (ang[i] < 10 ** -10 or ang[i] >= max_rot_ang)):
+                abs(ang_vel) == 0.0 and (ang < 10 ** -10 or ang >= max_rot_ang)):
             dt = 0.05
         else:
             dt = 0.05
-        DT.append(dt)
+        #DT.append(dt)
 
-        time.append(time[i - 1] + dt)
-        time_elap = time[i]
+        time = time + dt
+        time_elap = time
 
-        sum_y = grossLift(vel[i], ang[i], sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
+        sum_y = grossLift(vel, ang, sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
 
         if vel[i] > v_stall + 2.0:
             Flapped = 1
@@ -693,7 +693,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
     # plt.show()
 
-    return (sum_y, dist[i], vel[i], ang[i], ang_vel[i], time[i])
+    return sum_y, dist, vel, ang, ang_vel, time
 
 
 def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
