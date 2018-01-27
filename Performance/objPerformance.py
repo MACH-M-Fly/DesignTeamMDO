@@ -111,7 +111,8 @@ class objPerformance(Component):
                 print('############')
                 print('Takeoff Dist:  %.3f m'% (dist))
                 print('Takeoff Time:  %.3f s'% (time))
-                print('Takeoff Velo:  %.3f s' % (vel))
+                print('Takeoff Velo:  %.3f m/s' % (vel))
+                print('Sum Y: %.3f ' %(sum_y))
                 unknowns['score'] = score
                 AC.score = score
                 unknowns['sum_y'] = sum_y
