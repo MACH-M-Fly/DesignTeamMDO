@@ -242,4 +242,9 @@ def runStructAnalysis(AC):
     # plt.plot(x_tail, y_tail, label='deflection of tail'); plt.legend()
     # plt.show()
 
+    # Temporary variables to set the x and y displacements
+    AC.temp_x_wing = x
+    AC.temp_y_wing = y
+    AC.temp_y_tail = y_tail
+
     return max(abs(sigma)), max(abs(y)), max(abs(sigma_tail)), max(abs(y_tail))
