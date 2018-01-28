@@ -218,7 +218,7 @@ def CreateOptimizationProblem():
     #                        upper = np.array([5., 5., 5., 30.0 ]))
 
     prob.driver.add_desvar('chord.chord',
-                           lower=np.array([0.0, 0.0, 0.0, 0.01]),
+                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
                            upper=np.array([0.0, 0.0, 0.0, 2.0]))
 
     prob.driver.add_desvar('boom_len.boom_len',
@@ -278,7 +278,7 @@ def CreateOptimizationProblem():
     prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
-    prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
+    # prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
@@ -286,7 +286,6 @@ def CreateOptimizationProblem():
     prob.driver.add_constraint('createAC.cHT', lower=0.5)
 
     #prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
-    prob.driver.add_constraint('objPerformance.sum_y', lower=0.0)
     prob.driver.add_constraint('calcWeight.ac_mass', lower=0.0, upper=4.53592)
 
     prob.driver.add_constraint('aeroAnalysis.cruise_AoA', upper=10.)
