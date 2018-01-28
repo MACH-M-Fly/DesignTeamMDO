@@ -142,6 +142,8 @@ def distLoad(x, gross_F, dist_type):
     # uniformly distributed load
     elif dist_type == 'uniform':
         # TODO - Define mag
+        length = x[-1] - x[0]
+        mag = gross_F / length
         w = mag * np.ones(len(x))
 
     # linearly decreasing distributed load

@@ -100,6 +100,7 @@ def getWing_mass(AC):
 
     # Calculate number of ribs along the wing
     num_ribs = math.ceil(b_wing * rib_dens)
+    print('Number of Ribs: %d' % num_ribs)
 
     # Calculate mass of components in wing
     m_ribs = k_ribs * num_ribs * MAC 				# kg | total mass of ribs
@@ -109,10 +110,9 @@ def getWing_mass(AC):
 
     # kg | mass of aluminum spar of wing (asssume its length is half of wing span, hollow circular shape)
     m_wing_alum_spar = 0.5*b_wing * np.pi*(outer_r**2 - inner_r**2) * den_boom
-    m_wing_alum_spar = 0.
 
     # Calculate mass of ultrakote
-    wet_area_w = 2*sref_wing
+    wet_area_w = 2.06*sref_wing
     m_ult = wet_area_w * ultrakote_den
 
     # Get total mass of wing
