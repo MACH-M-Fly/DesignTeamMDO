@@ -13,7 +13,7 @@ updateAircraft(AC)
 comps = [propulsionAnalysis(), calcWeight(), structAnalysis()]
 
 for comp in comps:
-    AC.wing_f = 4.44822*8
+    AC.wing_f = 4.44822
     AC.tail_f = 10
     in_dict = {'in_aircraft' : AC}
     out_dict = dict()
@@ -21,5 +21,5 @@ for comp in comps:
     AC = out_dict['out_aircraft']
 
 print('Wing Mass %0.3f kg' % AC.mass_wing)
-print('Maximum Deflection Wing %0.5f m' % AC.y_max)
+print('Maximum Deflection Wing %0.5f cm' % (AC.y_max * 100.))
 print('Maximum Stress Wing %0.5f Pa' % AC.sig_max)
