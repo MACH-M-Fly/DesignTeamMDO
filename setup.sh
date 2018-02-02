@@ -7,6 +7,7 @@ python get-pip.py --user
 
 # Add to path
 echo $'\nPATH=$PATH:~/.local/bin' >> ~/.bash_profile
+echo $'\nmodule load ffmpeg' >> ~/.bash_profile
 source ~/.bash_profile
 
 # Upgrade numpy, scipy, and matplotlib
@@ -18,4 +19,4 @@ pip install --user scipy --upgrade
 pip install --user openmdao
 
 # Copy ffmpeg to the users local directory 
-cp ./Resources/ffmpeg ~/.local/bin/
+#cp ./Resources/ffmpeg ~/.local/bin/
