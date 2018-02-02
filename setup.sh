@@ -18,7 +18,7 @@ pip install --user sympy --upgrade
 # pip install --user matplotlib --upgrade 
 
 # Install OpenMDAO
-pip install --user openmdao
+pip install --user openmdao==1.7.3
 
 # Copy ffmpeg to the users local directory 
 #cp ./Resources/ffmpeg ~/.local/bin/
