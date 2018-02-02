@@ -49,6 +49,13 @@ Version 2:
 - OpenMPI integration for parallel computing 
 - integrate PyoptSparse for gradient free optimizers 
 
+Version 3:
+- Make it work in OpenMDAO 2.1
+- Airfoil design variables
+- Stability (non-AVL)
+- AUVSI Endurance mission
+	- Battery model
+- OpenMPI/Parallel
 
 
 
