@@ -3,10 +3,12 @@ import matplotlib.animation as animation
 import numpy as np
 import os
 
+from Constants import Rho, g
+
 def genMass(AC):
 	"""
 	gen_mass: Generates AVL mass file
-	
+
 	Inputs:
 		AC: Aircraft with all current attributes
 	Outputs:
@@ -27,14 +29,14 @@ def genMass(AC):
 	out('Lunit = 1.0 m')
 	out('Tunit = 1.0 s')
 	out('Munit = 1 kg')
-	out('g   = 9.81')
-	out('rho = 1.225')
+	out('g   = %0.2f' % g)
+	out('rho = %0.3f' % Rho)
 	out('#-------------------------')
 
 	out('# Mass Xcg Ycg Zcg     Ixx Iyy Izz Ixy Ixz Iyz Component')
 	out('# (kg) (m) (m) (m)     (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2)')
 	out('*   1.    1.    1.    1.    1.     1.    1.    1.    1.    1.')
-	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.') 
+	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.')
 	out( str(AC.mass) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
 
 	f.close()
@@ -56,7 +58,7 @@ def genGeo(AC):
 	MAC = AC.wing.MAC
 	b_wing = AC.wing.b_wing
 	cg = AC.wing.CG
-	CDp = 0.0
+	CDp = AC.CD_p
 	Xle = AC.wing.Xle
 	Yle = AC.wing.Yle
 	C = AC.wing.chord_vals
@@ -82,7 +84,7 @@ def genGeo(AC):
 		f.write(cmd + '\n')
 
 	out('MACH MDAO AVL\n')
-		
+
 	out('#======================================================')
 	out('#------------------- Geometry File --------------------')
 	out('#======================================================')
@@ -94,9 +96,9 @@ def genGeo(AC):
 	out('#IYsym   IZsym   Zsym')
 	out(' 0       0       0')
 	out('#Sref    Cref    b_wing')
-	out(str(Sref) + '  ' + str(MAC) + '  '+ str(b_wing)) 
+	out(str(Sref) + '  ' + str(MAC) + '  '+ str(b_wing))
 	out('#Xref    Yref    Zref')
-	out(str(cg[0]) + ' '+ str(cg[1]) + ' '+ str(cg[2])) 
+	out(str(cg[0]) + ' '+ str(cg[1]) + ' '+ str(cg[2]))
 	out('# CDp')
 	out(str(CDp) + '\n')
 
@@ -143,7 +145,7 @@ def genGeo(AC):
 	out('TRANSLATE')
 	out('0.0  0.0  0.0')
 	out('ANGLE')
-	out('0')	
+	out('0')
 	out('')
 	out('#------------------TAIL ROOT/ELEVATOR------------------')
 	inds = [0, len(C_ht) - 1]
@@ -263,4 +265,4 @@ def genGeo(AC):
 	# plt.pause(1)
 
 
-# -- END OF FILE --			
+# -- END OF FILE --

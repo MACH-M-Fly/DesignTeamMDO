@@ -1,6 +1,8 @@
 import numpy
 import math
 from lib_plot import *
+
+
 # from lib_plot import plot_geo_final
 
 # def postProcess(opt_problem):
@@ -8,7 +10,7 @@ from lib_plot import *
 #     # Not currently used
 #     # - Is an example of an all-in-one post-processing script
 
-#     # """   
+#     # """
 # 	# Remove possibility for surpressing output with ellipsis
 # 	numpy.set_printoptions(threshold='nan')
 
@@ -25,10 +27,10 @@ from lib_plot import *
 # 		 'weight.C_t', 'obj.NP','obj.SM', 'obj.score']
 
 # 	filename = 'converged.dat'
-	
+
 # 	# Open Output File
 # 	output_file = open(filename, 'w')
-	
+
 # 	# Write Header
 # 	line_header = 'Case: \n'
 # 	output_file.write(line_header)
@@ -53,7 +55,6 @@ from lib_plot import *
 # 	output_file.close()
 
 
-	
 # 	result_score = -1*opt_problem['obj.score']
 # 	result_Sref = opt_problem['weight.Sref_wing']
 
@@ -88,55 +89,67 @@ from lib_plot import *
 # 	plt.savefig('OPT_#.pdf', bbox_inches='tight')
 
 def printParameters(AC, param_str):
-	if param_str == 'Initial':
-		print('\n================  Initial Results ===================')
-	else:
-		print('\n================  Final Results ===================')
+    if param_str == 'Initial':
+        print('\n================  Initial Results ===================')
+    else:
+        print('\n================  Final Results ===================')
 
-	print("Total Build Hours: 		%f" % AC.total_hours)
-	print("Wingspan: 				%f" % AC.wing.b_wing)
-	print("Boom Length: 			%f" % AC.boom_len)
-	print("Chord Values:			" + ', '.join("%f" % n for n in AC.wing.chord_vals))
-	print("Chord Cubic Terms:		" + ', '.join("%f" % n for n in AC.wing.chord))
-	print("Sweep Values:			" + ', '.join("%f" % n for n in AC.wing.sweep_vals))
-	print("Sweep Cubic Terms:		" + ', '.join("%f" % n for n in AC.wing.sweep))
-	print("Horiz. Tail Span:	 	%f" % AC.tail.b_htail)
-	print("HT Chord Values:		" + ', '.join("%f" % n for n in AC.tail.htail_chord_vals))
-	print("HT Chord Cubic Terms:	" + ', '.join("%f" % n for n in AC.tail.htail_chord))
-	
-	print('\n########    Performance Metrics  #######')
-	print("Number of Laps:	%d" % AC.N)
-	print("Score:			%f" % AC.score)
-	print("Total Time:		%f" % AC.tot_time)
+    print("Total Build Hours: 		%f" % AC.total_hours)
+    print("Wingspan: 				%f" % AC.wing.b_wing)
+    print("Boom Length: 			%f" % AC.boom_len)
+    print("Chord Values:			" + ', '.join("%f" % n for n in AC.wing.chord_vals))
+    print("Chord Cubic Terms:		" + ', '.join("%f" % n for n in AC.wing.chord))
+    print("Sweep Values:			" + ', '.join("%f" % n for n in AC.wing.sweep_vals))
+    print("Sweep Cubic Terms:		" + ', '.join("%f" % n for n in AC.wing.sweep))
+    print("Horiz. Tail Span:	 	%f" % AC.tail.b_htail)
+    print("HT Chord Values:		" + ', '.join("%f" % n for n in AC.tail.htail_chord_vals))
+    print("HT Chord Cubic Terms:	" + ', '.join("%f" % n for n in AC.tail.htail_chord))
 
-	print('\n########     Weight Breakdown    #######')
-	print('Aircraft Mass:	%f kg' % AC.mass)
-	print('Wing Mass:		%f kg' % AC.mass_wing)
-	print('Tail Mass:		%f kg' % AC.mass_tail)
+    print('\n########    Performance Metrics  #######')
+    if AC.mission == 2:
+        print("Number of Laps:	%d" % AC.N)
+        print("Total Time:		%f" % AC.tot_time)
+    print("Score:			%f" % AC.score)
 
-	print('\n########  Aerodynamics Analysis  #######')
-	print("CL: %f" % AC.CL(AC.ang))
-	print("CD: %f" % AC.CD(AC.ang))
-	print("CM: %f" % AC.CM(AC.ang))
-	print("NP: %f" % AC.NP)
-	print("SM: %f" % AC.SM)
+    print('\n########     Weight Breakdown    #######')
+    print('Aircraft Mass:   %f kg' % AC.mass)
+    print('Empty Mass:      %f kg' % AC.mass_empty)
+    print('Wing Mass:       %f kg' % AC.mass_wing)
+    print('Tail Mass:       %f kg' % AC.mass_tail)
+    print('Payload Mass:    %f kg' % AC.m_payload)
 
-	print('\n########   Structural Analysis   #######')
-	print('Gross Lift:				%f N (%f kg)' % (AC.gross_F, AC.gross_F/9.81))
-	print("Wing Max Stress:		%.3f MPa" % (AC.sig_max/1.E6))
-	print("Wing Max Deflection:	%.3f mm" % (AC.y_max*1.E3))
-	print("Tail Max Stress:		%.3f MPa" % (AC.sig_max_tail/1.E6))
-	print("Tail Max Deflection:	%.3f mm" % (AC.y_max_tail*1.E3))
-	print("CG:						" + ', '.join("%f" % n for n in AC.CG))
+    print('\n########  Aerodynamics Analysis  #######')
+    print("CL: %f" % AC.CL(AC.ang))
+    print("CD: %f" % AC.CD(AC.ang))
+    print("CM: %f" % AC.CM(AC.ang))
+    print("NP: %f" % AC.NP)
+    print("SM: %f" % AC.SM)
 
-	print("\n#####\n")
+    print('\n########   Structural Analysis   #######')
+    print('Gross Lift:				%f N (%f kg)' % (AC.gross_F, AC.gross_F / 9.81))
+    print("Wing Max Stress:		%.3f MPa" % (AC.sig_max / 1.E6))
+    print("Wing Max Deflection:	%.3f mm" % (AC.y_max * 1.E3))
+    print("Tail Max Stress:		%.3f MPa" % (AC.sig_max_tail / 1.E6))
+    print("Tail Max Deflection:	%.3f mm" % (AC.y_max_tail * 1.E3))
+    print("CG:						" + ', '.join("%f" % n for n in AC.CG))
+
+    print('\n######  Propulsion Analysis #######')
+    print('Motor KV: %.3f ' % (AC.propulsion.motorKV))
+    print('Prop Diam: %.3f In' % (AC.propulsion.diameter))
+    print('Prop Pitch: %.3f In' % (AC.propulsion.pitch))
+    print('Thrust Curve: ' + ','.join("%f" % n for n in AC.propulsion.thrustCurve))
+    print('RPM: %.3f' % (AC.propulsion.motorKV * (AC.propulsion.cellNum * 3.7)))
+
+    print('\n#####\n')
+
 
 def postProcess_Main(in_ac, out_ac):
-	# Print starting parameters
-	# printParameters(in_ac, 'Initial')
+    # Print starting parameters
+    # printParameters(in_ac, 'Initial')
 
-	# Print final parameters
-	printParameters(out_ac, 'Final')
+    # Print final parameters
+    if in_ac is not None:
+        printParameters(out_ac, 'Final')
 
-	# Output final geometry of aircraft
-	plotGeoFinalDuo(in_ac, out_ac)
+    # Output final geometry of aircraft
+    plotGeoFinalDuo(in_ac, out_ac)

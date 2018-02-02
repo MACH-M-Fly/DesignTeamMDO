@@ -1,0 +1,683 @@
+=============== Initial vehicle Parameters =============
+('CDp', 0.0)
+('Tailboom Length', 0.75)
+('Mission', 1)
+=============== Initial wing Parameters =============
+('AC.wing.num_Sections: ', 5)
+('AC.wing.is_linear: ', 0)
+('AC.wing.b_wing: ', 1.0)
+('AC.wing.sweep: ', array([ 0.,  0.,  0.,  0.]))
+('AC.wing.Sref', 0.35)
+('AC.wing.chord: ', array([ 0.  ,  0.  ,  0.  ,  0.35]))
+('Chord Values at Section" ', array([ 0.35,  0.35,  0.35,  0.35,  0.35]))
+('AC.wing.Xo: ', 0)
+('AC.wing.Yo: ', 0)
+('AC.wing.Zo: ', 0)
+('AC.wing.Xle: ', array([ 0.,  0.,  0.,  0.,  0.]))
+('AC.wing.Yle: ', array([ 0.   ,  0.125,  0.25 ,  0.375,  0.5  ]))
+('AC.wing.Zle: ', array([ 0.        ,  0.01093608,  0.02187217,  0.03280825,  0.04374433]))
+('AC.wing.dihedral: ', 5.0)
+('AC.wing.Afiles: ', ['NACA2412', 'NACA2412', 'NACA2412', 'NACA2412', 'NACA2412'])
+('AC.wing.Ainc: ', array([ 0.,  0.,  0.,  0.,  0.]))
+('AC.wing.sec_span: ', 0.125)
+('AC.wing.MAC', 0.35)
+('AC.camber: ', array([1, 1, 1, 1]))
+('Camber Values at Section', array([ 1.15625,  1.375  ,  1.65625,  2.     ,  2.40625]))
+('AC.max_camber: ', array([1, 1, 1, 1]))
+('Max Camber Position at Section', array([ 1.15625,  1.375  ,  1.65625,  2.     ,  2.40625]))
+('AC.thickness: ', array([1, 1, 1, 1]))
+('Thickness Values at Section', array([ 1.15625,  1.375  ,  1.65625,  2.     ,  2.40625]))
+('AC.max_thickness: ', array([1, 1, 1, 1]))
+('Max Thickness Values at Section', array([ 1.15625,  1.375  ,  1.65625,  2.     ,  2.40625]))
+
+
+=============== Initial tail Parameters =============
+('AC.tail.num_Sections: ', 5)
+('AC.tail.is_linear: ', 0)
+('AC.tail.b_htail: ', 0.25)
+('AC.tail.Sref_ht', 0.025000000000000005)
+('AC.tail.Sref_vt', 0.020000000000000004)
+('AC.tail.htail_chord: ', array([ 0. ,  0. ,  0. ,  0.1]))
+('Horiz. Tail Chord Values at Section" ', array([ 0.1,  0.1,  0.1,  0.1,  0.1]))
+('AC.tail.b_vtail: ', 0.2)
+('AC.tail.vtail_chord: ', array([ 0. ,  0. ,  0. ,  0.1]))
+('Vert. Tail Chord Values at Section" ', array([ 0.1,  0.1,  0.1,  0.1,  0.1]))
+('AC.tail.Xo: ', 0)
+('AC.tail.Yo: ', 0)
+('AC.tail.Zo: ', 0)
+('AC.tail.Xle_ht: ', array([ 0.8125,  0.8125,  0.8125,  0.8125,  0.8125]))
+('AC.tail.Yle_ht: ', array([ 0.   ,  0.025,  0.05 ,  0.075,  0.1  ]))
+('AC.tail.Zle_ht: ', array([ 0.   ,  0.025,  0.05 ,  0.075,  0.1  ]))
+('AC.tail.boom_len: ', 0.75)
+('AC.tail.sec_span_htail: ', 0.025)
+('AC.tail.sec_span_vtail: ', 0.04)
+
+
+Reading in PER3_8x5.dat
+Success reading in PER3_8x5.dat
+Reading in PER3_8x6.dat
+Success reading in PER3_8x6.dat
+Reading in PER3_8x7.dat
+Success reading in PER3_8x7.dat
+Reading in PER3_8x8.dat
+Success reading in PER3_8x8.dat
+Reading in PER3_8x9.dat
+Success reading in PER3_8x9.dat
+Reading in PER3_9x5.dat
+Success reading in PER3_9x5.dat
+Reading in PER3_9x6.dat
+Success reading in PER3_9x6.dat
+Reading in PER3_9x7.dat
+Success reading in PER3_9x7.dat
+Reading in PER3_9x8.dat
+Success reading in PER3_9x8.dat
+Reading in PER3_9x9.dat
+Success reading in PER3_9x9.dat
+Reading in PER3_10x5.dat
+Success reading in PER3_10x5.dat
+Reading in PER3_10x6.dat
+Success reading in PER3_10x6.dat
+Reading in PER3_10x7.dat
+Success reading in PER3_10x7.dat
+Reading in PER3_10x8.dat
+Success reading in PER3_10x8.dat
+Reading in PER3_10x9.dat
+Success reading in PER3_10x9.dat
+Reading in PER3_11x5.dat
+Success reading in PER3_11x5.dat
+Reading in PER3_11x6.dat
+Success reading in PER3_11x6.dat
+Reading in PER3_11x7.dat
+Success reading in PER3_11x7.dat
+Reading in PER3_11x8.dat
+Success reading in PER3_11x8.dat
+Reading in PER3_11x9.dat
+Success reading in PER3_11x9.dat
+Success creating Kriging Model for Propulsion Component: Thrust
+Success creating Kriging Model for Propulsion Component: Torque
+##############################################
+Setup: Checking root problem for potential issues...
+
+No recorders have been specified, so no data will be saved.
+
+The following parameters have no associated unknowns:
+createAC.b_htail
+createAC.b_vtail
+createAC.b_wing
+createAC.boom_len
+createAC.chord
+createAC.def_aircraft
+createAC.dist_LG
+createAC.htail_chord
+createAC.m_payload
+createAC.motor_KV
+createAC.prop_diam
+createAC.prop_pitch
+createAC.sweep
+createAC.vtail_chord
+
+The following variables are not differentiable but were not labeled by the user as pass_by_obj:
+aeroAnalysis.in_aircraft: type Aircraft
+aeroAnalysis.out_aircraft: type Aircraft
+calcWeight.in_aircraft: type Aircraft
+calcWeight.out_aircraft: type Aircraft
+createAC.def_aircraft: type Aircraft
+createAC.aircraft: type Aircraft
+getBuildTime.in_aircraft: type Aircraft
+getBuildTime.out_aircraft: type Aircraft
+objPerformance.in_aircraft: type Aircraft
+objPerformance.out_aircraft: type Aircraft
+propulsionAnalysis.in_aircraft: type Aircraft
+propulsionAnalysis.out_aircraft: type Aircraft
+structAnalysis.in_aircraft: type Aircraft
+structAnalysis.out_aircraft: type Aircraft
+
+Setup: Check of root problem complete.
+##############################################
+
+Wing Mass = 0.511628 kg
+	Wing Sref = 0.350000 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.000000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 2.924137 kg
+ Empty Mass = 1.924137 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.000000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.195717 m from LE of wing
+	Wing loading = 81.959389 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05136 x + 0.7476
+NP = 0.091494
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 43.904440 m/s
+Cruise AOA = -11.441561 degrees
+CL of aircraft = 0.159978
+CD of aircraft = 0.007248
+SM = -0.297778
+Max Stress on Wing Spar = 3.870854E+06 Pa
+Max Stress on Tail Boom = 1.779806E+08 Pa
+############
+Performance
+############
+Takeoff Dist:  61.130 m
+Takeoff Time:  14.750 s
+Takeoff Velo:  7.467 s
+('Current Iteration Total Hours', 164.0025)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Reading in PER3_8x5.dat
+Success reading in PER3_8x5.dat
+Reading in PER3_8x6.dat
+Success reading in PER3_8x6.dat
+Reading in PER3_8x7.dat
+Success reading in PER3_8x7.dat
+Reading in PER3_8x8.dat
+Success reading in PER3_8x8.dat
+Reading in PER3_8x9.dat
+Success reading in PER3_8x9.dat
+Reading in PER3_9x5.dat
+Success reading in PER3_9x5.dat
+Reading in PER3_9x6.dat
+Success reading in PER3_9x6.dat
+Reading in PER3_9x7.dat
+Success reading in PER3_9x7.dat
+Reading in PER3_9x8.dat
+Success reading in PER3_9x8.dat
+Reading in PER3_9x9.dat
+Success reading in PER3_9x9.dat
+Reading in PER3_10x5.dat
+Success reading in PER3_10x5.dat
+Reading in PER3_10x6.dat
+Success reading in PER3_10x6.dat
+Reading in PER3_10x7.dat
+Success reading in PER3_10x7.dat
+Reading in PER3_10x8.dat
+Success reading in PER3_10x8.dat
+Reading in PER3_10x9.dat
+Success reading in PER3_10x9.dat
+Reading in PER3_11x5.dat
+Success reading in PER3_11x5.dat
+Reading in PER3_11x6.dat
+Success reading in PER3_11x6.dat
+Reading in PER3_11x7.dat
+Success reading in PER3_11x7.dat
+Reading in PER3_11x8.dat
+Success reading in PER3_11x8.dat
+Reading in PER3_11x9.dat
+Success reading in PER3_11x9.dat
+Success creating Kriging Model for Propulsion Component: Thrust
+Success creating Kriging Model for Propulsion Component: Torque
+##############################################
+Setup: Checking root problem for potential issues...
+
+No recorders have been specified, so no data will be saved.
+
+The following parameters have no associated unknowns:
+createAC.def_aircraft
+createAC.sweep
+
+The following variables are not differentiable but were not labeled by the user as pass_by_obj:
+aeroAnalysis.in_aircraft: type Aircraft
+aeroAnalysis.out_aircraft: type Aircraft
+calcWeight.in_aircraft: type Aircraft
+calcWeight.out_aircraft: type Aircraft
+createAC.def_aircraft: type Aircraft
+createAC.aircraft: type Aircraft
+getBuildTime.in_aircraft: type Aircraft
+getBuildTime.out_aircraft: type Aircraft
+objPerformance.in_aircraft: type Aircraft
+objPerformance.out_aircraft: type Aircraft
+propulsionAnalysis.in_aircraft: type Aircraft
+propulsionAnalysis.out_aircraft: type Aircraft
+structAnalysis.in_aircraft: type Aircraft
+structAnalysis.out_aircraft: type Aircraft
+
+Setup: Check of root problem complete.
+##############################################
+
+Wing Mass = 0.511628 kg
+	Wing Sref = 0.350000 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.000000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.029731 kg
+ Empty Mass = 2.029731 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.000000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.186978 m from LE of wing
+	Wing loading = 84.919040 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05136 x + 0.7476
+NP = 0.091677
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.679144 m/s
+Cruise AOA = 1.176049 degrees
+CL of aircraft = 0.807972
+CD of aircraft = 0.083089
+SM = -0.272291
+Max Stress on Wing Spar = 1.383400E+06 Pa
+Max Stress on Tail Boom = 2.546662E+06 Pa
+############
+Performance
+############
+Takeoff Dist:  57.284 m
+Takeoff Time:  7.100 s
+Takeoff Velo:  13.486 s
+('Current Iteration Total Hours', 164.0025)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Wing Mass = 0.511628 kg
+	Wing Sref = 0.350000 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.000000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.029731 kg
+ Empty Mass = 2.029731 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.000000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.186978 m from LE of wing
+	Wing loading = 84.919040 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05136 x + 0.7476
+NP = 0.091677
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.679144 m/s
+Cruise AOA = 1.176049 degrees
+CL of aircraft = 0.807972
+CD of aircraft = 0.083089
+SM = -0.272291
+Max Stress on Wing Spar = 1.383400E+06 Pa
+Max Stress on Tail Boom = 2.546662E+06 Pa
+############
+Performance
+############
+Takeoff Dist:  57.284 m
+Takeoff Time:  7.100 s
+Takeoff Velo:  13.486 s
+('Current Iteration Total Hours', 164.0025)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Wing Mass = 0.511628 kg
+	Wing Sref = 0.350000 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.000000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.030731 kg
+ Empty Mass = 2.029731 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.001000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.186946 m from LE of wing
+	Wing loading = 84.947068 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05136 x + 0.7476
+NP = 0.091677
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.682094 m/s
+Cruise AOA = 1.175773 degrees
+CL of aircraft = 0.807958
+CD of aircraft = 0.083086
+SM = -0.272195
+Max Stress on Wing Spar = 1.384075E+06 Pa
+Max Stress on Tail Boom = 2.546963E+06 Pa
+############
+Performance
+############
+Takeoff Dist:  57.271 m
+Takeoff Time:  7.100 s
+Takeoff Velo:  13.484 s
+('Current Iteration Total Hours', 164.0025)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Wing Mass = 0.511628 kg
+	Wing Sref = 0.350000 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.000000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.028731 kg
+ Empty Mass = 2.029731 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 0.999000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.187011 m from LE of wing
+	Wing loading = 84.891011 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05136 x + 0.7476
+NP = 0.091676
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.676194 m/s
+Cruise AOA = 1.176325 degrees
+CL of aircraft = 0.807986
+CD of aircraft = 0.083091
+SM = -0.272387
+Max Stress on Wing Spar = 1.382726E+06 Pa
+Max Stress on Tail Boom = 2.546361E+06 Pa
+############
+Performance
+############
+Takeoff Dist:  57.297 m
+Takeoff Time:  7.100 s
+Takeoff Velo:  13.488 s
+('Current Iteration Total Hours', 164.0025)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Wing Mass = 0.519195 kg
+	Wing Sref = 0.350350 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 1.001000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.037298 kg
+ Empty Mass = 2.037298 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.000000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.186731 m from LE of wing
+	Wing loading = 85.046083 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05138 x + 0.7479
+NP = 0.091675
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.691296 m/s
+Cruise AOA = 1.174533 degrees
+CL of aircraft = 0.808293
+CD of aircraft = 0.083070
+SM = -0.271587
+Max Stress on Wing Spar = 1.389607E+06 Pa
+Max Stress on Tail Boom = 2.547485E+06 Pa
+############
+Performance
+############
+Takeoff Dist:  57.857 m
+Takeoff Time:  7.150 s
+Takeoff Velo:  13.510 s
+('Current Iteration Total Hours', 169.023)
+
+######  Propulsion Analysis #######
+Motor KV: 900.000 
+Prop Diam: 11.000 In
+Prop Pitch: 5.000 In
+Thrust Curve: 0.000035,-0.001033,0.001003,-0.028082,4.340076
+RPM: 6660.000
+Wing Mass = 0.511166 kg
+	Wing Sref = 0.349650 m^2
+	MAC of wing = 0.350000 m
+	Wing span = 0.999000 m
+	Wing chord = 0.000000, 0.000000, 0.000000, 0.350000
+	Wing chord vals = 0.350000, 0.350000, 0.350000, 0.350000, 0.350000
+	Wing sweep = 0.000000, 0.000000, 0.000000, 0.000000
+	Wing sweep vals = 0.000000, 0.000000, 0.000000, 0.000000, 0.000000
+Tail Mass = 0.111176 kg
+	Mass of Tail Ribs = 0.002537 kg
+	Mass of LE        = 0.038884 kg
+	Mass of TE        = 0.023331 kg
+	Mass of Tail Spar = 0.034562 kg
+	Mass of Tail ultrakote = 0.011862 kg
+H_Tail
+	b_htail = 0.250000 m
+	Sref of HT = 0.025000 m^2
+	MAC of HT = 0.100000
+	H_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	H_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in HTail = 3.000000
+V_Tail
+	b_vtail = 0.200000
+	Sref of VT = 0.020000 m^2
+	MAC of VT = 0.100000
+	V_Tail chord = 0.000000, 0.000000, 0.000000, 0.100000
+	V_Tail chord_val = 0.100000, 0.100000, 0.100000, 0.100000, 0.100000
+	Number of Ribs in VTail = 2.000000
+	Kg per rib = 0.005075
+Boom Mass = 0.382610 kg
+	Boom Length = 0.750000 m
+Landing Gear Mass = 0.250000 kg
+	Front LG Mass = 0.270000 kg
+	Rear LG Mass  = 0.179205 kg
+	Height of LG = 0.069459 m
+Total Mass = 3.029269 kg
+ Empty Mass = 2.029269 kg
+	Empenage Mass = 0.493786 kg
+	Payload Mass = 1.000000 kg
+	Fuselage Mass = 0.250000 kg
+	X CG = 0.186994 m from LE of wing
+	Wing loading = 84.991084 N/m^2
+ Motor Weight = 0.298940 kg
+ Ballast Mass = 0.000000 kg
+CL Line:
+ 
+0.05133 x + 0.7472
+NP = 0.091683
+Max Elevator deflection = 0.000000 deg
+Cruise Velocity = 11.687938 m/s
+Cruise AOA = 1.175600 degrees
+CL of aircraft = 0.807549
+CD of aircraft = 0.083089
+SM = -0.272317
+Max Stress on Wing Spar = 1.381991E+06 Pa
+Max Stress on Tail Boom = 2.547973E+06 Pa

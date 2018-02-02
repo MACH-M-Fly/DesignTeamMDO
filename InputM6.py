@@ -24,7 +24,7 @@ AC = Aircraft()
 # 1 = 1 wing surface, 2 = 2 wing surfaces, etc.
 # =========================================================================
 
-AC.AC_name = "405"
+AC.AC_name = "M6"
 AC.wings = 1
 AC.h_tails = 1
 AC.v_tails = 1
@@ -51,7 +51,7 @@ AC.Zo = 0
 # Initial Conditions for Optimizer
 # =========================================================================
 # Wingspan (m)
-b_wing = 1.0
+b_wing = 1.8
 # Wing dihedral angle (degrees)
 dihedral = 5.0
 
@@ -115,7 +115,7 @@ ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 # Initial Conditions for Optimizer
 # =========================================================================
 # Horizontal tail span (m)
-b_htail = 0.25
+b_htail = 0.75
 
 # Vertical tail span (m)
 b_vtail = 0.2
@@ -147,7 +147,7 @@ b = 0
 c = 0
 d = 0
 e = 1
-thrust = [a, b, c, d, e]
+thrust = {a, b, c, d, e}
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
@@ -158,12 +158,12 @@ cell_Num = 2.0
 motor_KV = 900.0
 # Propeller Diameter
 
-prop_diam = 11.0
+prop_diam = 8.0
 # Propeller Pitch
 prop_pitch = 5.0
 
 # ESC max current
-esc_max = 50.0
+esc_max = 100.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)
@@ -321,8 +321,7 @@ print('=============== Initial tail Parameters =============')
 print('AC.tail.num_Sections: ', AC.tail.num_sections)
 print('AC.tail.is_linear: ', AC.tail.is_linear)
 print('AC.tail.b_htail: ', AC.tail.b_htail)
-print('AC.tail.Sref_ht', AC.tail.sref_ht)
-print('AC.tail.Sref_vt', AC.tail.sref_vt)
+print('AC.tail.Sref', AC.tail.sref)
 print('AC.tail.htail_chord: ', AC.tail.htail_chord)
 print('Horiz. Tail Chord Values at Section" ', AC.tail.htail_chord_vals)
 print('AC.tail.b_vtail: ', AC.tail.b_vtail)

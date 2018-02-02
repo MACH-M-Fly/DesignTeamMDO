@@ -24,7 +24,7 @@ AC = Aircraft()
 # 1 = 1 wing surface, 2 = 2 wing surfaces, etc.
 # =========================================================================
 
-AC.AC_name = "405"
+AC.AC_name = "405WingOnly"
 AC.wings = 1
 AC.h_tails = 1
 AC.v_tails = 1
@@ -42,9 +42,9 @@ num_sections_tail = 5
 AC.is_linear = 0
 
 # Specify origin for aicraft build (root chord leading edge position)
-AC.Xo = 0
-AC.Yo = 0
-AC.Zo = 0
+AC.Xo = 0.
+AC.Yo = 0.
+AC.Zo = 0.
 
 # =========================================================================
 # Wing Parameters (Design Variables)
@@ -57,10 +57,10 @@ dihedral = 5.0
 
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
-s_a = 0
-s_b = 0
-s_c = 0
-s_d = 0.0
+s_a = 0.
+s_b = 0.
+s_c = 0.
+s_d = 0.
 sweep = np.array([s_a, s_b, s_c, s_d])
 
 # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
@@ -104,10 +104,10 @@ mt_d = 1
 max_thickness = np.array([mt_a, mt_b, mt_c, mt_d])
 
 # Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
-ang_a = 1
-ang_b = 1
-ang_c = 1
-ang_d = 1
+ang_a = 0.
+ang_b = 0.
+ang_c = 0.
+ang_d = 0.
 ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 
 # =========================================================================
@@ -177,23 +177,27 @@ AC.actual_takeoff = 200
 #		Weights
 #       =========================================================================
 # density of aluminum (kg/m^3)
-AC.spar_den = 2700.0
+AC.spar_den = 0.
 # Linear density of wooden spar (kg/m)
-AC.spar_lindens = 0.15361
+AC.spar_lindens = 0.0616934
 # Leading Edge (LE) density (kg/m)
-AC.LE_lindens = 5 * 0.453592 * 0.3048 / 4
+AC.LE_lindens = 0.0354838
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5 * 0.453592 * 0.3048 / 4. / 4.
+AC.TE_lindens =0.0129032
+
 # Linear density of wooden tail spar (kg/m)
 AC.spar_lindens_t = 0.15361 / 2.
 # Tail Leading Edge (LE) density (kg/m)
 AC.LE_lindens_t = 5 * 0.453592 * 0.3048 * 0.25 / 2.
 # Tail Trailing Edge (TE) density (kg/m)
 AC.TE_lindens_t = 5 * 0.453592 * 0.3048 * 0.15 / 2.
+
 # Rib Mass (kg/r) per meter of rib
-AC.k_ribs = 0.0203
+AC.k_ribs = 1.79e-3 + 0.000384072
 # Rib spanwise desnity (# of ribs per m)
-AC.rib_lindens = 4
+AC.rib_lindens = 9.84251968504
+
+
 # Tail Rib Mass (kg/r) per meter of rib
 AC.k_ribs_t = 0.0203 / 4.
 # Tail Rib spanwise desnity (# of ribs per m)
@@ -244,18 +248,18 @@ def updateAircraft(cur_AC):
                    cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
 
     # Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
-    AC.wing.dist_type = 'elliptical'
+    AC.wing.dist_type = 'uniform'
 
     # Add wing structural parameters ('C', R', 'I')
-    AC.wing.spar_type = 'C'
+    AC.wing.spar_type = 'I'
 
     # Add spar dimensions (m)
     outer_radius = 0.015
     inner_radius = outer_radius * 0.75
-    AC.wing.spar_dim = [outer_radius, inner_radius]
+    AC.wing.spar_dim = [0.009525, 0.00635, 0.003175, 0.01905]
 
     # Spar Young's Modulus
-    AC.wing.spar_E = 68.9e9
+    AC.wing.spar_E = 800e6
 
     # Add propulsion system
     AC.propulsion = Propulsion(cur_AC.propulsion.motorKV, cur_AC.propulsion.diameter, cur_AC.propulsion.pitch,
