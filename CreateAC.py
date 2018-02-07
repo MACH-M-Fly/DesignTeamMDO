@@ -1,11 +1,13 @@
 # python stantdard libraries
 from __future__ import division
 
+import copy
+
 # open MDAO libraries
 from openmdao.api import Component
 
 # Import self-created components
-from Input import updateAircraft
+from Input import updateAircraft, AC
 
 
 class createAC(Component):
@@ -29,6 +31,9 @@ class createAC(Component):
 
     def __init__(self, ac):
         super(createAC, self).__init__()
+
+        if ac is None:
+            ac = copy.deepcopy(AC)
 
         # Input instance of aircraft - before modification
         self.add_param('def_aircraft', val=ac, desc='Aircraft Class')

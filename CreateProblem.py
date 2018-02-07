@@ -7,6 +7,7 @@ import copy
 # open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
+import numpy as np
 
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
 # from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
@@ -43,6 +44,7 @@ class constrainedMDO(Group):
         # - Must also uncomment the param in createAC.py
 
         ac = copy.deepcopy(AC)
+        self.ac = ac
 
         # Mass Payload
         self.add_design_variable('m_payload', ac.m_payload)
@@ -148,7 +150,7 @@ def CreateRoot():
     """
     # Create the root group and add all modules
     root = Group()
-    CreateAddModules(root)
+    CreateAddModules(root, None)
 
     # Return the root
     return root
