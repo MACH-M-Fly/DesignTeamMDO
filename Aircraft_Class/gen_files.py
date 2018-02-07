@@ -37,7 +37,7 @@ def genMass(AC):
 	out('# (kg) (m) (m) (m)     (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2) (kg-m^2)')
 	out('*   1.    1.    1.    1.    1.     1.    1.    1.    1.    1.')
 	out('+   0.    0.    0.    0.    0.     0.    0.    0.    0.    0.')
-	out( str(AC.mass) + ' ' + str(AC.CG[0]) + ' ' + str(AC.CG[1]) + ' ' + str(AC.CG[2]) + ' ' + str(AC.I[0]) + ' ' + str(AC.I[1])  + ' ' + str(AC.I[2]) + ' ' + str(AC.I[3]) + ' ' + str(AC.I[4]) + ' ' + str(AC.I[5]) +	' !	Aircraft')
+	out('{:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} !	Aircraft'.format(AC.mass, AC.CG[0], AC.CG[1], AC.CG[2], AC.I[0], AC.I[1], AC.I[2], AC.I[3], AC.I[4], AC.I[5]))
 
 	f.close()
 
