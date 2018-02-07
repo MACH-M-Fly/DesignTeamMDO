@@ -259,7 +259,7 @@ def updateAircraft(cur_AC):
     AC.wing.spar_dim = [0.009525, 0.00635, 0.003175, 0.01905]
 
     # Spar Young's Modulus
-    AC.wing.spar_E = 800e6
+    AC.wing.spar_E = 440e6
 
     # Add propulsion system
     AC.propulsion = Propulsion(cur_AC.propulsion.motorKV, cur_AC.propulsion.diameter, cur_AC.propulsion.pitch,

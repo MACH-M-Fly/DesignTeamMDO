@@ -1,11 +1,7 @@
 # python stantdard libraries
 from __future__ import print_function
-from time import localtime, strftime, time
 
 # addition python libraries
-import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 import copy
 
 # open MDAO libraries
@@ -23,9 +19,6 @@ from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
 from Propulsion.propulsionAnalysis import propulsionAnalysis
 from getBuildTime import getBuildTime
-# from Post_Process.postProcess import postProcess
-# from Post_Process.lib_plot import *
-from Post_Process.postProcess import *
 
 from Input import AC
 
@@ -49,43 +42,43 @@ class constrainedMDO(Group):
         # - Uncomment a param to add it as a design variable
         # - Must also uncomment the param in createAC.py
 
-        ac = AC
+        ac = copy.deepcopy(AC)
 
         # Mass Payload
-        self.add_design_variable('m_payload', AC.m_payload)
+        self.add_design_variable('m_payload', ac.m_payload)
 
         # Wingspan (m)
-        self.add_design_variable('b_wing', AC.wing.b_wing)
+        self.add_design_variable('b_wing', ac.wing.b_wing)
 
         # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('chord', AC.wing.chord)
+        self.add_design_variable('chord', ac.wing.chord)
 
         # Motor parameters
-        self.add_design_variable('motor_KV', AC.propulsion.motorKV)
-        self.add_design_variable('prop_diam', AC.propulsion.diameter)
-        self.add_design_variable('prop_pitch', AC.propulsion.pitch)
+        self.add_design_variable('motor_KV', ac.propulsion.motorKV)
+        self.add_design_variable('prop_diam', ac.propulsion.diameter)
+        self.add_design_variable('prop_pitch', ac.propulsion.pitch)
 
         # Length of tailboom (m)
-        self.add_design_variable('boom_len', AC.tail.boom_len)
+        self.add_design_variable('boom_len', ac.tail.boom_len)
 
         # Length of tailboom (m)
         # self.add('boom_len',IndepVarComp('boom_len', 1.60))
         # self.add('b_htail',IndepVarComp('b_htail',1.30))
 
         # Horizontal tail span (m)
-        self.add_design_variable('b_htail', AC.tail.b_htail)
+        self.add_design_variable('b_htail', ac.tail.b_htail)
 
         # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('htail_chord', AC.tail.htail_chord)
+        self.add_design_variable('htail_chord', ac.tail.htail_chord)
 
         # Vertical Tail Values
-        self.add_design_variable('b_vtail', AC.tail.b_vtail)
+        self.add_design_variable('b_vtail', ac.tail.b_vtail)
 
         # Vert. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('vtail_chord', AC.tail.vtail_chord)
+        self.add_design_variable('vtail_chord', ac.tail.vtail_chord)
 
         # Distance from the CG to the landing gear
-        self.add_design_variable('dist_LG', AC.dist_LG)
+        self.add_design_variable('dist_LG', ac.dist_LG)
 
         # Wing dihedral angle (degrees)
         # self.add('dihedral',IndepVarComp('dihedral',1.0))
@@ -112,14 +105,14 @@ class constrainedMDO(Group):
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
                        'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG')
-        CreateAddModules(self, connections)
+        CreateAddModules(self, ac, connections)
 
     def add_design_variable(self, var, init_val):
         """Adds an independent design variable to the current model"""
         self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item, connections=()):
+def CreateAddModules(item, ac, connections=()):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -128,7 +121,7 @@ def CreateAddModules(item, connections=()):
         item - MUST be an OpenMDAO group
     """
     # Create modules
-    item.add('createAC', createAC())
+    item.add('createAC', createAC(ac))
     item.add('calcWeight', calcWeight())
     item.add('aeroAnalysis', aeroAnalysis())
     item.add('structAnalysis', structAnalysis())

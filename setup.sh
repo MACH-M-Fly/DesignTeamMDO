@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Change to root directory
 cd ~
 
@@ -14,7 +15,7 @@ pip install --user numpy --upgrade
 pip install --user scipy --upgrade
 pip install --user sympy
 pip install --user sympy --upgrade
-# pip install --user matplotlib --upgrade 
+# pip install --user matplotlib --upgrade
 
 # Install OpenMDAO
 pip install --user openmdao

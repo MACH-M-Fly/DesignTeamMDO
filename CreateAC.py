@@ -1,23 +1,11 @@
 # python stantdard libraries
 from __future__ import division
-from time import localtime, strftime, time
-
-# addition python libraries
-import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 
 # open MDAO libraries
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-from scipy.optimize import *
-# from sympy import Symbol, nsolve
+from openmdao.api import Component
 
 # Import self-created components
-from Input import AC, updateAircraft
-from Aircraft_Class.aircraft_class import *
+from Input import updateAircraft
 
 
 class createAC(Component):
@@ -39,41 +27,39 @@ class createAC(Component):
 
     """
 
-    def __init__(self):
+    def __init__(self, ac):
         super(createAC, self).__init__()
 
-        ac = AC
-
         # Input instance of aircraft - before modification
-        self.add_param('def_aircraft', val=AC, desc='Aircraft Class')
+        self.add_param('def_aircraft', val=ac, desc='Aircraft Class')
 
         # Parameter(s) of aicraft to be modified within this component
         # - I.e. design variables
         # - Uncomment the variables to be used
-        self.add_param('b_wing', val=AC.wing.b_wing, desc='wing span')
+        self.add_param('b_wing', val=ac.wing.b_wing, desc='wing span')
         # self.add_param('dihedral',val = 0.0, desc='wing dihedral')
-        self.add_param('sweep', val=AC.wing.sweep, desc='wing sweep')
-        self.add_param('chord', val=AC.wing.chord, desc='wing chord')
-        self.add_param('dist_LG',val=AC.dist_LG, desc = 'Distance b/w LG and CG')
-        self.add_param('boom_len', val=AC.tail.boom_len, desc='Length of Tailboom')
+        self.add_param('sweep', val=ac.wing.sweep, desc='wing sweep')
+        self.add_param('chord', val=ac.wing.chord, desc='wing chord')
+        self.add_param('dist_LG',val=ac.dist_LG, desc = 'Distance b/w LG and CG')
+        self.add_param('boom_len', val=ac.tail.boom_len, desc='Length of Tailboom')
         # self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
         # self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')
         # self.add_param('thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='wing thickness')
         # self.add_param('max_thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max thickness')	# Vertical Tail Span
         # self.add_param('Ainc',val = p.array([0.0 , 0.0, 0.0,0.0]), desc = 'Angle of Incidence')
-        self.add_param('htail_chord', val=AC.tail.htail_chord, desc='Horiz. tail chord')
-        self.add_param('vtail_chord', val=AC.tail.vtail_chord, desc='Vert. tail chord')
-        self.add_param('b_htail', val=AC.tail.b_htail, desc='Horiz. tail span')
-        self.add_param('b_vtail', val=AC.tail.b_vtail, desc='Vert. tail span')
+        self.add_param('htail_chord', val=ac.tail.htail_chord, desc='Horiz. tail chord')
+        self.add_param('vtail_chord', val=ac.tail.vtail_chord, desc='Vert. tail chord')
+        self.add_param('b_htail', val=ac.tail.b_htail, desc='Horiz. tail span')
+        self.add_param('b_vtail', val=ac.tail.b_vtail, desc='Vert. tail span')
 
-        self.add_param('motor_KV', val=AC.propulsion.motorKV, desc='Motor KV')
-        self.add_param('prop_diam', val=AC.propulsion.diameter, desc='Propeller Diameter')
-        self.add_param('prop_pitch', val=AC.propulsion.pitch, desc='Propeller Pitch')
+        self.add_param('motor_KV', val=ac.propulsion.motorKV, desc='Motor KV')
+        self.add_param('prop_diam', val=ac.propulsion.diameter, desc='Propeller Diameter')
+        self.add_param('prop_pitch', val=ac.propulsion.pitch, desc='Propeller Pitch')
 
-        self.add_param('m_payload', val=AC.m_payload, desc='Mass Payload')
+        self.add_param('m_payload', val=ac.m_payload, desc='Mass Payload')
 
         # Output instance of aircaft - after modification
-        self.add_output('aircraft', val=AC, desc='Output Aircraft')
+        self.add_output('aircraft', val=ac, desc='Output Aircraft')
 
         # Output the tail volume coefficients (for constraints)
         self.add_output('cHT', val=0.0, desc='Horizontal Tail Volume Coefficient')
@@ -81,37 +67,37 @@ class createAC(Component):
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
-        AC = params['def_aircraft']
+        ac = params['def_aircraft']
 
-        AC.m_payload = params['m_payload']
+        ac.m_payload = params['m_payload']
 
         # Uncomment to reveal more design variables for use in the MDO
-        AC.wing.b_wing = params['b_wing']
+        ac.wing.b_wing = params['b_wing']
         # AC.wing.dihedral = params['dihedral']
-        AC.wing.sweep = params['sweep']
-        AC.wing.chord = params['chord']
-        AC.dist_LG = params['dist_LG']
-        AC.boom_len = params['boom_len']
+        ac.wing.sweep = params['sweep']
+        ac.wing.chord = params['chord']
+        ac.dist_LG = params['dist_LG']
+        ac.boom_len = params['boom_len']
         # AC.camber = params['camber']
         # AC.max_camber = params['max_camber']
         # AC.thickness = params['thickness']
         # AC.max_thickness = params['max_thickness']
         # AC.wing.Ainc = params['Ainc']
-        AC.tail.htail_chord = params['htail_chord']
-        AC.tail.vtail_chord = params['vtail_chord']
-        AC.tail.b_htail = params['b_htail']
-        AC.tail.b_vtail = params['b_vtail']
+        ac.tail.htail_chord = params['htail_chord']
+        ac.tail.vtail_chord = params['vtail_chord']
+        ac.tail.b_htail = params['b_htail']
+        ac.tail.b_vtail = params['b_vtail']
 
-        AC.propulsion.motorKV = params['motor_KV']
-        AC.propulsion.diameter = params['prop_diam']
-        AC.propulsion.pitch = params['prop_pitch']
+        ac.propulsion.motorKV = params['motor_KV']
+        ac.propulsion.diameter = params['prop_diam']
+        ac.propulsion.pitch = params['prop_pitch']
 
         # Update aircraft before analysis
-        updateAircraft(AC)
+        updateAircraft(ac)
 
         # Set output to updated instance of aircraft
-        unknowns['aircraft'] = AC
+        unknowns['aircraft'] = ac
 
         # Calculate Volume Coefficients
-        unknowns['cHT'] = AC.boom_len * AC.tail.calcSrefHTail() / (AC.wing.calcMAC() * AC.wing.calcSrefWing())
-        unknowns['cVT'] = AC.boom_len * AC.tail.calcSrefVTail() / (AC.wing.b_wing * AC.wing.calcSrefWing())
+        unknowns['cHT'] = ac.boom_len * ac.tail.calcSrefHTail() / (ac.wing.calcMAC() * ac.wing.calcSrefWing())
+        unknowns['cVT'] = ac.boom_len * ac.tail.calcSrefVTail() / (ac.wing.b_wing * ac.wing.calcSrefWing())
