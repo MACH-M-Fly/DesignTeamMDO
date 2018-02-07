@@ -159,7 +159,6 @@ class objPerformance(Component):
 
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
-        a = 3
 
 
 

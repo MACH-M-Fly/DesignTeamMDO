@@ -2,7 +2,7 @@
 from __future__ import division
 from time import localtime, strftime, time
 
-# addition python libraries 
+# addition python libraries
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -91,8 +91,8 @@ class getBuildTime(Component):
         hoursPerMonokoteMeter2 = 5
 
         # Constants for definining tail build hours
-        hoursPerVertSurfaceMeter2 = 5 ^ 2
-        hoursPerHorzSurfaceMeter2 = 5 ^ 2
+        hoursPerVertSurfaceMeter2 = 5 ** 2
+        hoursPerHorzSurfaceMeter2 = 5 ** 2
 
         # Number of people will vary
         # 16 hours cure + 3 for prep, 3 * Number of people

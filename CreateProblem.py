@@ -136,12 +136,13 @@ def CreateAddModules(item, ac, connections=()):
         item.connect('{0:s}.{0:s}'.format(connect), 'createAC.{:s}'.format(connect))
 
     # Setting up the MDO run by connecting all modules
-    item.connect('createAC.aircraft', 'calcWeight.in_aircraft')
+    item.connect('createAC.aircraft', 'propulsionAnalysis.in_aircraft')
+    item.connect('propulsionAnalysis.out_aircraft', 'calcWeight.in_aircraft')
     item.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
     item.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
     item.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
     item.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-    item.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
+
 
 
 def CreateRoot():

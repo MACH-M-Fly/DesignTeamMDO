@@ -16,7 +16,6 @@ from scipy.optimize import *
 from sympy import Symbol, nsolve
 
 # Import self-created components
-from Input import AC
 from APCdat_parser import createKriging
 
 # Kriging Library
@@ -40,6 +39,7 @@ class propulsionAnalysis(Component):
 
     def __init__(self):
         super(propulsionAnalysis, self).__init__()
+        from Input import AC
 
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
@@ -52,13 +52,13 @@ class propulsionAnalysis(Component):
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
-        AC = params['in_aircraft']
+        ac = params['in_aircraft']
 
         # Calculate battery parameters
         # Set it such that the only in increments of 3.7 V
-        total_Voltage = AC.propulsion.cellNum * 3.7 * .8
+        total_Voltage = ac.propulsion.cellNum * 3.7 * .8
 
-        RPM = AC.propulsion.motorKV * total_Voltage
+        RPM = ac.propulsion.motorKV * total_Voltage
         # # Calcualte thrust curve
         # coeff1Model = self.model['coeff1'][0]
         # coeff2Model = self.model['coeff2'][0]
@@ -85,11 +85,11 @@ class propulsionAnalysis(Component):
         # New Method
 
         # Thrust
-        maxThrust, ss = self.model[0]['max'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
-        maxVel, ss = self.model[0]['vel'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
-        thrust14,ss = self.model[0]['14'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
-        thrust24,ss = self.model[0]['24'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
-        thrust34,ss = self.model[0]['34'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
+        maxThrust, ss = self.model[0]['max'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        maxVel, ss = self.model[0]['vel'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        thrust14,ss = self.model[0]['14'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        thrust24,ss = self.model[0]['24'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        thrust34,ss = self.model[0]['34'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
 
         X = [0, (maxVel/4.0), (maxVel/2.0), (maxVel*3.0/4.0), maxVel]
         Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
@@ -99,19 +99,19 @@ class propulsionAnalysis(Component):
         thrust_Curve = np.polyfit(X, Y, 4)
         #torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
 
-        AC.propulsion.setThrustCurve(thrust_Curve)
+        ac.propulsion.setThrustCurve(thrust_Curve)
 
-        maxTorque, ss = self.model[1]['max'].execute('points', AC.propulsion.diameter, AC.propulsion.pitch, RPM)
-        KT = 1.0 / AC.propulsion.motorKV
+        maxTorque, ss = self.model[1]['max'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        KT = 1.0 / ac.propulsion.motorKV
         maxCurrent = maxTorque / KT
-        AC.propulsion.escCur = maxCurrent * 1.1  # Provide 30% margin
+        ac.propulsion.escCur = maxCurrent * 1.1  # Provide 30% margin
 
         print('\n######  Propulsion Analysis #######')
-        print('Motor KV: %.3f ' % (AC.propulsion.motorKV))
-        print('Prop Diam: %.3f In' % (AC.propulsion.diameter))
-        print('Prop Pitch: %.3f In' % (AC.propulsion.pitch))
-        print('Thrust Curve: ' + ','.join("%f" % n for n in AC.propulsion.thrustCurve))
-        print('RPM: %.3f' % (AC.propulsion.motorKV* (AC.propulsion.cellNum * 3.7)))
+        print('Motor KV: %.3f ' % (ac.propulsion.motorKV))
+        print('Prop Diam: %.3f In' % (ac.propulsion.diameter))
+        print('Prop Pitch: %.3f In' % (ac.propulsion.pitch))
+        print('Thrust Curve: ' + ','.join("%f" % n for n in ac.propulsion.thrustCurve))
+        print('RPM: %.3f' % (ac.propulsion.motorKV* (ac.propulsion.cellNum * 3.7)))
 
         # Set output to updated instance of aircraft
-        unknowns['out_aircraft'] = AC
+        unknowns['out_aircraft'] = ac
