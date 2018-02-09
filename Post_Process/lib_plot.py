@@ -13,8 +13,6 @@ import string
 
 from openmdao.api import Component
 
-#from Input import AC
-
 
 class Plot(Component):
     """
@@ -41,6 +39,8 @@ class Plot(Component):
     # Plots each iteration configuration
     def __init__(self, geo1, geo2, A, writer, fig):
         super(Plot, self).__init__()
+
+        from Input import AC
 
         self.geo1 = geo1
         self.geo2 = geo2
