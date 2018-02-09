@@ -463,7 +463,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
     # -  Uses a momentum buildup
     while sum_y <= 0.0 and time_elap < 60.0 and dist < AC.runway_length:
         # F = ma yeilds two second order equations => system of 4 first order
-        # runge Kutta 4th to approximate kinimatic varibles at time = time + dt
+        # Runge Kutta 4th to approximate kinimatic varibles at time = time + dt
         k1_dist = dt * getVelocity(vel)
         k1_vel = dt * getAcceleration(vel, ang)
         k1_ang = dt * getVelocity_ang(ang, ang_vel)

@@ -4,7 +4,6 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-A	../MDO_Top.py	/^	A = []$/;"	kind:variable	line:62
 A	../Post_Process/lib_plot.py	/^	A = []$/;"	kind:variable	line:469
 A	../Post_Process/lib_plot.py	/^    A = []$/;"	kind:variable	line:404
 AC	../Aerodynamics/aeroAnalysis.py	/^        from Input import AC$/;"	kind:namespace	line:39
@@ -13,7 +12,6 @@ AC	../CreateProblem.py	/^from Input import AC$/;"	kind:namespace	line:30
 AC	../Input.py	/^AC = Aircraft()$/;"	kind:variable	line:19
 AC	../InputM6.py	/^AC = Aircraft()$/;"	kind:variable	line:19
 AC	../InputWing.py	/^AC = Aircraft()$/;"	kind:variable	line:19
-AC	../MDO_Top.py	/^from Input import AC, updateAircraft$/;"	kind:namespace	line:22
 AC	../MDO_Wing_Only.py	/^    AC = out_dict['out_aircraft']$/;"	kind:variable	line:21
 AC	../MDO_Wing_Only.py	/^from InputWing import AC, updateAircraft$/;"	kind:namespace	line:1
 AC	../Performance/objPerformance.py	/^        from Input import AC$/;"	kind:namespace	line:65
@@ -54,7 +52,7 @@ Constants.py	../Constants.py	1;"	kind:file	line:1
 CreateAC.py	../CreateAC.py	1;"	kind:file	line:1
 CreateAddModules	../CreateProblem.py	/^def CreateAddModules(item, connections=()):$/;"	kind:function	line:122
 CreateOptimizationProblem	../CreateProblem.py	/^def CreateOptimizationProblem():$/;"	kind:function	line:180
-CreateProblem	../MDO_Top.py	/^import CreateProblem$/;"	kind:namespace	line:153
+CreateProblem	../MDO_Top.py	/^import CreateProblem$/;"	kind:namespace	line:13
 CreateProblem	../MDO_Top_runOnce.py	/^import CreateProblem$/;"	kind:namespace	line:6
 CreateProblem.py	../CreateProblem.py	1;"	kind:file	line:1
 CreateRoot	../CreateProblem.py	/^def CreateRoot():$/;"	kind:function	line:152
@@ -66,7 +64,6 @@ ExecComp	../Performance/objPerformance.py	/^from openmdao.api import ScipyOptimi
 ExecComp	../Propulsion/propulsionAnalysis.py	/^from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder$/;"	kind:namespace	line:12
 ExecComp	../Template_Component.py	/^from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder$/;"	kind:namespace	line:12
 ExecComp	../getBuildTime.py	/^from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder$/;"	kind:namespace	line:13
-FFMpegWriter	../MDO_Top.py	/^	FFMpegWriter = animation.writers['ffmpeg']$/;"	kind:variable	line:75
 Group	../CreateAC.py	/^from openmdao.api import IndepVarComp, Component, Problem, Group$/;"	kind:namespace	line:11
 Group	../CreateProblem.py	/^from openmdao.api import IndepVarComp, Component, Problem, Group$/;"	kind:namespace	line:12
 Group	../Performance/objPerformance.py	/^from openmdao.api import IndepVarComp, Component, Problem, Group$/;"	kind:namespace	line:3
@@ -93,7 +90,6 @@ OptimizedLatinHypercubeDriver	../Template_Component.py	/^from openmdao.drivers.l
 OptimizedLatinHypercubeDriver	../getBuildTime.py	/^from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver$/;"	kind:namespace	line:15
 OrdinaryKriging3D	../Propulsion/APCdat_parser.py	/^from pykrige.ok3d import OrdinaryKriging3D$/;"	kind:namespace	line:6
 OrdinaryKriging3D	../Propulsion/propulsionAnalysis.py	/^from pykrige.ok3d import OrdinaryKriging3D$/;"	kind:namespace	line:23
-Plot	../MDO_Top.py	/^from Post_Process.lib_plot import Plot$/;"	kind:namespace	line:23
 Plot	../Post_Process/lib_plot.py	/^class Plot(Component):$/;"	kind:class	line:24
 Problem	../CreateAC.py	/^from openmdao.api import IndepVarComp, Component, Problem, Group$/;"	kind:namespace	line:11
 Problem	../CreateProblem.py	/^from openmdao.api import IndepVarComp, Component, Problem, Group$/;"	kind:namespace	line:12
@@ -150,7 +146,6 @@ __init__	../Aircraft_Class/aircraft_class.py	/^    def __init__(self, num_sectio
 __init__	../Aircraft_Class/aircraft_class.py	/^    def __init__(self, num_sections, is_linear, b_wing, sweep, chord, Xo, Yo, Zo, dihedral, camber, max_camber,$/;"	kind:member	line:36
 __init__	../CreateAC.py	/^    def __init__(self):$/;"	kind:member	line:42
 __init__	../CreateProblem.py	/^    def __init__(self):$/;"	kind:member	line:45
-__init__	../MDO_Top.py	/^	def __init__(self):$/;"	kind:member	line:87
 __init__	../Performance/objPerformance.py	/^    def __init__(self):$/;"	kind:member	line:62
 __init__	../Post_Process/lib_plot.py	/^	def __init__(self, geo1, geo2, A, writer, fig):$/;"	kind:member	line:48
 __init__	../Post_Process/lib_plot.py	/^    def __init__(self, geo1, geo2, A, writer, fig):$/;"	kind:function	line:169
@@ -177,7 +172,6 @@ addTrimCondition	../Aerodynamics/pyAVL.py	/^    def addTrimCondition(self, varia
 add_design_variable	../CreateProblem.py	/^    def add_design_variable(self, var, init_val):$/;"	kind:member	line:117
 aeroAnalysis	../Aerodynamics/aeroAnalysis.py	/^class aeroAnalysis(Component):$/;"	kind:class	line:17
 aeroAnalysis	../CreateProblem.py	/^from Aerodynamics.aeroAnalysis import aeroAnalysis$/;"	kind:namespace	line:21
-aeroAnalysis	../MDO_Top.py	/^from Aerodynamics.aeroAnalysis import aeroAnalysis $/;"	kind:namespace	line:17
 aeroAnalysis.py	../Aerodynamics/aeroAnalysis.py	1;"	kind:file	line:1
 ainc	../Input.py	/^ainc = np.array([ang_a, ang_b, ang_c, ang_d])$/;"	kind:variable	line:111
 ainc	../InputM6.py	/^ainc = np.array([ang_a, ang_b, ang_c, ang_d])$/;"	kind:variable	line:111
@@ -208,9 +202,9 @@ animation	../Propulsion/propulsionAnalysis.py	/^import matplotlib.animation as a
 animation	../Template_Component.py	/^import matplotlib.animation as animation$/;"	kind:namespace	line:7
 animation	../basic_example_writer.py	/^import matplotlib.animation as animation$/;"	kind:namespace	line:18
 animation	../getBuildTime.py	/^import matplotlib.animation as animation$/;"	kind:namespace	line:7
-argparse	../MDO_Top.py	/^import argparse$/;"	kind:namespace	line:26
-args	../MDO_Top.py	/^args = parser.parse_args()$/;"	kind:variable	line:46
 at	../Post_Process/lib_plot.py	/^    at = AnchoredText(str(score), prop=dict(size=17), frameon=True, loc=2)$/;"	kind:variable	line:428
+average_diameter	../passenger.py	/^average_diameter = np.sum(ball_weight*ball_diameter)$/;"	kind:variable	line:8
+average_weight	../passenger.py	/^average_weight = np.sum(ball_weight*ball_percent)$/;"	kind:variable	line:7
 avl	../Aerodynamics/pyAVL.py	/^import pyavl as avl$/;"	kind:namespace	line:37
 avlAnalysis	../Aerodynamics/pyAVL.py	/^class avlAnalysis():$/;"	kind:class	line:156
 avl_const_options	../Aerodynamics/pyAVL.py	/^avl_const_options = {'alpha': ['A', 'A '],$/;"	kind:variable	line:43
@@ -227,6 +221,10 @@ b_vtail	../InputWing.py	/^b_vtail = 0.2$/;"	kind:variable	line:121
 b_wing	../Input.py	/^b_wing = 1.0$/;"	kind:variable	line:54
 b_wing	../InputM6.py	/^b_wing = 1.8$/;"	kind:variable	line:54
 b_wing	../InputWing.py	/^b_wing = 1.0$/;"	kind:variable	line:54
+ballWeight	../passenger.py	/^def ballWeight(N):$/;"	kind:function	line:14
+ball_diameter	../passenger.py	/^ball_diameter = np.array([27,32, 38, 45, 49])  $/;"	kind:variable	line:5
+ball_percent	../passenger.py	/^ball_percent = np.array([0.15, 0.2, 0.3, 0.2, 0.15])  $/;"	kind:variable	line:4
+ball_weight	../passenger.py	/^ball_weight = np.array([0.4, 0.67, 1.12, 1.85, 2.39])  # oz$/;"	kind:variable	line:3
 base	../basic_example_writer.py	/^base = np.hypot(x, y)$/;"	kind:variable	line:46
 basic_example_writer.py	../basic_example_writer.py	1;"	kind:file	line:1
 c	../Input.py	/^c = 0$/;"	kind:variable	line:147
@@ -246,7 +244,6 @@ c_d	../InputM6.py	/^c_d = 1$/;"	kind:variable	line:83
 c_d	../InputWing.py	/^c_d = 1$/;"	kind:variable	line:83
 calcClimb	../Performance/objPerformance.py	/^def calcClimb(CL, CD, weight, sref_wing, sref_tail):$/;"	kind:function	line:172
 calcCruise_time	../Performance/objPerformance.py	/^def calcCruise_time(dist, velocity):$/;"	kind:function	line:262
-calcCruise_time	../Performance/objPerformance.py	/^def calcCruise_time(dist, velocity):$/;"	kind:function	line:592
 calcDistribution	../Structures/structAnalysis.py	/^def calcDistribution(x, w, I, E, c):$/;"	kind:function	line:176
 calcHorizLeading_Edge	../Aircraft_Class/aircraft_class.py	/^    def calcHorizLeading_Edge(self, wing_rootchord_qrt):$/;"	kind:member	line:356
 calcI	../Structures/structAnalysis.py	/^def calcI(shape, dim):$/;"	kind:function	line:69
@@ -260,13 +257,11 @@ calcSecLift	../Aerodynamics/aeroAnalysis.py	/^def calcSecLift(velocity, sec_CL, 
 calcSrefHTail	../Aircraft_Class/aircraft_class.py	/^    def calcSrefHTail(self):$/;"	kind:member	line:322
 calcSrefVTail	../Aircraft_Class/aircraft_class.py	/^    def calcSrefVTail(self):$/;"	kind:member	line:330
 calcSrefWing	../Aircraft_Class/aircraft_class.py	/^    def calcSrefWing(self):$/;"	kind:member	line:183
-calcTurn_time	../Performance/objPerformance.py	/^def calcTurn_time(bank_angle, velocity, weight ,Sref_wing, turn_angle):$/;"	kind:function	line:283
-calcTurn_time	../Performance/objPerformance.py	/^def calcTurn_time(bank_angle, velocity, weight, Sref_wing, turn_angle):$/;"	kind:function	line:614
+calcTurn_time	../Performance/objPerformance.py	/^def calcTurn_time(bank_angle, velocity, weight, Sref_wing, turn_angle):$/;"	kind:function	line:284
 calcVelCruise	../Aerodynamics/aeroAnalysis.py	/^def calcVelCruise(CL, CD, weight, sref_wing, sref_tail, AC):$/;"	kind:function	line:317
 calcVelCruise	../Performance/objPerformance.py	/^from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCruise$/;"	kind:namespace	line:20
 calcVertLeading_Edge	../Aircraft_Class/aircraft_class.py	/^    def calcVertLeading_Edge(self, wing_rootchord_qrt):$/;"	kind:member	line:380
 calcWeight	../CreateProblem.py	/^from Weights.calcWeight import calcWeight$/;"	kind:namespace	line:20
-calcWeight	../MDO_Top.py	/^from Weights.calcWeight import calcWeight$/;"	kind:namespace	line:16
 calcWeight	../MDO_Wing_Only.py	/^from Weights.calcWeight import calcWeight$/;"	kind:namespace	line:6
 calcWeight	../Weights/calcWeight.py	/^class calcWeight(Component):$/;"	kind:class	line:13
 calcWeight.py	../Weights/calcWeight.py	1;"	kind:file	line:1
@@ -295,14 +290,12 @@ chord	../InputWing.py	/^chord = np.array([ch_a, ch_b, ch_c, ch_d])$/;"	kind:vari
 clearVals	../Aerodynamics/pyAVL.py	/^    def clearVals(self):$/;"	kind:member	line:177
 comps	../MDO_Wing_Only.py	/^comps = [propulsionAnalysis(), calcWeight(), structAnalysis()]$/;"	kind:variable	line:13
 constrainedMDO	../CreateProblem.py	/^class constrainedMDO(Group):$/;"	kind:class	line:37
-constrainedMDO	../MDO_Top.py	/^class constrainedMDO(Group):$/;"	kind:class	line:79
 copy	../Aerodynamics/pyAVL.py	/^import os, sys, string, copy, pdb, time$/;"	kind:namespace	line:23
 copy	../CreateProblem.py	/^import copy$/;"	kind:namespace	line:9
 copy	../MDO_Top.py	/^import copy$/;"	kind:namespace	line:9
 copy	../MDO_Top_runOnce.py	/^import copy$/;"	kind:namespace	line:4
 createAC	../CreateAC.py	/^class createAC(Component):$/;"	kind:class	line:23
 createAC	../CreateProblem.py	/^from CreateAC import createAC$/;"	kind:namespace	line:19
-createAC	../MDO_Top.py	/^from CreateAC import createAC$/;"	kind:namespace	line:15
 createKriging	../Propulsion/APCdat_parser.py	/^def createKriging(rangeD, rangeP, rangeRPM, vario):$/;"	kind:function	line:127
 createKriging	../Propulsion/propulsionAnalysis.py	/^from APCdat_parser import createKriging$/;"	kind:namespace	line:20
 cruise_alpha	../Post_Process/lib_plot.py	/^			cruise_alpha = AC.ang$/;"	kind:variable	line:538
@@ -334,7 +327,6 @@ exampleComponent	../Template_Component.py	/^class exampleComponent(Component):$/
 executeRun	../Aerodynamics/pyAVL.py	/^    def executeRun(self, sequence_key=None, sequence=(None,)):$/;"	kind:member	line:218
 f	../Post_Process/lib_plot.py	/^			f = open('Aerodynamics\/airfoils\/A_' + str(i) + '.dat', 'r')$/;"	kind:variable	line:563
 f	../Post_Process/lib_plot.py	/^        f = open('.\/airfoils\/A_' + str(i) + '.dat', 'r')$/;"	kind:variable	line:439
-fig	../MDO_Top.py	/^	fig = plt.figure(figsize=[12,8])$/;"	kind:variable	line:53
 fig	../Post_Process/lib_plot.py	/^	fig = plt.figure(figsize=[12,8])$/;"	kind:variable	line:467
 fig	../Post_Process/lib_plot.py	/^    fig = plt.figure(figsize=[12, 8])$/;"	kind:variable	line:402
 fig1	../basic_example_writer.py	/^fig1 = plt.figure()$/;"	kind:variable	line:30
@@ -349,20 +341,15 @@ genGeo	../Weights/calcWeight.py	/^from Aircraft_Class.gen_files import genMass, 
 genMass	../Aircraft_Class/gen_files.py	/^def genMass(AC):$/;"	kind:function	line:8
 genMass	../Weights/calcWeight.py	/^from Aircraft_Class.gen_files import genMass, genGeo$/;"	kind:namespace	line:9
 gen_files.py	../Aircraft_Class/gen_files.py	1;"	kind:file	line:1
-geo1	../MDO_Top.py	/^	geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)$/;"	kind:variable	line:55
 geo1	../Post_Process/lib_plot.py	/^	geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)$/;"	kind:variable	line:471
 geo1	../Post_Process/lib_plot.py	/^    geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)$/;"	kind:variable	line:406
-geo2	../MDO_Top.py	/^	geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)$/;"	kind:variable	line:56
 geo2	../Post_Process/lib_plot.py	/^	geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)$/;"	kind:variable	line:472
 geo2	../Post_Process/lib_plot.py	/^    geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)$/;"	kind:variable	line:407
-getAcceleration	../Performance/objPerformance.py	/^	def getAcceleration(vel, ang):$/;"	kind:function	line:383
-getAcceleration	../Performance/objPerformance.py	/^    def getAcceleration(vel, ang):$/;"	kind:function	line:714
-getAcceleration_ang	../Performance/objPerformance.py	/^	def getAcceleration_ang(vel, ang, v_ang):$/;"	kind:function	line:402
-getAcceleration_ang	../Performance/objPerformance.py	/^    def getAcceleration_ang(vel, ang, ang_vel):$/;"	kind:function	line:742
+getAcceleration	../Performance/objPerformance.py	/^    def getAcceleration(vel, ang):$/;"	kind:function	line:384
+getAcceleration_ang	../Performance/objPerformance.py	/^    def getAcceleration_ang(vel, ang, ang_vel):$/;"	kind:function	line:412
 getAeroCoef	../Aerodynamics/aeroAnalysis.py	/^def getAeroCoef(geo_filename='.\/Aerodynamics\/aircraft.txt', mass_filename='.\/Aerodynamics\/aircraft.mass'):$/;"	kind:function	line:115
 getAircraftBuildHours	../getBuildTime.py	/^        def getAircraftBuildHours():$/;"	kind:function	line:156
 getBuildTime	../CreateProblem.py	/^from getBuildTime import getBuildTime$/;"	kind:namespace	line:25
-getBuildTime	../MDO_Top.py	/^from getBuildTime import getBuildTime$/;"	kind:namespace	line:20
 getBuildTime	../getBuildTime.py	/^class getBuildTime(Component):$/;"	kind:class	line:23
 getBuildTime.py	../getBuildTime.py	1;"	kind:file	line:1
 getCamber	../Aircraft_Class/aircraft_class.py	/^    def getCamber(self):$/;"	kind:member	line:129
@@ -386,10 +373,8 @@ getThrust	../Aerodynamics/aeroAnalysis.py	/^def getThrust(vel, ang, AC):$/;"	kin
 getThrust	../Performance/objPerformance.py	/^from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCruise$/;"	kind:namespace	line:20
 getThrustCurve	../Aircraft_Class/aircraft_class.py	/^    def getThrustCurve(self):$/;"	kind:member	line:460
 getVTailChord	../Aircraft_Class/aircraft_class.py	/^    def getVTailChord(self, vtail_chord, sec_span_vtail):$/;"	kind:member	line:347
-getVelocity	../Performance/objPerformance.py	/^	def getVelocity(vel):$/;"	kind:function	line:379
-getVelocity	../Performance/objPerformance.py	/^    def getVelocity(vel):$/;"	kind:function	line:710
-getVelocity_ang	../Performance/objPerformance.py	/^	def getVelocity_ang(a_vel, ang):$/;"	kind:function	line:391
-getVelocity_ang	../Performance/objPerformance.py	/^    def getVelocity_ang(ang, ang_vel):$/;"	kind:function	line:730
+getVelocity	../Performance/objPerformance.py	/^    def getVelocity(vel):$/;"	kind:function	line:380
+getVelocity_ang	../Performance/objPerformance.py	/^    def getVelocity_ang(ang, ang_vel):$/;"	kind:function	line:400
 getVolume	../Aircraft_Class/aircraft_class.py	/^    def getVolume(self):$/;"	kind:member	line:436
 getWingBuildHours	../getBuildTime.py	/^        def getWingBuildHours():$/;"	kind:function	line:110
 getWing_mass	../Weights/calcWeight.py	/^def getWing_mass(AC):$/;"	kind:function	line:68
@@ -412,8 +397,7 @@ htail_chord	../InputM6.py	/^htail_chord = np.array([ht_a, ht_b, ht_c, ht_d])$/;"
 htail_chord	../InputWing.py	/^htail_chord = np.array([ht_a, ht_b, ht_c, ht_d])$/;"	kind:variable	line:128
 im_ani	../basic_example_writer.py	/^im_ani = animation.ArtistAnimation(fig2, ims, interval=50, repeat_delay=3000,$/;"	kind:variable	line:51
 ims	../basic_example_writer.py	/^ims = []$/;"	kind:variable	line:47
-in_ac	../MDO_Top.py	/^in_ac = copy.deepcopy(prob0['createAC.aircraft'])$/;"	kind:variable	line:265
-in_ac	../MDO_Top.py	/^in_ac = copy.deepcopy(prob['my_comp.aircraft'])$/;"	kind:variable	line:253
+in_ac	../MDO_Top.py	/^in_ac = copy.deepcopy(prob0['createAC.aircraft'])$/;"	kind:variable	line:28
 in_ac	../MDO_Top_runOnce.py	/^in_ac = copy.deepcopy(prob0['createAC.aircraft'])$/;"	kind:variable	line:12
 in_dict	../MDO_Wing_Only.py	/^    in_dict = {'in_aircraft' : AC}$/;"	kind:variable	line:18
 inced_ang	../Aerodynamics/aeroAnalysis.py	/^from Constants import Rho, inced_ang$/;"	kind:namespace	line:13
@@ -474,7 +458,6 @@ mc_c	../InputWing.py	/^mc_c = 1$/;"	kind:variable	line:88
 mc_d	../Input.py	/^mc_d = 1$/;"	kind:variable	line:89
 mc_d	../InputM6.py	/^mc_d = 1$/;"	kind:variable	line:89
 mc_d	../InputWing.py	/^mc_d = 1$/;"	kind:variable	line:89
-metadata	../MDO_Top.py	/^	metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation') $/;"	kind:variable	line:76
 motor_KV	../Input.py	/^motor_KV = 900.0$/;"	kind:variable	line:158
 motor_KV	../InputM6.py	/^motor_KV = 900.0$/;"	kind:variable	line:158
 motor_KV	../InputWing.py	/^motor_KV = 900.0$/;"	kind:variable	line:158
@@ -508,9 +491,10 @@ np	../Template_Component.py	/^import numpy as np$/;"	kind:namespace	line:6
 np	../Weights/calcWeight.py	/^import numpy as np$/;"	kind:namespace	line:5
 np	../basic_example_writer.py	/^import numpy as np$/;"	kind:namespace	line:14
 np	../getBuildTime.py	/^import numpy as np$/;"	kind:namespace	line:6
+np	../passenger.py	/^import numpy as np$/;"	kind:namespace	line:1
 nsolve	../Propulsion/propulsionAnalysis.py	/^from sympy import Symbol, nsolve$/;"	kind:namespace	line:16
 nsolve	../Template_Component.py	/^from sympy import Symbol, nsolve$/;"	kind:namespace	line:16
-num_laps	../Performance/objPerformance.py	/^def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):$/;"	kind:function	line:913
+num_laps	../Performance/objPerformance.py	/^def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):$/;"	kind:function	line:583
 num_sections_tail	../Input.py	/^num_sections_tail = 5$/;"	kind:variable	line:38
 num_sections_tail	../InputM6.py	/^num_sections_tail = 5$/;"	kind:variable	line:38
 num_sections_tail	../InputWing.py	/^num_sections_tail = 5$/;"	kind:variable	line:38
@@ -519,7 +503,6 @@ num_sections_wing	../InputM6.py	/^num_sections_wing = 5$/;"	kind:variable	line:3
 num_sections_wing	../InputWing.py	/^num_sections_wing = 5$/;"	kind:variable	line:37
 numpy	../Post_Process/postProcess.py	/^import numpy$/;"	kind:namespace	line:1
 objPerformance	../CreateProblem.py	/^from Performance.objPerformance import objPerformance$/;"	kind:namespace	line:23
-objPerformance	../MDO_Top.py	/^from Performance.objPerformance import objPerformance$/;"	kind:namespace	line:19
 objPerformance	../Performance/objPerformance.py	/^class objPerformance(Component):$/;"	kind:class	line:28
 objPerformance.py	../Performance/objPerformance.py	1;"	kind:file	line:1
 os	../Aerodynamics/pyAVL.py	/^import os, sys, string, copy, pdb, time$/;"	kind:namespace	line:23
@@ -527,9 +510,9 @@ os	../Aerodynamics/xfoil_lib.py	/^import os$/;"	kind:namespace	line:3
 os	../Aircraft_Class/gen_files.py	/^import os$/;"	kind:namespace	line:4
 out	../Aircraft_Class/gen_files.py	/^	def out(cmd):$/;"	kind:function	line:26
 out	../Aircraft_Class/gen_files.py	/^	def out(cmd):$/;"	kind:function	line:83
-out_ac	../MDO_Top.py	/^out_ac = prob['createAC.aircraft']$/;"	kind:variable	line:270
+out_ac	../MDO_Top.py	/^out_ac = prob['createAC.aircraft']$/;"	kind:variable	line:33
 out_dict	../MDO_Wing_Only.py	/^    out_dict = dict()$/;"	kind:variable	line:19
-parser	../MDO_Top.py	/^parser = argparse.ArgumentParser(description='Process some integers.')$/;"	kind:variable	line:40
+passenger.py	../passenger.py	1;"	kind:file	line:1
 pdb	../Aerodynamics/pyAVL.py	/^import os, sys, string, copy, pdb, time$/;"	kind:namespace	line:23
 pdb	../Post_Process/lib_plot.py	/^import pdb$/;"	kind:namespace	line:8
 plotGeoFinal	../Post_Process/lib_plot.py	/^def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):$/;"	kind:function	line:273
@@ -558,9 +541,8 @@ print_function	../CreateProblem.py	/^from __future__ import print_function$/;"	k
 print_function	../MDO_Top.py	/^from __future__ import print_function$/;"	kind:namespace	line:2
 print_function	../MDO_Top_runOnce.py	/^from __future__ import print_function$/;"	kind:namespace	line:2
 print_function	../Propulsion/APCdat_parser.py	/^from __future__ import print_function$/;"	kind:namespace	line:1
-prob	../MDO_Top.py	/^prob = CreateProblem.CreateOptimizationProblem()$/;"	kind:variable	line:267
-prob	../MDO_Top.py	/^prob = Problem()$/;"	kind:variable	line:167
-prob0	../MDO_Top.py	/^prob0 = CreateProblem.CreateRunOnceProblem()$/;"	kind:variable	line:263
+prob	../MDO_Top.py	/^prob = CreateProblem.CreateOptimizationProblem()$/;"	kind:variable	line:30
+prob0	../MDO_Top.py	/^prob0 = CreateProblem.CreateRunOnceProblem()$/;"	kind:variable	line:26
 prob0	../MDO_Top_runOnce.py	/^prob0 = CreateProblem.CreateRunOnceProblem()$/;"	kind:variable	line:10
 propDataParse	../Propulsion/APCdat_parser.py	/^def propDataParse(filename):$/;"	kind:function	line:25
 prop_diam	../Input.py	/^prop_diam = 11.0$/;"	kind:variable	line:161
@@ -579,11 +561,9 @@ rib_dens	../Constants.py	/^rib_dens = 7.$/;"	kind:variable	line:22
 rib_dens	../Weights/calcWeight.py	/^from Constants import rib_dens, rib_dens_t$/;"	kind:namespace	line:11
 rib_dens_t	../Constants.py	/^rib_dens_t = 10.$/;"	kind:variable	line:25
 rib_dens_t	../Weights/calcWeight.py	/^from Constants import rib_dens, rib_dens_t$/;"	kind:namespace	line:11
-root	../MDO_Top.py	/^root = Group()$/;"	kind:variable	line:228
 runStructAnalysis	../Structures/structAnalysis.py	/^def runStructAnalysis(AC):$/;"	kind:function	line:227
 run_avl_with_params	../Aerodynamics/pyAVL.py	/^def run_avl_with_params(queue, sequence_key, sequence):$/;"	kind:function	line:81
-runwaySim_small	../Performance/objPerformance.py	/^def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):$/;"	kind:function	line:321
-runwaySim_small	../Performance/objPerformance.py	/^def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC):$/;"	kind:function	line:652
+runwaySim_small	../Performance/objPerformance.py	/^def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC):$/;"	kind:function	line:322
 s_a	../Input.py	/^s_a = 0$/;"	kind:variable	line:60
 s_a	../InputM6.py	/^s_a = 0$/;"	kind:variable	line:60
 s_a	../InputWing.py	/^s_a = 0.$/;"	kind:variable	line:60
@@ -618,7 +598,7 @@ solve_nonlinear	../Weights/calcWeight.py	/^    def solve_nonlinear(self, params,
 solve_nonlinear	../getBuildTime.py	/^    def solve_nonlinear(self, params, unknowns, resids):$/;"	kind:member	line:52
 sp	../Aerodynamics/xfoil_lib.py	/^import subprocess as sp$/;"	kind:namespace	line:2
 special	../Aircraft_Class/aircraft_class.py	/^import scipy.special as special$/;"	kind:namespace	line:4
-str2bool	../MDO_Top.py	/^def str2bool(v):$/;"	kind:function	line:29
+std	../passenger.py	/^std = np.sqrt(sum((ball_weight - average_weight)**2*ball_percent))$/;"	kind:variable	line:12
 strftime	../Aerodynamics/xfoil_lib.py	/^from time import localtime, strftime$/;"	kind:namespace	line:7
 strftime	../CreateAC.py	/^from time import localtime, strftime, time$/;"	kind:namespace	line:3
 strftime	../CreateProblem.py	/^from time import localtime, strftime, time$/;"	kind:namespace	line:3
@@ -630,13 +610,11 @@ string	../Aerodynamics/pyAVL.py	/^import os, sys, string, copy, pdb, time$/;"	ki
 string	../Aerodynamics/xfoil_lib.py	/^import string$/;"	kind:namespace	line:6
 string	../Post_Process/lib_plot.py	/^import string$/;"	kind:namespace	line:17
 structAnalysis	../CreateProblem.py	/^from Structures.structAnalysis import structAnalysis$/;"	kind:namespace	line:22
-structAnalysis	../MDO_Top.py	/^from Structures.structAnalysis import structAnalysis$/;"	kind:namespace	line:18
 structAnalysis	../MDO_Wing_Only.py	/^from Structures.structAnalysis import structAnalysis$/;"	kind:namespace	line:4
 structAnalysis	../Structures/structAnalysis.py	/^class structAnalysis(Component):$/;"	kind:class	line:16
 structAnalysis.py	../Structures/structAnalysis.py	1;"	kind:file	line:1
 sumForces	../Aerodynamics/aeroAnalysis.py	/^    def sumForces(A):$/;"	kind:function	line:343
-sumForces	../Performance/objPerformance.py	/^	def sumForces (A):$/;"	kind:function	line:202
-sumForces	../Performance/objPerformance.py	/^    def sumForces(A):$/;"	kind:function	line:531
+sumForces	../Performance/objPerformance.py	/^    def sumForces(A):$/;"	kind:function	line:202
 sweep	../Input.py	/^sweep = np.array([s_a, s_b, s_c, s_d])$/;"	kind:variable	line:64
 sweep	../InputM6.py	/^sweep = np.array([s_a, s_b, s_c, s_d])$/;"	kind:variable	line:64
 sweep	../InputWing.py	/^sweep = np.array([s_a, s_b, s_c, s_d])$/;"	kind:variable	line:64
@@ -680,7 +658,6 @@ updateAircraft	../CreateAC.py	/^from Input import AC, updateAircraft$/;"	kind:na
 updateAircraft	../Input.py	/^def updateAircraft(cur_AC):$/;"	kind:function	line:226
 updateAircraft	../InputM6.py	/^def updateAircraft(cur_AC):$/;"	kind:function	line:226
 updateAircraft	../InputWing.py	/^def updateAircraft(cur_AC):$/;"	kind:function	line:230
-updateAircraft	../MDO_Top.py	/^from Input import AC, updateAircraft$/;"	kind:namespace	line:22
 updateAircraft	../MDO_Wing_Only.py	/^from InputWing import AC, updateAircraft$/;"	kind:namespace	line:1
 update_line	../basic_example_writer.py	/^def update_line(num, data, line):$/;"	kind:function	line:21
 vt_a	../Input.py	/^vt_a = 0$/;"	kind:variable	line:131
@@ -706,7 +683,6 @@ wing_zpos	../Post_Process/lib_plot.py	/^		wing_zpos = [0.0*abs(x) for x in wing_
 wing_zpos	../Post_Process/lib_plot.py	/^    wing_zpos = [0.0 * abs(x) for x in wing_pos]$/;"	kind:variable	line:394
 words	../Post_Process/lib_plot.py	/^				words = str.split(flines[j]) $/;"	kind:variable	line:569
 words	../Post_Process/lib_plot.py	/^            words = str.split(flines[j])$/;"	kind:variable	line:445
-writer	../MDO_Top.py	/^	writer = FFMpegWriter(fps=15, metadata=metadata)$/;"	kind:variable	line:77
 writer	../basic_example_writer.py	/^writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)$/;"	kind:variable	line:27
 x	../basic_example_writer.py	/^x = np.arange(-9, 10)$/;"	kind:variable	line:44
 x_cg	../Post_Process/lib_plot.py	/^		x_cg = AC.x_cg$/;"	kind:variable	line:499
