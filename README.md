@@ -56,6 +56,7 @@ Version 3:
 - AUVSI Endurance mission
 	- Battery model
 - OpenMPI/Parallel
+- Component weights scale with aircraft size
 
 
 
