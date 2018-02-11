@@ -56,6 +56,9 @@ class Wing(object):
         self.ainc = ainc  # Angle of incidence as a function of half-span (b_wing/2)
         self.sec_span = self.b_wing / 2.0 / (self.num_sections - 1)  # Span of each section of wing
 
+        if b_wing < 1.00:
+            A = 3
+
         # Check for linearly varying input
         if self.is_linear == 1:
             self.chord[0] = 0

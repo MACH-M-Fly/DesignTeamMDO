@@ -203,7 +203,7 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('m_payload.m_payload',
                            lower=0.0,
-                           upper=4.53592)
+                           upper=4.53592/2)
 
     prob.driver.add_desvar('b_wing.b_wing',
                            lower=0.25,

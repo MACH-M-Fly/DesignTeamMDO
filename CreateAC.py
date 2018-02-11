@@ -72,7 +72,8 @@ class createAC(Component):
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
-        ac = params['def_aircraft']
+        # ac = params['def_aircraft']
+        ac = copy.deepcopy(params['def_aircraft'])
 
         ac.m_payload = params['m_payload']
 
