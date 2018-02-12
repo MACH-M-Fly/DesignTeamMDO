@@ -280,6 +280,7 @@ def CreateOptimizationProblem():
 
     prob.driver.add_constraint('createAC.cVT', lower=0.03)
     prob.driver.add_constraint('createAC.cHT', lower=0.5)
+    prob.driver.add_constraint('createAC.delta_boom_len', lower=0.1)
 
     #prob.driver.add_constraint('objPerformance.takeoff_distance', upper=AC.runway_length)
     prob.driver.add_constraint('calcWeight.ac_mass', lower=0.0, upper=4.53592)
@@ -290,4 +291,3 @@ def CreateOptimizationProblem():
     prob.setup()
 
     return prob
-
