@@ -203,10 +203,10 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('m_payload.m_payload',
                            lower=0.0,
-                           upper=4.53592/2)
+                           upper=4.53592/2.5)
 
     prob.driver.add_desvar('b_wing.b_wing',
-                           lower=0.25,
+                           lower=0.75,
                            upper=1.2192)
 
     # prob.driver.add_desvar('sweep.sweep',
@@ -235,7 +235,7 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('b_htail.b_htail',
                            lower=0.2,
-                           upper=4.0)
+                           upper=0.40)
 
     prob.driver.add_desvar('htail_chord.htail_chord',
                            lower=np.array([0.0, 0.0, 0.0, 0.1]),

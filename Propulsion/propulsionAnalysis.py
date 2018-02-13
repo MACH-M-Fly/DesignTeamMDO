@@ -48,7 +48,7 @@ class propulsionAnalysis(Component):
         self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
 
         # Initialize Kriging Model
-        self.model = createKriging([8, 11], [5, 9], [1000, 10000], 'spherical')
+        self.model = createKriging([8, 12], [5, 9], [1000, 13000], 'power')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft

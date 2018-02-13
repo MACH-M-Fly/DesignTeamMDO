@@ -158,7 +158,7 @@ cell_Num = 2.0
 motor_KV = 900.0
 # Propeller Diameter
 
-prop_diam = 9.0
+prop_diam = 11.0
 # Propeller Pitch
 prop_pitch = 5.0
 
