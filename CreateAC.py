@@ -70,6 +70,9 @@ class createAC(Component):
         self.add_output('cHT', val=0.0, desc='Horizontal Tail Volume Coefficient')
         self.add_output('cVT', val=0.0, desc='Vertical Tail Volume Coefficient')
 
+        # Output the Relative Boom-Length
+        self.add_output('delta_boom_len', val=0.0, desc='Delta Boom Length - Positive if Wing and Tail Don\'t Intersect')
+
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         # ac = params['def_aircraft']
@@ -107,3 +110,6 @@ class createAC(Component):
         # Calculate Volume Coefficients
         unknowns['cHT'] = ac.boom_len * ac.tail.calcSrefHTail() / (ac.wing.calcMAC() * ac.wing.calcSrefWing())
         unknowns['cVT'] = ac.boom_len * ac.tail.calcSrefVTail() / (ac.wing.b_wing * ac.wing.calcSrefWing())
+
+        # Calculate delta-boom-length
+        unknowns['delta_boom_len'] = ac.boom_len - 0.75 * ac.wing.chord[0] - 0.25 * ac.tail.htail_chord[0]
