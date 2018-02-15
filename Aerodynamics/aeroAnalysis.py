@@ -243,8 +243,8 @@ def getThrust(vel, ang, AC):
     # Thrust available
     T = vel ** 4 * T_4 + vel ** 3 * T_3 + vel ** 2 * T_2 + vel * T_1 + T_0
     # X and Y components of thrust available
-    X_comp = np.cos(ang) * T*2
-    Y_comp = np.sin(ang) * T*2
+    X_comp = np.cos(ang) * T
+    Y_comp = np.sin(ang) * T
     return (X_comp, Y_comp)
 
 

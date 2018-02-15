@@ -153,7 +153,7 @@ AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
 # Number of battery cells
-cell_Num = 2.0
+cell_Num = 3.0
 # Motor KV
 motor_KV = 900.0
 # Propeller Diameter
@@ -209,7 +209,7 @@ AC.m_electronics = 0.381
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
 # Payload
-AC.m_payload = 1.
+AC.m_payload = 0.5
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
                AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)

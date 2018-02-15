@@ -103,7 +103,7 @@ class propulsionAnalysis(Component):
 
         maxTorque, ss = self.model[1]['max'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
         KT = 1.0 / ac.propulsion.motorKV
-        maxCurrent = maxTorque / KT
+        maxCurrent = maxTorque * 2* 3.14 / (KT * 60)
         ac.propulsion.escCur = maxCurrent * 1.1  # Provide 30% margin
 
         print('\n######  Propulsion Analysis #######')
@@ -112,6 +112,7 @@ class propulsionAnalysis(Component):
         print('Prop Pitch: %.3f In' % (ac.propulsion.pitch))
         print('Thrust Curve: ' + ','.join("%f" % n for n in ac.propulsion.thrustCurve))
         print('RPM: %.3f' % (ac.propulsion.motorKV* (ac.propulsion.cellNum * 3.7)))
+        print('Max Current: %.3f' % (ac.propulsion.escCur))
 
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = ac

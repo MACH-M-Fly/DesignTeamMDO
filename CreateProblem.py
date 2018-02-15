@@ -203,10 +203,10 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('m_payload.m_payload',
                            lower=0.0,
-                           upper=4.53592/2.5)
+                           upper=4.53592/2)
 
     prob.driver.add_desvar('b_wing.b_wing',
-                           lower=0.75,
+                           lower=1.0,
                            upper=1.2192)
 
     # prob.driver.add_desvar('sweep.sweep',
@@ -214,24 +214,24 @@ def CreateOptimizationProblem():
     #                        upper = np.array([5., 5., 5., 30.0 ]))
 
     prob.driver.add_desvar('chord.chord',
-                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
+                           lower=np.array([0.0, 0.0, 0.0, 0.20]),
                            upper=np.array([0.0, 0.0, 0.0, 2.0]))
 
     prob.driver.add_desvar('boom_len.boom_len',
-                           lower=0.1,
+                           lower=0.5,
                            upper=10.)
 
     prob.driver.add_desvar('motor_KV.motor_KV',
-                           lower=300.,
+                           lower=600.,
                            upper=900.)
 
     prob.driver.add_desvar('prop_diam.prop_diam',
-                           lower=8.,
-                           upper=11.)
+                           lower=9.,
+                           upper=12.)
 
     prob.driver.add_desvar('prop_pitch.prop_pitch',
                            lower=5.,
-                           upper=9.)
+                           upper=8.)
 
     prob.driver.add_desvar('b_htail.b_htail',
                            lower=0.2,
@@ -274,7 +274,7 @@ def CreateOptimizationProblem():
     prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
-    # prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
+    prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
