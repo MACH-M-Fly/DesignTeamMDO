@@ -1,19 +1,11 @@
 # python stantdard libraries
 from __future__ import division
-from time import localtime, strftime, time
 
 # addition python libraries
 import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 
 # open MDAO libraries
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-from scipy.optimize import *
-from sympy import Symbol, nsolve
+from openmdao.api import Component
 
 # Import self-created components
 from APCdat_parser import createKriging

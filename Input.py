@@ -172,6 +172,7 @@ AC.climb_rate = 0.4
 AC.bank_angle = 20
 
 AC.actual_takeoff = 200
+AC.x_struct = 0.25
 
 #       =========================================================================
 #		Weights

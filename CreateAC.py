@@ -47,6 +47,7 @@ class createAC(Component):
         self.add_param('chord', val=ac.wing.chord, desc='wing chord')
         self.add_param('dist_LG',val=ac.dist_LG, desc = 'Distance b/w LG and CG')
         self.add_param('boom_len', val=ac.tail.boom_len, desc='Length of Tailboom')
+        self.add_param('x_struct', val=ac.x_struct, desc='Position of Fuselage/Payload')
         # self.add_param('camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Wing Camber')
         # self.add_param('max_camber',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='Percent chord of max camber')
         # self.add_param('thickness',val = np.array([0.0 , 0.0, 0.0,0.0]), desc='wing thickness')
@@ -96,6 +97,7 @@ class createAC(Component):
         ac.tail.vtail_chord = params['vtail_chord']
         ac.tail.b_htail = params['b_htail']
         ac.tail.b_vtail = params['b_vtail']
+        ac.x_struct = params['x_struct']
 
         ac.propulsion.motorKV = params['motor_KV']
         ac.propulsion.diameter = params['prop_diam']

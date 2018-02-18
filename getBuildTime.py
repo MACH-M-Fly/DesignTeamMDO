@@ -1,23 +1,11 @@
 # python stantdard libraries
 from __future__ import division
-from time import localtime, strftime, time
 
 # addition python libraries
-import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 import math
 
 # open MDAO libraries
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-from scipy.optimize import *
-# from sympy import Symbol, nsolve
-
-# Import self-created components
-from Input import AC
+from openmdao.api import Component
 
 
 class getBuildTime(Component):
@@ -42,6 +30,8 @@ class getBuildTime(Component):
 
     def __init__(self):
         super(getBuildTime, self).__init__()
+
+        from Input import AC
 
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
@@ -161,7 +151,7 @@ class getBuildTime(Component):
 
         # Run build time estimation
         AC.total_hours = getAircraftBuildHours()
-        print("Current Iteration Total Hours", AC.total_hours)
+        print('Current Iteration Total Build Hours: %0.2f' % AC.total_hours)
 
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = AC

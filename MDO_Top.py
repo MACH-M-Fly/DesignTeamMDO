@@ -55,6 +55,11 @@ prob.run()
 out_ac = prob['createAC.aircraft']
 
 
+# Extract the createAC object from the problem root
+createAC = prob.root.createAC
+
+
+
 # Animation settings
 # with writer.saving(fig, "OPT_M.mp4", 100):
 # 	prob.run()
