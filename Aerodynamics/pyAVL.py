@@ -216,18 +216,24 @@ class avlAnalysis():
             self.trim_conds[variable] = (variable, val)
 
     def executeRun(self, sequence_key=None, sequence=(None,)):
+        # Put the current aircraft class into the queue to facilitate data transfer to new thread
         queue = Queue()
         queue.put(self)
 
+        # Spawn a new process and wait a specified amount of time until it joins back
         t = Process(target=run_avl_with_params, args=(queue, sequence_key, sequence))
         t.start()
-        t.join(5)
+        t.join(30)
 
+        # If the process is still allive, terminate, force join, and raise error (likely trim timing out)
         if t.is_alive():
             t.terminate()
             t.join()
             raise RuntimeError('Oper Times Out')
+
+        # Otherwise, case successful and can reset the current object with the one from the queue
         else:
+            # BAD, but works
             self.__dict__ = queue.get().__dict__
 
     def calcNP(self):

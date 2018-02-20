@@ -7,10 +7,7 @@ from scipy.integrate import cumtrapz
 
 # open MDAO libraries
 from openmdao.api import Component
-# from sympy import Symbol, nsolve
 
-# Import self-created components
-from Input import AC
 
 
 class structAnalysis(Component):
@@ -37,6 +34,8 @@ class structAnalysis(Component):
 
     def __init__(self):
         super(structAnalysis, self).__init__()
+
+        from Input import AC
 
         # Input instance of aircraft - before modification
         self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
@@ -149,12 +148,14 @@ def distLoad(x, gross_F, dist_type):
     # linearly decreasing distributed load
     elif dist_type == 'lin_decrease':
         # TODO - Define mag
-        w = mag - mag / x[-1] * x
+        #w = mag - mag / x[-1] * x
+        raise ValueError('Linear Decrease Not Yet Defined')
 
     # linearly increasing distributed load
     elif dist_type == 'lin_increase':
         # TODO - Define mag
-        w = mag / x[-1] * x
+        #w = mag / x[-1] * x
+        raise ValueError('Linear Incrase Not Yet Defined')
 
     else:
         raise ValueError('Invalid distribution type provided to structAnalysis.py')

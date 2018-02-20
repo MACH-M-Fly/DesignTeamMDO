@@ -51,9 +51,9 @@ AC.Zo = 0
 # Initial Conditions for Optimizer
 # =========================================================================
 # Wingspan (m)
-b_wing = 1.0
+b_wing = 1.2192
 # Wing dihedral angle (degrees)
-dihedral = 5.0
+dihedral = 0.0
 
 # Quarter Chord Sweep in degrees (cubic)
 # (can constrain to no sweep by making max and min 0 degrees)
@@ -67,14 +67,14 @@ sweep = np.array([s_a, s_b, s_c, s_d])
 ch_a = .0
 ch_b = .0
 ch_c = .0
-ch_d = 0.35
+ch_d = 0.24384
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
 AC.dist_LG = 0.35
 
 # Length of tailboom (m)
-AC.boom_len = 0.75
+AC.boom_len = 0.754634
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 1
@@ -115,23 +115,23 @@ ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 # Initial Conditions for Optimizer
 # =========================================================================
 # Horizontal tail span (m)
-b_htail = 0.25
+b_htail = 0.4572
 
 # Vertical tail span (m)
-b_vtail = 0.2
+b_vtail = 0.1778
 
 # Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
 ht_a = 0
 ht_b = 0
 ht_c = 0
-ht_d = 0.1
+ht_d = 0.1778
 htail_chord = np.array([ht_a, ht_b, ht_c, ht_d])
 
 # Vertical Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
 vt_a = 0
 vt_b = 0
 vt_c = 0
-vt_d = 0.1
+vt_d = 0.1778
 vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 
 # =========================================================================
@@ -172,6 +172,7 @@ AC.climb_rate = 0.4
 AC.bank_angle = 20
 
 AC.actual_takeoff = 200
+AC.x_struct = 0.25
 
 #       =========================================================================
 #		Weights

@@ -41,13 +41,14 @@ class constrainedMDO(Group):
 
         # ====================================== Params =============================================== #
         # - Uncomment a param to add it as a design variable
-        # - Must also uncomment the param in createAC.py
+        # - Must also uncomment the parameter in createAC.py
 
         ac = copy.deepcopy(AC)
         self.ac = ac
 
         # Mass Payload
         self.add_design_variable('m_payload', ac.m_payload)
+        self.add_design_variable('x_struct', ac.x_struct)
 
         # Wingspan (m)
         self.add_design_variable('b_wing', ac.wing.b_wing)
@@ -106,7 +107,7 @@ class constrainedMDO(Group):
         # Adding components
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
-                       'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG')
+                       'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG', 'x_struct')
         CreateAddModules(self, ac, connections)
 
     def add_design_variable(self, var, init_val):
@@ -144,7 +145,6 @@ def CreateAddModules(item, ac, connections=()):
     item.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
 
 
-
 def CreateRoot():
     """
     CreateRoot creates the linked problem set that is used to define a problem
@@ -176,7 +176,7 @@ def CreateRunOnceProblem():
 def CreateOptimizationProblem():
     """
     CreateOptimizationProblem creates the problem that can be used for optimization
-    - Setsup the problem, but DOES NOT RUN
+    - Sets up the problem, but DOES NOT RUN
     """
     # ============================================== Create Problem ============================================ #
     prob = Problem()
@@ -208,6 +208,10 @@ def CreateOptimizationProblem():
     prob.driver.add_desvar('b_wing.b_wing',
                            lower=1.0,
                            upper=1.2192)
+
+    prob.driver.add_desvar('x_struct.x_struct',
+                           lower=-5.0,
+                           upper=5.0)
 
     # prob.driver.add_desvar('sweep.sweep',
     #                        lower = np.array([-5., -5., -5., -20.0 ]),
@@ -271,7 +275,7 @@ def CreateOptimizationProblem():
 
     # ======================================== Add Objective Function and Constraints========================== #
     prob.driver.add_objective('objPerformance.score')
-    prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+    prob.driver.add_constraint('objPerformance.sum_y', lower=0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
     prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)

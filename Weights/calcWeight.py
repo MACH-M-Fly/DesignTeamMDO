@@ -7,8 +7,8 @@ import numpy as np
 import math
 
 from Aircraft_Class.gen_files import genMass, genGeo
-
 from Constants import rib_dens, rib_dens_t
+
 
 class calcWeight(Component):
     """
@@ -311,7 +311,8 @@ def massPostProcess(AC, m_wing, m_tail, m_boom, m_landgear, m_ballast):
     x_landgear = m_landgear * dist_LG
     x_motor = m_motor * mount_len
     x_elec = ( m_battery + m_electronics ) * mount_len/4.
-    x_structs = ( m_fuselage + m_payload ) * C[0]/4.
+    #x_structs = ( m_fuselage + m_payload ) * C[0]/4.
+    x_structs = AC.x_struct
     x_ballast = m_ballast * mount_len/2.
 
     x_cg = ( x_wing + x_tail + x_boom + x_landgear + x_motor + x_elec + x_structs + x_ballast ) / m_total
