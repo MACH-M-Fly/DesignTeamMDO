@@ -242,15 +242,15 @@ def createKriging(rangeD, rangeP, rangeRPM, vario):
     thrustKrigingDict = {}
     # Max Thrust
     thrustDict = np.array(thrustDict)
-    maxThrustok3d = OrdinaryKriging3D(thrustDict[:,0], thrustDict[:,1],thrustDict[:,2],thrustDict[:,6],
+    maxThrustok3d = UniversalKriging3D(thrustDict[:,0], thrustDict[:,1],thrustDict[:,2],thrustDict[:,6],
                                variogram_model=vario)
-    maxVelok3d = OrdinaryKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 7],
+    maxVelok3d = UniversalKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 7],
                                variogram_model=vario)
-    thrust14ok3d = OrdinaryKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 3],
+    thrust14ok3d = UniversalKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 3],
                                variogram_model=vario)
-    thrust24ok3d = OrdinaryKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 4],
+    thrust24ok3d = UniversalKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 4],
                                variogram_model=vario)
-    thrust34ok3d = OrdinaryKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 5],
+    thrust34ok3d = UniversalKriging3D(thrustDict[:, 0], thrustDict[:, 1], thrustDict[:, 2], thrustDict[:, 5],
                                variogram_model=vario)
     thrustKrigingDict['max'] = maxThrustok3d
     thrustKrigingDict['vel'] = maxVelok3d
