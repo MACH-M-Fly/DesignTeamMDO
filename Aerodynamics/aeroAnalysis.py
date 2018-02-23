@@ -172,9 +172,6 @@ def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aer
     print('CL Line:')
     print(CL)
 
-    if CL(.71) > 7:
-        A = 3
-
     # # ----------------- Plot Outputs --------------------------
     # plt.figure(4)
     # plt.subplot(411)

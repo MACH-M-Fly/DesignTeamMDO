@@ -7,7 +7,7 @@ import copy
 from openmdao.api import Component
 
 # Import self-created components
-from Input import updateAircraft, AC
+from Input import updateAircraft
 
 
 class createAC(Component):
@@ -33,6 +33,7 @@ class createAC(Component):
         super(createAC, self).__init__()
 
         if ac is None:
+            from Input import AC
             ac = copy.deepcopy(AC)
 
         # Input instance of aircraft - before modification

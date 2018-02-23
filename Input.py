@@ -51,7 +51,7 @@ AC.Zo = 0
 # Initial Conditions for Optimizer
 # =========================================================================
 # Wingspan (m)
-b_wing = 1.2192
+b_wing = 1.524
 # Wing dihedral angle (degrees)
 dihedral = 0.0
 
@@ -67,7 +67,7 @@ sweep = np.array([s_a, s_b, s_c, s_d])
 ch_a = .0
 ch_b = .0
 ch_c = .0
-ch_d = 0.24384
+ch_d = 0.3048
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
@@ -193,7 +193,7 @@ AC.LE_lindens_t = 5 * 0.453592 * 0.3048 * 0.25 / 2.
 AC.TE_lindens_t = 5 * 0.453592 * 0.3048 * 0.15 / 2.
 # Rib Mass (kg/r) per meter of rib
 AC.k_ribs = 0.0203
-# Rib spanwise desnity (# of ribs per m)
+# Rib spanwise density (# of ribs per m)
 AC.rib_lindens = 4
 # Tail Rib Mass (kg/r) per meter of rib
 AC.k_ribs_t = 0.0203 / 4.

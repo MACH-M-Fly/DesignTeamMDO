@@ -99,7 +99,7 @@ class objPerformance(Component):
                 #AC.actual_takeoff = dist
                 unknowns['takeoff_distance'] = dist
                 unknowns['out_aircraft'] = AC
-                score = -100. * AC.m_payload / math.sqrt(AC.mass_empty)
+                score = -10. * AC.m_payload / math.sqrt(AC.mass_empty)
                 print('############')
                 print('Performance')
                 print('############')
