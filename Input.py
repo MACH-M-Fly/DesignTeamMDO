@@ -77,37 +77,38 @@ AC.dist_LG = 0.35
 AC.boom_len = 0.754634
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
-c_a = 1
-c_b = 1
-c_c = 1
-c_d = 1
+c_a = 0
+c_b = 0
+c_c = 0
+c_d = 1 # TODO - FIX THIS
 camber = np.array([c_a, c_b, c_c, c_d])
+
 # Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)
-mc_a = 1
-mc_b = 1
-mc_c = 1
-mc_d = 1
+mc_a = 0
+mc_b = 0
+mc_c = 0
+mc_d = 1 # TODO - FIX THIS
 max_camber = np.array([mc_a, mc_b, mc_c, mc_d])
 
 # Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)
-t_a = 1
-t_b = 1
-t_c = 1
-t_d = 1
+t_a = 0
+t_b = 0
+t_c = 0
+t_d = 1 # TODO - FIX THIS
 thickness = np.array([t_a, t_b, t_c, t_d])
 
 # Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
-mt_a = 1
-mt_b = 1
-mt_c = 1
-mt_d = 1
+mt_a = 0
+mt_b = 0
+mt_c = 0
+mt_d = 1 # TODO - FIX THIS
 max_thickness = np.array([mt_a, mt_b, mt_c, mt_d])
 
 # Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
-ang_a = 1
-ang_b = 1
-ang_c = 1
-ang_d = 1
+ang_a = 0
+ang_b = 0
+ang_c = 0
+ang_d = 0 # TODO - FIX THIS
 ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 
 # =========================================================================
