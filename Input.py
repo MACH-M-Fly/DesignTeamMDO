@@ -74,7 +74,7 @@ chord = np.array([ch_a, ch_b, ch_c, ch_d])
 AC.dist_LG = 0.35
 
 # Length of tailboom (m)
-AC.boom_len = 0.754634
+AC.boom_len = 0.73152
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 0
@@ -269,19 +269,20 @@ def updateAircraft(cur_AC):
                    cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo,
                    cur_AC.Zo, cur_AC.boom_len, cur_AC.wing.chord_vals[0] / 4.)
 
-    cur_AC.tail.boom_Type = 'C'
+    #cur_AC.tail.boom_Type = 'C'
+    #outer_radius = 0.0381 / 2.
+    #inner_radius = 0.0174
+    #cur_AC.tail.boom_Dim = [outer_radius, inner_radius]
 
-    outer_radius = 0.0381 / 2.
-    inner_radius = 0.0174
-    cur_AC.tail.boom_Dim = [outer_radius, inner_radius]
+    cur_AC.tail.boom_Type = 'R'
+    width_o = 0.0254
+    width_i = 0.022225
+    cur_AC.tail.boom_Dim = (width_o, width_o, width_i, width_i)
 
     cur_AC.tail.boom_E = 68.9e9
 
     # Reset score
     cur_AC.score = 0
-
-
-
 
 
 # Call the above function to update the aircraft for this MDO iteration

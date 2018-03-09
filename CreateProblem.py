@@ -36,7 +36,7 @@ class constrainedMDO(Group):
         on the Joint MDO design team project
     """
 
-    def __init__(self):
+    def __init__(self, plot_obj):
         super(constrainedMDO, self).__init__()
 
         # ====================================== Params =============================================== #
@@ -108,14 +108,14 @@ class constrainedMDO(Group):
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
                        'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG', 'x_struct')
-        CreateAddModules(self, ac, connections)
+        CreateAddModules(self, ac, connections, plot_obj=plot_obj)
 
     def add_design_variable(self, var, init_val):
         """Adds an independent design variable to the current model"""
         self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item, ac, connections=()):
+def CreateAddModules(item, ac, connections=(), plot_obj=None):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -132,6 +132,10 @@ def CreateAddModules(item, ac, connections=()):
     item.add('getBuildTime', getBuildTime())
     item.add('propulsionAnalysis', propulsionAnalysis())
 
+    # Add plot object, if applicable
+    if plot_obj is not None:
+        item.add('Plot', plot_obj)
+
     # Connect different variables, as per the format in constrainedMDO
     for connect in connections:
         item.connect('{0:s}.{0:s}'.format(connect), 'createAC.{:s}'.format(connect))
@@ -143,6 +147,10 @@ def CreateAddModules(item, ac, connections=()):
     item.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
     item.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
     item.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
+
+    # Connect movie plotting if applicable
+    if plot_obj is not None:
+        item.connect('getBuildTime.out_aircraft', 'Plot.in_aircraft')
 
 
 def CreateRoot():
@@ -173,14 +181,14 @@ def CreateRunOnceProblem():
     return prob0
 
 
-def CreateOptimizationProblem():
+def CreateOptimizationProblem(plot_obj):
     """
     CreateOptimizationProblem creates the problem that can be used for optimization
     - Sets up the problem, but DOES NOT RUN
     """
     # ============================================== Create Problem ============================================ #
     prob = Problem()
-    prob.root = constrainedMDO()
+    prob.root = constrainedMDO(plot_obj=plot_obj)
 
     # ================================================ Add Driver ============================================== #
     # Gradient-Free Method: Not currently working

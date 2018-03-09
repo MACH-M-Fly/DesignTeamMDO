@@ -149,7 +149,10 @@ def postProcess_Main(in_ac, out_ac):
 
     # Print final parameters
     if in_ac is not None:
+        printParameters(in_ac, 'Initial')
+    else:
         printParameters(out_ac, 'Final')
+
 
     # Output final geometry of aircraft
     plotGeoFinalDuo(in_ac, out_ac)
