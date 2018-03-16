@@ -209,53 +209,53 @@ def CreateOptimizationProblem():
                            lower=0.0,
                            upper=4.53592)
 
-    prob.driver.add_desvar('b_wing.b_wing',
-                           lower=0.25,
-                           upper=1.2192)
-
-    # prob.driver.add_desvar('sweep.sweep',
-    #                        lower = np.array([-5., -5., -5., -20.0 ]),
-    #                        upper = np.array([5., 5., 5., 30.0 ]))
-
-    prob.driver.add_desvar('chord.chord',
-                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
-                           upper=np.array([0.0, 0.0, 0.0, 2.0]))
-
-    prob.driver.add_desvar('boom_len.boom_len',
-                           lower=0.1,
-                           upper=10.)
-
-    prob.driver.add_desvar('motor_KV.motor_KV',
-                           lower=300.,
-                           upper=900.)
-
-    prob.driver.add_desvar('prop_diam.prop_diam',
-                           lower=8.,
-                           upper=11.)
-
-    prob.driver.add_desvar('prop_pitch.prop_pitch',
-                           lower=5.,
-                           upper=9.)
-
-    prob.driver.add_desvar('b_htail.b_htail',
-                           lower=0.2,
-                           upper=4.0)
-
-    prob.driver.add_desvar('htail_chord.htail_chord',
-                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
-                           upper=np.array([0.0, 0.0, 0.0, 3.0]) )
-
-    prob.driver.add_desvar('b_vtail.b_vtail',
-                           lower=0.2,
-                           upper=1.2)
-
-    prob.driver.add_desvar('vtail_chord.vtail_chord',
-                           lower=np.array([0., 0., 0., 0.1 ]),
-                           upper=np.array([0., 0., 0., 0.45 ]) )
-
-    prob.driver.add_desvar('dist_LG.dist_LG',
-                           lower=0.0,
-                           upper=3.0)
+    # prob.driver.add_desvar('b_wing.b_wing',
+    #                        lower=0.25,
+    #                        upper=1.2192)
+    #
+    # # prob.driver.add_desvar('sweep.sweep',
+    # #                        lower = np.array([-5., -5., -5., -20.0 ]),
+    # #                        upper = np.array([5., 5., 5., 30.0 ]))
+    #
+    # prob.driver.add_desvar('chord.chord',
+    #                        lower=np.array([0.0, 0.0, 0.0, 0.1]),
+    #                        upper=np.array([0.0, 0.0, 0.0, 2.0]))
+    #
+    # prob.driver.add_desvar('boom_len.boom_len',
+    #                        lower=0.1,
+    #                        upper=10.)
+    #
+    # prob.driver.add_desvar('motor_KV.motor_KV',
+    #                        lower=300.,
+    #                        upper=900.)
+    #
+    # prob.driver.add_desvar('prop_diam.prop_diam',
+    #                        lower=8.,
+    #                        upper=11.)
+    #
+    # prob.driver.add_desvar('prop_pitch.prop_pitch',
+    #                        lower=5.,
+    #                        upper=9.)
+    #
+    # prob.driver.add_desvar('b_htail.b_htail',
+    #                        lower=0.2,
+    #                        upper=4.0)
+    #
+    # prob.driver.add_desvar('htail_chord.htail_chord',
+    #                        lower=np.array([0.0, 0.0, 0.0, 0.1]),
+    #                        upper=np.array([0.0, 0.0, 0.0, 3.0]) )
+    #
+    # prob.driver.add_desvar('b_vtail.b_vtail',
+    #                        lower=0.2,
+    #                        upper=1.2)
+    #
+    # prob.driver.add_desvar('vtail_chord.vtail_chord',
+    #                        lower=np.array([0., 0., 0., 0.1 ]),
+    #                        upper=np.array([0., 0., 0., 0.45 ]) )
+    #
+    # prob.driver.add_desvar('dist_LG.dist_LG',
+    #                        lower=0.0,
+    #                        upper=3.0)
 
     # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
     # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)

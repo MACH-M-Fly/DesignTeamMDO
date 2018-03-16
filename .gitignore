@@ -168,7 +168,8 @@ venv.bak/
 # idea
 .idea/
 
-
-# vscode
+# VS-Code
 .vscode/
 
+# Sphinx Documentation
+_build/
