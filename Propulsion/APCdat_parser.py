@@ -322,5 +322,6 @@ def createKriging(rangeD, rangeP, rangeRPM, vario):
 
 # Test Kriging model creation function
 
-KG = createKriging([8,10],[5,8],[1000, 10000], 'linear')
-# plotKrigGrid(KG,[8,10],[5,8],[1000, 10000])
+if __name__ == '__main__':
+    KG = createKriging([8,10],[5,8],[1000, 10000], 'linear')
+    # plotKrigGrid(KG,[8,10],[5,8],[1000, 10000])

@@ -1,0 +1,430 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Input &#8212; DesignTeamMDO 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Input</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">Aircraft_Class.aircraft_class</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Input.py</span>
+<span class="sd">- User modifies:</span>
+<span class="sd">	- Starting design variables</span>
+<span class="sd">	- Constraints</span>
+<span class="sd">	- Mission select (0 for Mach or 1 for M-Fly)</span>
+<span class="sd">	- Weights data</span>
+<span class="sd">	- Thrust data</span>
+
+<span class="sd">SI UNITS ONLY</span>
+<span class="sd">- kg</span>
+<span class="sd">- m</span>
+<span class="sd">- s</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Create initial class</span>
+<span class="n">AC</span> <span class="o">=</span> <span class="n">Aircraft</span><span class="p">()</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Problem Setup</span>
+<span class="c1"># Define name and number of surfaces</span>
+<span class="c1"># 1 = 1 wing surface, 2 = 2 wing surfaces, etc.</span>
+<span class="c1"># =========================================================================</span>
+
+<span class="n">AC</span><span class="o">.</span><span class="n">AC_name</span> <span class="o">=</span> <span class="s2">&quot;405&quot;</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">wings</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">h_tails</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">v_tails</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">booms</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Select Mission (1 for M-Fly max payload, 2 for MACH lap-time)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">mission</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Number of wing sections (per half-span for wing and tail)</span>
+<span class="n">num_sections_wing</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">num_sections_tail</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1"># 0 = Non-Linear (cubic) varying wing values</span>
+<span class="c1"># 1 = Linear constant sweep leading edge, linearly varying wing values</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">is_linear</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Specify origin for aicraft build (root chord leading edge position)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">Xo</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">Yo</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">Zo</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Wing Parameters (Design Variables)</span>
+<span class="c1"># Initial Conditions for Optimizer</span>
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Wingspan (m)</span>
+<span class="n">b_wing</span> <span class="o">=</span> <span class="mf">1.524</span>
+<span class="c1"># Wing dihedral angle (degrees)</span>
+<span class="n">dihedral</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="c1"># Quarter Chord Sweep in degrees (cubic)</span>
+<span class="c1"># (can constrain to no sweep by making max and min 0 degrees)</span>
+<span class="n">s_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">s_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">s_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">s_d</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">sweep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">s_a</span><span class="p">,</span> <span class="n">s_b</span><span class="p">,</span> <span class="n">s_c</span><span class="p">,</span> <span class="n">s_d</span><span class="p">])</span>
+
+<span class="c1"># Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)</span>
+<span class="n">ch_a</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+<span class="n">ch_b</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+<span class="n">ch_c</span> <span class="o">=</span> <span class="o">.</span><span class="mi">0</span>
+<span class="n">ch_d</span> <span class="o">=</span> <span class="mf">0.3048</span>
+<span class="n">chord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ch_a</span><span class="p">,</span> <span class="n">ch_b</span><span class="p">,</span> <span class="n">ch_c</span><span class="p">,</span> <span class="n">ch_d</span><span class="p">])</span>
+
+<span class="c1"># Distance between LE of wing and landing gear (m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">dist_LG</span> <span class="o">=</span> <span class="mf">0.35</span>
+
+<span class="c1"># Length of tailboom (m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">boom_len</span> <span class="o">=</span> <span class="mf">0.73152</span>
+
+<span class="c1"># Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)</span>
+<span class="n">c_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c_d</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># TODO - FIX THIS</span>
+<span class="n">camber</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c_a</span><span class="p">,</span> <span class="n">c_b</span><span class="p">,</span> <span class="n">c_c</span><span class="p">,</span> <span class="n">c_d</span><span class="p">])</span>
+
+<span class="c1"># Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)</span>
+<span class="n">mc_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mc_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mc_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mc_d</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># TODO - FIX THIS</span>
+<span class="n">max_camber</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mc_a</span><span class="p">,</span> <span class="n">mc_b</span><span class="p">,</span> <span class="n">mc_c</span><span class="p">,</span> <span class="n">mc_d</span><span class="p">])</span>
+
+<span class="c1"># Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)</span>
+<span class="n">t_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">t_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">t_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">t_d</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># TODO - FIX THIS</span>
+<span class="n">thickness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t_a</span><span class="p">,</span> <span class="n">t_b</span><span class="p">,</span> <span class="n">t_c</span><span class="p">,</span> <span class="n">t_d</span><span class="p">])</span>
+
+<span class="c1"># Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)</span>
+<span class="n">mt_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mt_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mt_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">mt_d</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># TODO - FIX THIS</span>
+<span class="n">max_thickness</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mt_a</span><span class="p">,</span> <span class="n">mt_b</span><span class="p">,</span> <span class="n">mt_c</span><span class="p">,</span> <span class="n">mt_d</span><span class="p">])</span>
+
+<span class="c1"># Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)</span>
+<span class="n">ang_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ang_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ang_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ang_d</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># TODO - FIX THIS</span>
+<span class="n">ainc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ang_a</span><span class="p">,</span> <span class="n">ang_b</span><span class="p">,</span> <span class="n">ang_c</span><span class="p">,</span> <span class="n">ang_d</span><span class="p">])</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Tail Parameters (Design Variables)</span>
+<span class="c1"># Initial Conditions for Optimizer</span>
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Horizontal tail span (m)</span>
+<span class="n">b_htail</span> <span class="o">=</span> <span class="mf">0.4572</span>
+
+<span class="c1"># Vertical tail span (m)</span>
+<span class="n">b_vtail</span> <span class="o">=</span> <span class="mf">0.1778</span>
+
+<span class="c1"># Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)</span>
+<span class="n">ht_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ht_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ht_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ht_d</span> <span class="o">=</span> <span class="mf">0.1778</span>
+<span class="n">htail_chord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ht_a</span><span class="p">,</span> <span class="n">ht_b</span><span class="p">,</span> <span class="n">ht_c</span><span class="p">,</span> <span class="n">ht_d</span><span class="p">])</span>
+
+<span class="c1"># Vertical Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)</span>
+<span class="n">vt_a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">vt_b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">vt_c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">vt_d</span> <span class="o">=</span> <span class="mf">0.1778</span>
+<span class="n">vtail_chord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vt_a</span><span class="p">,</span> <span class="n">vt_b</span><span class="p">,</span> <span class="n">vt_c</span><span class="p">,</span> <span class="n">vt_d</span><span class="p">])</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Constant Parameters</span>
+<span class="c1"># =========================================================================</span>
+
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Propulsion</span>
+<span class="c1"># =========================================================================</span>
+<span class="c1"># Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">d</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">e</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">thrust</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">e</span><span class="p">]</span>
+<span class="c1"># Lap perimiter (m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">lap_perim</span> <span class="o">=</span> <span class="mi">350</span>
+<span class="c1"># Coefficient of rolling friction (mu)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="c1"># Number of battery cells</span>
+<span class="n">cell_Num</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="c1"># Motor KV</span>
+<span class="n">motor_KV</span> <span class="o">=</span> <span class="mf">900.0</span>
+<span class="c1"># Propeller Diameter</span>
+
+<span class="n">prop_diam</span> <span class="o">=</span> <span class="mf">11.0</span>
+<span class="c1"># Propeller Pitch</span>
+<span class="n">prop_pitch</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+<span class="c1"># ESC max current</span>
+<span class="n">esc_max</span> <span class="o">=</span> <span class="mf">50.0</span>
+<span class="c1"># Runway length (m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">runway_length</span> <span class="o">=</span> <span class="mf">60.96</span>
+<span class="c1"># Desired climb rate (for carpet plot, m/s)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">climb_rate</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="c1"># Desired bank angle (sustained load factor turn, steady level, degrees)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">bank_angle</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">AC</span><span class="o">.</span><span class="n">actual_takeoff</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">x_struct</span> <span class="o">=</span> <span class="mf">0.25</span>
+
+<span class="c1">#       =========================================================================</span>
+<span class="c1">#		Weights</span>
+<span class="c1">#       =========================================================================</span>
+<span class="c1"># density of aluminum (kg/m^3)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">spar_den</span> <span class="o">=</span> <span class="mf">2700.0</span>
+<span class="c1"># Linear density of wooden spar (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">spar_lindens</span> <span class="o">=</span> <span class="mf">0.15361</span>
+<span class="c1"># Leading Edge (LE) density (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">LE_lindens</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="mf">0.453592</span> <span class="o">*</span> <span class="mf">0.3048</span> <span class="o">/</span> <span class="mi">4</span>
+<span class="c1"># Trailing Edge (TE) density (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">TE_lindens</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="mf">0.453592</span> <span class="o">*</span> <span class="mf">0.3048</span> <span class="o">/</span> <span class="mf">4.</span> <span class="o">/</span> <span class="mf">4.</span>
+<span class="c1"># Linear density of wooden tail spar (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">spar_lindens_t</span> <span class="o">=</span> <span class="mf">0.15361</span> <span class="o">/</span> <span class="mf">2.</span>
+<span class="c1"># Tail Leading Edge (LE) density (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">LE_lindens_t</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="mf">0.453592</span> <span class="o">*</span> <span class="mf">0.3048</span> <span class="o">*</span> <span class="mf">0.25</span> <span class="o">/</span> <span class="mf">2.</span>
+<span class="c1"># Tail Trailing Edge (TE) density (kg/m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">TE_lindens_t</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="mf">0.453592</span> <span class="o">*</span> <span class="mf">0.3048</span> <span class="o">*</span> <span class="mf">0.15</span> <span class="o">/</span> <span class="mf">2.</span>
+<span class="c1"># Rib Mass (kg/r) per meter of rib</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">k_ribs</span> <span class="o">=</span> <span class="mf">0.0203</span>
+<span class="c1"># Rib spanwise density (# of ribs per m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">rib_lindens</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="c1"># Tail Rib Mass (kg/r) per meter of rib</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">k_ribs_t</span> <span class="o">=</span> <span class="mf">0.0203</span> <span class="o">/</span> <span class="mf">4.</span>
+<span class="c1"># Tail Rib spanwise desnity (# of ribs per m)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">rib_lindens_t</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="c1"># Motor mass (kg)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">m_motor</span> <span class="o">=</span> <span class="mf">0.965</span>
+<span class="c1"># Battery mass (kg)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">m_battery</span> <span class="o">=</span> <span class="mf">0.427</span>
+<span class="c1"># Propeller mass (kg)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">m_propeller</span> <span class="o">=</span> <span class="mf">0.15</span>
+<span class="c1"># Electronics mass (kg)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">m_electronics</span> <span class="o">=</span> <span class="mf">0.381</span>
+<span class="c1"># Ultrakote density (kg/m^2)</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">ultrakote_Density</span> <span class="o">=</span> <span class="mf">0.1318</span>
+<span class="c1"># Payload</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">m_payload</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="c1"># Create an instance of AC for wing values</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">wing</span> <span class="o">=</span> <span class="n">Wing</span><span class="p">(</span><span class="n">num_sections_wing</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">is_linear</span><span class="p">,</span> <span class="n">b_wing</span><span class="p">,</span> <span class="n">sweep</span><span class="p">,</span> <span class="n">chord</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">Xo</span><span class="p">,</span>
+               <span class="n">AC</span><span class="o">.</span><span class="n">Yo</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">Zo</span><span class="p">,</span> <span class="n">dihedral</span><span class="p">,</span> <span class="n">camber</span><span class="p">,</span> <span class="n">max_camber</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">max_thickness</span><span class="p">)</span>
+
+<span class="c1"># Create an instance of AC for tail values</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">Tail</span><span class="p">(</span><span class="n">num_sections_tail</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">is_linear</span><span class="p">,</span> <span class="n">b_htail</span><span class="p">,</span>
+               <span class="n">htail_chord</span><span class="p">,</span> <span class="n">b_vtail</span><span class="p">,</span> <span class="n">vtail_chord</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">Xo</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">Yo</span><span class="p">,</span>
+               <span class="n">AC</span><span class="o">.</span><span class="n">Zo</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">boom_len</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">chord_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">)</span>
+
+<span class="c1"># Create an instance of AC for propulsion values</span>
+<span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span> <span class="o">=</span> <span class="n">Propulsion</span><span class="p">(</span><span class="n">motor_KV</span><span class="p">,</span> <span class="n">prop_diam</span><span class="p">,</span> <span class="n">prop_pitch</span><span class="p">,</span> <span class="n">cell_Num</span><span class="p">,</span> <span class="n">thrust</span><span class="p">,</span> <span class="n">esc_max</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="updateAircraft"><a class="viewcode-back" href="../Input.html#Input.updateAircraft">[docs]</a><span class="k">def</span> <span class="nf">updateAircraft</span><span class="p">(</span><span class="n">cur_AC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function to update the aircraft on each iteration of MDO</span>
+
+<span class="sd">    Inputs</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cur_AC          :   Class</span>
+<span class="sd">                        Class containing all aircraft data</span>
+
+
+<span class="sd">    Outputs</span>
+<span class="sd">    ----------</span>
+<span class="sd">    none, just updates the aircraft (AC)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AC</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Create an instance of AC for wing values</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span> <span class="o">=</span> <span class="n">Wing</span><span class="p">(</span><span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">num_sections</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">is_linear</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">b_wing</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">sweep</span><span class="p">,</span>
+                   <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">chord</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">Xo</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">Yo</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">Zo</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">dihedral</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">camber</span><span class="p">,</span>
+                   <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_camber</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">thickness</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_thickness</span><span class="p">)</span>
+
+    <span class="c1"># Add wing structural parameters (&#39;elliptical&#39;, &#39;uniform&#39;, &#39;lin_decrease&#39;, &#39;lin_increase&#39;)</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">dist_type</span> <span class="o">=</span> <span class="s1">&#39;elliptical&#39;</span>
+
+    <span class="c1"># Add wing structural parameters (&#39;C&#39;, R&#39;, &#39;I&#39;)</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">spar_type</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
+
+    <span class="c1"># Add spar dimensions (m)</span>
+    <span class="n">outer_radius</span> <span class="o">=</span> <span class="mf">0.015</span>
+    <span class="n">inner_radius</span> <span class="o">=</span> <span class="n">outer_radius</span> <span class="o">*</span> <span class="mf">0.75</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">spar_dim</span> <span class="o">=</span> <span class="p">[</span><span class="n">outer_radius</span><span class="p">,</span> <span class="n">inner_radius</span><span class="p">]</span>
+
+    <span class="c1"># Spar Young&#39;s Modulus</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">spar_E</span> <span class="o">=</span> <span class="mf">68.9e9</span>
+
+    <span class="c1"># Add propulsion system</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span> <span class="o">=</span> <span class="n">Propulsion</span><span class="p">(</span><span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">motorKV</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span>
+                               <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">cellNum</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">thrustCurve</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">escCur</span><span class="p">)</span>
+
+    <span class="c1"># Create an instance of AC for tail values</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span> <span class="o">=</span> <span class="n">Tail</span><span class="p">(</span><span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">num_sections</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">is_linear</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">b_htail</span><span class="p">,</span>
+                   <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">htail_chord</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">b_vtail</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">vtail_chord</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">Xo</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">Yo</span><span class="p">,</span>
+                   <span class="n">cur_AC</span><span class="o">.</span><span class="n">Zo</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">boom_len</span><span class="p">,</span> <span class="n">cur_AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">chord_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">)</span>
+
+    <span class="c1">#cur_AC.tail.boom_Type = &#39;C&#39;</span>
+    <span class="c1">#outer_radius = 0.0381 / 2.</span>
+    <span class="c1">#inner_radius = 0.0174</span>
+    <span class="c1">#cur_AC.tail.boom_Dim = [outer_radius, inner_radius]</span>
+
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">boom_Type</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+    <span class="n">width_o</span> <span class="o">=</span> <span class="mf">0.0254</span>
+    <span class="n">width_i</span> <span class="o">=</span> <span class="mf">0.022225</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">boom_Dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">width_o</span><span class="p">,</span> <span class="n">width_o</span><span class="p">,</span> <span class="n">width_i</span><span class="p">,</span> <span class="n">width_i</span><span class="p">)</span>
+
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">boom_E</span> <span class="o">=</span> <span class="mf">68.9e9</span>
+
+    <span class="c1"># Reset score</span>
+    <span class="n">cur_AC</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<span class="c1"># Call the above function to update the aircraft for this MDO iteration</span>
+<span class="n">updateAircraft</span><span class="p">(</span><span class="n">AC</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=============== Initial vehicle Parameters =============&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CDp&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">CD_p</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tailboom Length&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">boom_len</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mission&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">mission</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=============== Initial wing Parameters =============&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.num_Sections: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">num_sections</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.is_linear: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">is_linear</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.b_wing: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">b_wing</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.sweep: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">sweep</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Sref&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">sref</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.chord: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">chord</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Chord Values at Section&quot; &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">chord_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Xo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Xo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Yo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Yo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Zo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Zo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Xle: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Xle</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Yle: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Yle</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Zle: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Zle</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.dihedral: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">dihedral</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Afiles: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">Afiles</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.Ainc: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">ainc</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.sec_span: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">sec_span</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.wing.MAC&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">MAC</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.camber: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">camber</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Camber Values at Section&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">camber_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.max_camber: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_camber</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Max Camber Position at Section&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_camber_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.thickness: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">thickness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Thickness Values at Section&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">thickness_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.max_thickness: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_thickness</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Max Thickness Values at Section&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">wing</span><span class="o">.</span><span class="n">max_thickness_vals</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=============== Initial tail Parameters =============&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.num_Sections: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">num_sections</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.is_linear: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">is_linear</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.b_htail: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">b_htail</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Sref_ht&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">sref_ht</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Sref_vt&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">sref_vt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.htail_chord: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">htail_chord</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Horiz. Tail Chord Values at Section&quot; &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">htail_chord_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.b_vtail: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">b_vtail</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.vtail_chord: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">vtail_chord</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Vert. Tail Chord Values at Section&quot; &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">vtail_chord_vals</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Xo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Xo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Yo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Yo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Zo: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Zo</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Xle_ht: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Xle_ht</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Yle_ht: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Yle_ht</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.Zle_ht: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">Zle_ht</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.boom_len: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">boom_len</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.sec_span_htail: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">sec_span_htail</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;AC.tail.sec_span_vtail: &#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">tail</span><span class="o">.</span><span class="n">sec_span_vtail</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, MACH and M-Fly.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

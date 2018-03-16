@@ -1,3 +1,7 @@
+"""
+aeroAnalysis contains primary functions and information to analyze the current aircraft design through the MDO software
+"""
+
 from __future__ import division
 from __future__ import print_function
 

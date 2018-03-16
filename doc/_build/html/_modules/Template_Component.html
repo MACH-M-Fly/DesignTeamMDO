@@ -1,0 +1,137 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Template_Component &#8212; DesignTeamMDO 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Template_Component</h1><div class="highlight"><pre>
+<span></span><span class="c1"># python stantdard libraries</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">localtime</span><span class="p">,</span> <span class="n">strftime</span><span class="p">,</span> <span class="n">time</span>
+
+<span class="c1"># addition python libraries </span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.animation</span> <span class="k">as</span> <span class="nn">animation</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># open MDAO libraries</span>
+<span class="kn">from</span> <span class="nn">openmdao.api</span> <span class="k">import</span> <span class="n">IndepVarComp</span><span class="p">,</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Problem</span><span class="p">,</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">openmdao.api</span> <span class="k">import</span> <span class="n">ScipyOptimizer</span><span class="p">,</span> <span class="n">ExecComp</span><span class="p">,</span> <span class="n">SqliteRecorder</span>
+<span class="c1"># from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver</span>
+<span class="kn">from</span> <span class="nn">openmdao.drivers.latinhypercube_driver</span> <span class="k">import</span> <span class="n">OptimizedLatinHypercubeDriver</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="k">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">nsolve</span>
+
+<span class="c1"># Import self-created components</span>
+<span class="kn">from</span> <span class="nn">Input</span> <span class="k">import</span> <span class="n">AC</span>
+
+
+<span class="c1"># Change the name of your componenet here</span>
+<div class="viewcode-block" id="exampleComponent"><a class="viewcode-back" href="../Template_Component.html#Template_Component.exampleComponent">[docs]</a><span class="k">class</span> <span class="nc">exampleComponent</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        exampleComponent: Uses the current iteration of the aircraft, performances</span>
+<span class="sd">        &quot;input analysis name&quot; analysis</span>
+<span class="sd">        Inputs:</span>
+<span class="sd">            - Aircraft_Class: Input aircraft instance</span>
+<span class="sd">            - Design variables: These will be modified based on new MDO iteration</span>
+<span class="sd">        Outputs:</span>
+<span class="sd">            - Aircraft_Class: Output and modified aircraft instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">exampleComponent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Input instance of aircraft - before modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="s1">&#39;in_aircraft&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">AC</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Input Aircraft Class&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Output instance of aircaft - after modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s1">&#39;out_aircraft&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">AC</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Output Aircraft Class&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="exampleComponent.solve_nonlinear"><a class="viewcode-back" href="../Template_Component.html#Template_Component.exampleComponent.solve_nonlinear">[docs]</a>    <span class="k">def</span> <span class="nf">solve_nonlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">unknowns</span><span class="p">,</span> <span class="n">resids</span><span class="p">):</span>
+        <span class="c1"># Used passed in instance of aircraft</span>
+        <span class="n">AC</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;in_aircraft&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Insert component analysis functions here - This is an example from the aeroAnalysis component</span>
+        <span class="c1"># Add attributes to AC</span>
+        <span class="n">AC</span><span class="o">.</span><span class="n">CL</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">CD</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">CM</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">NP</span> <span class="o">=</span> <span class="n">getAeroCoef</span><span class="p">()</span>
+
+        <span class="c1"># Set output to updated instance of aircraft</span>
+        <span class="n">unknowns</span><span class="p">[</span><span class="s1">&#39;out_aircraft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AC</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, MACH and M-Fly.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

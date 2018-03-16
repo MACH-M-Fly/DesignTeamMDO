@@ -63,36 +63,32 @@ else:
 
 # ============================================== Create Problem ============================================ #
 
-# Create the run-once problem
-prob0 = CreateProblem.CreateRunOnceProblem()
-prob0.run()
-in_ac = copy.deepcopy(prob0['createAC.aircraft'])
+if __name__ == '__main__':
+    # Create the run-once problem
+    prob0 = CreateProblem.CreateRunOnceProblem()
+    prob0.run()
+    in_ac = copy.deepcopy(prob0['createAC.aircraft'])
 
-# Create the constrained problem, if applicable
-if not args.once:
-    prob = CreateProblem.CreateOptimizationProblem(plot_obj=plot_obj)
+    # Create the constrained problem, if applicable
+    if not args.once:
+        prob = CreateProblem.CreateOptimizationProblem(plot_obj=plot_obj)
 
-    # Run the optimization problem
-    if args.movie:
-        with writer.saving(fig, 'opt_run.mp4', 100):
+        # Run the optimization problem
+        if args.movie:
+            with writer.saving(fig, 'opt_run.mp4', 100):
+                prob.run()
+        else:
             prob.run()
+
+        # Specify the output aircraft (final AC) from the MDO
+        out_ac = prob['createAC.aircraft']
+
+        # Extract the createAC object from the problem root
+        createAC = prob.root.createAC
     else:
-        prob.run()
-
-    # Specify the output aircraft (final AC) from the MDO
-    out_ac = prob['createAC.aircraft']
-
-    # Extract the createAC object from the problem root
-    createAC = prob.root.createAC
-else:
-    out_ac = in_ac
-    in_ac = None
+        out_ac = in_ac
+        in_ac = None
 
 
-# ============================================== Post-Processing ============================================ #
-
-postProcess_Main(in_ac, out_ac)
-
-# plotGeoFinal(out_ac.wing.Xle.tolist(), out_ac.wing.Yle.tolist(), out_ac.wing.chord_vals.tolist(), \
-# 				out_ac.tail.Xle_ht.tolist(), out_ac.tail.Yle_ht.tolist(), out_ac.tail.htail_chord_vals.tolist(), \
-# 				out_ac.CG[0], out_ac.NP, out_ac.score, out_ac.mount_len)
+    # Post-Process Results
+    postProcess_Main(in_ac, out_ac)

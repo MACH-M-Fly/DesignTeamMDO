@@ -7,16 +7,13 @@ import numpy as np
 # Add xfoil library to python path
 import sys
 
-sys.path.insert(0, 'Aerodynamics/xfoil/')
-
-from Aerodynamics.xfoil_lib import getDataXfoil
+#sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCruise
 
 import math
 
-from Constants import Rho, g, mu_k, inced_ang
-from Constants import xfoil_path
+from Constants import Rho, g, mu_k
 
 
 class objPerformance(Component):
@@ -103,10 +100,10 @@ class objPerformance(Component):
                 print('############')
                 print('Performance')
                 print('############')
-                print('Takeoff Dist:  %.3f m'% (dist))
-                print('Takeoff Time:  %.3f s'% (time))
-                print('Takeoff Velo:  %.3f m/s' % (vel))
-                print('Sum Y: %.3f ' %(sum_y))
+                print('Takeoff Dist:  %.3f m' % dist)
+                print('Takeoff Time:  %.3f s' % time)
+                print('Takeoff Velo:  %.3f m/s'  % vel)
+                print('Sum Y: %.3f ' % sum_y)
                 unknowns['score'] = score
                 AC.score = score
                 unknowns['sum_y'] = sum_y
@@ -116,7 +113,7 @@ class objPerformance(Component):
 
             # Call num_laps function for MACH mission
             N, tot_time, sum_y = num_laps(AC.CL, AC.CD, AC.CM, AC.wing.sref, AC.tail.sref, AC.weight, AC.boom_len,
-                                          AC.dist_LG, AC.wing.MAC, AC.Iyy)
+                                          AC.dist_LG, AC.wing.MAC, AC.Iyy, AC)
             score = -1 * (N * 100 - tot_time / 100.0)
 
             # Print output
@@ -156,14 +153,14 @@ class objPerformance(Component):
 
 
 
-alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path + '_flap.dat')[0:2]
-alphas_tail_noflap, CLs_tail_noflap = getDataXfoil(xfoil_path + '.dat')[0:2]
-alphas_tail = [x * np.pi / 180 for x in alphas_tail]
-CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
-CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
+#alphas_tail, CLs_tail_flap = getDataXfoil(xfoil_path + '_flap.dat')[0:2]
+#alphas_tail_noflap, CLs_tail_noflap = getDataXfoil(xfoil_path + '.dat')[0:2]
+#alphas_tail = [x * np.pi / 180 for x in alphas_tail]
+#CL_tail_flap = np.poly1d(np.polyfit(alphas_tail, CLs_tail_flap, 2))
+#CL_tail_noflap = np.poly1d(np.polyfit(alphas_tail_noflap, CLs_tail_noflap, 2))
 
 
-def calcClimb(CL, CD, weight, sref_wing, sref_tail):
+def calcClimb(CL, CD, weight, sref_wing, sref_tail, AC):
     """
     Calculate the climb performance of a configuration
 
@@ -200,8 +197,8 @@ def calcClimb(CL, CD, weight, sref_wing, sref_tail):
         vel = A[0]
         gamma = A[1]
         F = np.empty(2)
-        F[0] = getThrust(vel, ang)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing - weight * np.sin(gamma)
-        F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL)[0] - weight * np.cos(gamma)
+        F[0] = getThrust(vel, ang, AC)[0] - 0.5 * vel ** 2 * Rho * CD(ang) * sref_wing - weight * np.sin(gamma)
+        F[1] = grossLift(vel, ang, sref_wing, sref_tail, 0, CL, AC)[0] - weight * np.cos(gamma)
 
         return F
 
@@ -574,7 +571,7 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
     return sum_y, dist, vel, ang, ang_vel, time
 
 
-def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy):
+def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC):
     """
     Runway simulation to find maximum payload
 
@@ -623,8 +620,8 @@ def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, I
     Flapped = 0
 
     # Get performance for cruise and climb
-    cruise_vel, cruise_Ang = calcVelCruise(CL, CD, weight, sref_wing, sref_tail)
-    climb_vel, climb_hvel, horz_Vel, AoA_climb = calcClimb(CL, CD, weight, sref_wing, sref_tail)
+    cruise_vel, cruise_Ang = calcVelCruise(CL, CD, weight, sref_wing, sref_tail, AC)
+    climb_vel, climb_hvel, horz_Vel, AoA_climb = calcClimb(CL, CD, weight, sref_wing, sref_tail, AC)
 
     # Check if blimp is too slow/cannot climb
     # if climb_vel <= 0.5 or cruise_vel <= 6.0:
