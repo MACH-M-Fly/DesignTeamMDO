@@ -33,6 +33,7 @@ Version 2:
 - Compare take off simulations (Ian)
 	- Use MFly Data
 - Parasitic drag calculation (Nick)
+	- **Update with airfoil estimation code for cl/cd for velocity estimate when available**
 - Airfoil DVs (camber, thickness, camber max loc, thickness max loc) (Josh)
 - Clean up what is printed to the terminal 
 - Improve post processing
@@ -56,6 +57,7 @@ Version 3:
 - AUVSI Endurance mission
 	- Battery model
 - OpenMPI/Parallel
+- Component weights scale with aircraft size
 
 
 
