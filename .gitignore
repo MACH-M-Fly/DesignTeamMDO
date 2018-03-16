@@ -167,3 +167,6 @@ venv.bak/
 
 # idea
 .idea/
+
+# Sphinx Documentation
+_build/
