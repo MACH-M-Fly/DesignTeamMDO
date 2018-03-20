@@ -25,7 +25,7 @@ for i in range(len(masses)):
         P = m * 9.807
         x_tail = np.linspace(0, boom_len, 1001)
         c_tail, I_tail = struct_anal.calcI(boom_type, boom_dim)
-        M_tail, y_tail, sigma_tail = struct_anal.calcPointLoad(x_tail, boom_len, P, I_tail, boom_E, c_tail)
+        M_tail, y_tail, sigma_tail = struct_anal.calcPointLoadSimplySupported(x_tail, 0.3048, boom_len, P, I_tail, boom_E, c_tail)
         print('{:.6e}'.format(np.max(y_tail)*100.)) # Centimeters
 
     print('')

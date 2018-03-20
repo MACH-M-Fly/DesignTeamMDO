@@ -222,6 +222,16 @@ def calcPointLoad(x, L, P, I, E, c):
 
     return M, y, sigma
 
+def calcPointLoadSimplySupported(x, l, L, P, I, E, c):
+    M = P * L
+
+    # y = P / (6 * E * I) * (-x ** 3 + 3 * L ** 2 * x - 2 * L ** 3)
+    y = P * x ** 2 * (3 * L - x)/(6 * E * I)
+    sigma = -c * M / I
+    y = (P * x / (6 * E * I)) * (2 * l * L + 3 * L * x - x**2)
+
+    return M, y, sigma
+
 
 # Runs main structure analysis
 def runStructAnalysis(AC):
