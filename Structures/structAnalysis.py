@@ -9,7 +9,6 @@ from scipy.integrate import cumtrapz
 from openmdao.api import Component
 
 
-
 class structAnalysis(Component):
     """
     OpenMDAO component for structural analysis
@@ -215,7 +214,7 @@ def calcDistribution(x, w, I, E, c):
 
 
 def calcPointLoad(x, L, P, I, E, c):
-    M = P * x
+    M = P * L
 
     # y = P / (6 * E * I) * (-x ** 3 + 3 * L ** 2 * x - 2 * L ** 3)
     y = P * x ** 2 * (3 * L - x)/(6 * E * I)

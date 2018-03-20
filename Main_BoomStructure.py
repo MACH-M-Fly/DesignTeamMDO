@@ -12,9 +12,9 @@ boom_E = 68.9e9
 boom_len = 0.9144
 
 # Define loaded masses
-masses_1 = [0.458, 0.912, 1.367, 1.823, 2.274, 2.725, 3.175, 3.627, 4.080, 4.532]
-masses_2 = [0.458, 0.913, 1.364, 1.816, 2.271, 2.723, 3.173, 3.626, 4.080, 4.534]
-masses_3 = [0.457, 0.913, 1.363, 1.813, 2.264, 2.719, 3.170, 3.624, 4.076, 4.530]
+masses_1 = [0.451, 0.901, 1.356, 1.810, 2.264, 2.715, 3.167, 3.625, 4.083, 4.538]
+masses_2 = [0.450, 0.901, 1.359, 1.814, 2.269, 2.727, 3.178, 3.630, 4.084, 4.537]
+masses_3 = [0.451, 0.901, 1.356, 1.810, 2.264, 2.715, 3.167, 3.625, 4.083, 4.538]
 
 masses = [masses_1, masses_2, masses_3]
 
@@ -26,6 +26,17 @@ for i in range(len(masses)):
         x_tail = np.linspace(0, boom_len, 1001)
         c_tail, I_tail = struct_anal.calcI(boom_type, boom_dim)
         M_tail, y_tail, sigma_tail = struct_anal.calcPointLoad(x_tail, boom_len, P, I_tail, boom_E, c_tail)
-        print('P = {:0.5f} N\tD = {:.6e}'.format(P, max(y_tail)*100.)) # Centimeters
+        print('{:.6e}'.format(np.max(y_tail)*100.)) # Centimeters
 
-    print()
+    print('')
+
+
+# Calc Mass
+
+den_boom = 2700.0
+outer_a = boom_dim[0] * boom_dim[1]
+inner_a = boom_dim[2] * boom_dim[3]
+
+m_boom = boom_len * (outer_a - inner_a) * den_boom
+
+print('Mass of Boom: {:.3f} kg'.format(m_boom))

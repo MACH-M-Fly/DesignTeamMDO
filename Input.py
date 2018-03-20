@@ -182,6 +182,8 @@ AC.x_struct = 0.25
 AC.spar_den = 2700.0
 # Linear density of wooden spar (kg/m)
 AC.spar_lindens = 0.15361
+# Boom Linear Density (kg/m^3)
+AC.boom_lindens = 2700.0
 # Leading Edge (LE) density (kg/m)
 AC.LE_lindens = 5 * 0.453592 * 0.3048 / 4
 # Trailing Edge (TE) density (kg/m)

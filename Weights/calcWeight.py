@@ -92,7 +92,7 @@ def getWing_mass(AC):
     linden_spar = AC.spar_lindens           # kg/m | Main Wing Spar mass
     k_ribs = AC.k_ribs                      # kg/m | mass of rib per 0.05 meter of rib
 
-    den_boom = AC.spar_den                  # kg/m^3 | density of aluminum
+    den_boom = AC.boom_den                  # kg/m^3 | density of aluminum
     outer_r = AC.wing.spar_dim[0]           # m | outer radius of wing alum. spar
     inner_r = AC.wing.spar_dim[1]           # m | inner radius of wing alum. spar
 
@@ -235,7 +235,7 @@ def getStruct_mass(AC):
     boom_len = AC.boom_len
 
     # Calculate mass of tailboom
-    den_boom = AC.spar_den              # kg/m^3 | density of aluminum
+    den_boom = AC.boom_den              # kg/m^3 | density of aluminum
     outer_r = AC.tail.boom_Dim[0]       # m | outer radius of alum. tailboom
     inner_r = AC.tail.boom_Dim[1]       # m | inner radius of alum. tailboom
 
