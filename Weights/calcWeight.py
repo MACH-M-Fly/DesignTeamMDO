@@ -7,7 +7,6 @@ import numpy as np
 import math
 
 from Aircraft_Class.gen_files import genMass, genGeo
-from Constants import rib_dens, rib_dens_t
 
 
 class calcWeight(Component):
@@ -92,14 +91,14 @@ def getWing_mass(AC):
     linden_spar = AC.spar_lindens           # kg/m | Main Wing Spar mass
     k_ribs = AC.k_ribs                      # kg/m | mass of rib per 0.05 meter of rib
 
-    den_boom = AC.boom_den                  # kg/m^3 | density of aluminum
+    den_spar = AC.spar_den                  # kg/m^3 | density of aluminum
     outer_r = AC.wing.spar_dim[0]           # m | outer radius of wing alum. spar
     inner_r = AC.wing.spar_dim[1]           # m | inner radius of wing alum. spar
 
     ultrakote_den = AC.ultrakote_Density    # kg/m^2 | density of ultrakote
 
     # Calculate number of ribs along the wing
-    num_ribs = math.ceil(b_wing * rib_dens)
+    num_ribs = math.ceil(b_wing * AC.rib_lindens)
     print('Number of Ribs: %d' % num_ribs)
 
     # Calculate mass of components in wing
@@ -108,11 +107,12 @@ def getWing_mass(AC):
     m_TE = linden_TE * b_wing                       # kg | mass of trailing edge
     m_spar = linden_spar * b_wing                   # kg | mass of spar
 
-    # kg | mass of aluminum spar of wing (asssume its length is half of wing span, hollow circular shape)
-    m_wing_alum_spar = 0.5*b_wing * np.pi*(outer_r**2 - inner_r**2) * den_boom
+    # TODO - FIX THIS!!!
+    # kg | mass of aluminum spar of wing (asssum its length is half of wing span, hollow circular shape)
+    m_wing_alum_spar = 0.5*b_wing * np.pi*(outer_r**2 - inner_r**2) * den_spar
 
     # Calculate mass of ultrakote
-    wet_area_w = 2.06*sref_wing
+    wet_area_w = 2.1*sref_wing
     m_ult = wet_area_w * ultrakote_den
 
     # Get total mass of wing
@@ -166,8 +166,8 @@ def getTail_mass(AC):
     ultrakote_den = AC.ultrakote_Density    # kg/m^2 | density of ultrakote
 
     # Calculate number of ribs along wing
-    num_ribs_ht = math.ceil(b_htail * rib_dens_t)
-    num_ribs_vt = math.ceil(b_vtail * rib_dens_t)
+    num_ribs_ht = math.ceil(b_htail * AC.rib_lindens_t)
+    num_ribs_vt = math.ceil(b_vtail * AC.rib_lindens_t)
 
     # Calculate mass of components in tail
     m_ribs_ht = AC.k_ribs_t * num_ribs_ht * MAC_ht

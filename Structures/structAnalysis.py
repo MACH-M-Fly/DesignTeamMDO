@@ -147,14 +147,12 @@ def distLoad(x, gross_F, dist_type):
     # linearly decreasing distributed load
     elif dist_type == 'lin_decrease':
         # TODO - Define mag
-        #w = mag - mag / x[-1] * x
-        raise ValueError('Linear Decrease Not Yet Defined')
+        w = gross_F - gross_F / x[-1] * x
 
     # linearly increasing distributed load
     elif dist_type == 'lin_increase':
         # TODO - Define mag
-        #w = mag / x[-1] * x
-        raise ValueError('Linear Incrase Not Yet Defined')
+        w = gross_F / x[-1] * x
 
     else:
         raise ValueError('Invalid distribution type provided to structAnalysis.py')
@@ -222,15 +220,10 @@ def calcPointLoad(x, L, P, I, E, c):
 
     return M, y, sigma
 
-def calcPointLoadSimplySupported(x, l, L, P, I, E, c):
-    M = P * L
-
-    # y = P / (6 * E * I) * (-x ** 3 + 3 * L ** 2 * x - 2 * L ** 3)
-    y = P * x ** 2 * (3 * L - x)/(6 * E * I)
-    sigma = -c * M / I
+def calcPointLoadSimplySupported(x, l, L, P, I, E):
     y = (P * x / (6 * E * I)) * (2 * l * L + 3 * L * x - x**2)
 
-    return M, y, sigma
+    return y
 
 
 # Runs main structure analysis

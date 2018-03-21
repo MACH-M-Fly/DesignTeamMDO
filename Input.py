@@ -179,29 +179,34 @@ AC.x_struct = 0.25
 #		Weights
 #       =========================================================================
 # density of aluminum (kg/m^3)
-AC.spar_den = 2700.0
+AC.spar_den = 0.0
 # Linear density of wooden spar (kg/m)
-AC.spar_lindens = 0.15361
-# Boom Linear Density (kg/m^3)
-AC.boom_lindens = 2700.0
+AC.spar_lindens = 0.069777022
 # Leading Edge (LE) density (kg/m)
-AC.LE_lindens = 5 * 0.453592 * 0.3048 / 4
+AC.LE_lindens = 0.041407175
 # Trailing Edge (TE) density (kg/m)
-AC.TE_lindens = 5 * 0.453592 * 0.3048 / 4. / 4.
+AC.TE_lindens = 0.013802392
+
+# Rib Mass (kg/r) per meter of rib
+AC.k_ribs = 0.0025
+
+# Rib spanwise density (# of ribs per m)
+AC.rib_lindens = 14
+
 # Linear density of wooden tail spar (kg/m)
 AC.spar_lindens_t = 0.15361 / 2.
 # Tail Leading Edge (LE) density (kg/m)
 AC.LE_lindens_t = 5 * 0.453592 * 0.3048 * 0.25 / 2.
 # Tail Trailing Edge (TE) density (kg/m)
 AC.TE_lindens_t = 5 * 0.453592 * 0.3048 * 0.15 / 2.
-# Rib Mass (kg/r) per meter of rib
-AC.k_ribs = 0.0203
-# Rib spanwise density (# of ribs per m)
-AC.rib_lindens = 4
+
+
 # Tail Rib Mass (kg/r) per meter of rib
 AC.k_ribs_t = 0.0203 / 4.
 # Tail Rib spanwise desnity (# of ribs per m)
 AC.rib_lindens_t = 4
+
+
 # Motor mass (kg)
 AC.m_motor = 0.965
 # Battery mass (kg)
@@ -252,15 +257,18 @@ def updateAircraft(cur_AC):
     cur_AC.wing.dist_type = 'elliptical'
 
     # Add wing structural parameters ('C', R', 'I')
-    cur_AC.wing.spar_type = 'C'
+    cur_AC.wing.spar_type = 'I'
+
+    flange_w = 0.9652 / 100
+    flange_h = 0.6858 / 100
+    web_w = 0.3302 / 100
+    web_h = 2.3876 / 100
 
     # Add spar dimensions (m)
-    outer_radius = 0.015
-    inner_radius = outer_radius * 0.75
-    cur_AC.wing.spar_dim = [outer_radius, inner_radius]
+    cur_AC.wing.spar_dim = (flange_w, flange_h, web_w, web_h)
 
     # Spar Young's Modulus
-    cur_AC.wing.spar_E = 68.9e9
+    cur_AC.wing.spar_E = 21.4e9 + 3.71e9
 
     # Add propulsion system
     cur_AC.propulsion = Propulsion(cur_AC.propulsion.motorKV, cur_AC.propulsion.diameter, cur_AC.propulsion.pitch,
@@ -271,17 +279,16 @@ def updateAircraft(cur_AC):
                    cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo,
                    cur_AC.Zo, cur_AC.boom_len, cur_AC.wing.chord_vals[0] / 4.)
 
-    #cur_AC.tail.boom_Type = 'C'
-    #outer_radius = 0.0381 / 2.
-    #inner_radius = 0.0174
-    #cur_AC.tail.boom_Dim = [outer_radius, inner_radius]
-
     cur_AC.tail.boom_Type = 'R'
     width_o = 0.0254
     width_i = 0.022225
     cur_AC.tail.boom_Dim = (width_o, width_o, width_i, width_i)
 
     cur_AC.tail.boom_E = 68.9e9
+
+    # Boom Linear Density (kg/m^3)
+    cur_AC.boom_den = 2700.0
+    cur_AC.boom_lindens = cur_AC.boom_den * (width_o ** 2 - width_i ** 2)
 
     # Reset score
     cur_AC.score = 0
