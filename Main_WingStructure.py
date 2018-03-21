@@ -60,7 +60,7 @@ for i in range(len(masses)):
 
 # Add 20 grams for servos, 20 for wires, and 20 for servo attachements
 # Add 10% fudge factor for glue, etc...
-mass_w = (getWing_mass(AC)[1])*1.1 + 0.020*3
+mass_w = (getWing_mass(AC)[1]) + 0.020*3
 print('Mass: {:.4f} kg'.format(mass_w))
 
 # TODO - Calc Mass
