@@ -46,12 +46,15 @@ if __name__ == '__main__':
     if not args.once:
         prob = CreateProblem.CreateOptimizationProblem(ac=AC, writer=writer)
 
-        # Run the optimization problem, adding a movie if applicable
-        if args.movie:
-            with writer.saving(prob.driver.root.Plot.fig, 'opt_run.mp4', 100):
+        try:
+            # Run the optimization problem, adding a movie if applicable
+            if args.movie:
+                with writer.saving(prob.driver.root.Plot.fig, 'opt_run.mp4', 100):
+                    prob.run()
+            else:
                 prob.run()
-        else:
-            prob.run()
+        except KeyboardInterrupt:
+            pass
 
         # Specify the output aircraft (final AC) from the MDO
         out_ac = prob['createAC.aircraft']
