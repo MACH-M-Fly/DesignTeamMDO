@@ -35,9 +35,7 @@ class aeroAnalysis(Component):
                     Static margin
     """
 
-    def __init__(self):
-        from Input import AC
-
+    def __init__(self, AC):
         super(aeroAnalysis, self).__init__()
 
         # Input instance of aircraft - before modification

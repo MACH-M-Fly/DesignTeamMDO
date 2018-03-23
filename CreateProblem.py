@@ -1,16 +1,17 @@
+"""
+Creates the design problem for the
+"""
+
 # python stantdard libraries
 from __future__ import print_function
-from time import localtime, strftime, time
 
 # addition python libraries
-import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 import copy
 
 # open MDAO libraries
 from openmdao.api import IndepVarComp, Component, Problem, Group
 
+import numpy as np
 
 from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
 # from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
@@ -22,10 +23,7 @@ from Aerodynamics.aeroAnalysis import aeroAnalysis
 from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
 from Propulsion.propulsionAnalysis import propulsionAnalysis
-from getBuildTime import getBuildTime
-# from Post_Process.postProcess import postProcess
-# from Post_Process.lib_plot import *
-from Post_Process.postProcess import *
+from Build_Time.BuildTime import BuildTime
 
 from Input import AC
 
@@ -36,56 +34,87 @@ from Input import AC
 
 class constrainedMDO(Group):
     """
-    OpenMDAO group for Version 1.0 of the constrained MDO for the joint design team
-    - Developed by Chris Reynolds in partnership with Joint Design Team MDO group
-    - Top level OpenMDAO setup script for constrained MDO
-        on the Joint MDO design team project
+    Return evenly spaced numbers over a specified interval.
+    Returns `num` evenly spaced samples, calculated over the
+    interval [`start`, `stop`].
+    The endpoint of the interval can optionally be excluded.
+    Parameters
+    ----------
+    start : scalar
+        The starting value of the sequence.
+    stop : scalar
+        The end value of the sequence, unless `endpoint` is set to False.
+        In that case, the sequence consists of all but the last of ``num + 1``
+        evenly spaced samples, so that `stop` is excluded.  Note that the step
+        size changes when `endpoint` is False.
+    num : int, optional
+        Number of samples to generate. Default is 50. Must be non-negative.
+    endpoint : bool, optional
+        If True, `stop` is the last sample. Otherwise, it is not included.
+        Default is True.
+    retstep : bool, optional
+        If True, return (`samples`, `step`), where `step` is the spacing
+        between samples.
+    dtype : dtype, optional
+        The type of the output array.  If `dtype` is not given, infer the data
+        type from the other input arguments.
+        .. versionadded:: 1.9.0
+    Returns
+    -------
+    samples : ndarray
+        There are `num` equally spaced samples in the closed interval
+        ``[start, stop]`` or the half-open interval ``[start, stop)``
+        (depending on whether `endpoint` is True or False).
+    step : float, optional
+        Only returned if `retstep` is True
+        Size of spacing between samples.
     """
 
-    def __init__(self):
+    def __init__(self, plot_obj):
         super(constrainedMDO, self).__init__()
 
         # ====================================== Params =============================================== #
         # - Uncomment a param to add it as a design variable
-        # - Must also uncomment the param in createAC.py
+        # - Must also uncomment the parameter in createAC.py
 
-        ac = AC
+        ac = copy.deepcopy(AC)
+        self.ac = ac
 
         # Mass Payload
-        self.add_design_variable('m_payload', AC.m_payload)
+        self.add_design_variable('m_payload', ac.m_payload)
 
         # Wingspan (m)
-        self.add_design_variable('b_wing', AC.wing.b_wing)
+        self.add_design_variable('b_wing', ac.wing.b_wing)
 
         # Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('chord', AC.wing.chord)
+        self.add_design_variable('chord', ac.wing.chord)
 
         # Motor parameters
-        self.add_design_variable('motor_KV', AC.propulsion.motorKV)
-        self.add_design_variable('prop_diam', AC.propulsion.diameter)
-        self.add_design_variable('prop_pitch', AC.propulsion.pitch)
+        self.add_design_variable('motor_KV', ac.propulsion.motorKV)
+        self.add_design_variable('prop_diam', ac.propulsion.diameter)
+        self.add_design_variable('prop_pitch', ac.propulsion.pitch)
 
         # Length of tailboom (m)
-        self.add_design_variable('boom_len', AC.tail.boom_len)
+        self.add_design_variable('boom_len', ac.tail.boom_len)
 
         # Length of tailboom (m)
         # self.add('boom_len',IndepVarComp('boom_len', 1.60))
         # self.add('b_htail',IndepVarComp('b_htail',1.30))
 
         # Horizontal tail span (m)
-        self.add_design_variable('b_htail', AC.tail.b_htail)
+        self.add_design_variable('b_htail', ac.tail.b_htail)
 
         # Horiz. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('htail_chord', AC.tail.htail_chord)
+        self.add_design_variable('htail_chord', ac.tail.htail_chord)
 
         # Vertical Tail Values
-        self.add_design_variable('b_vtail', AC.tail.b_vtail)
+        self.add_design_variable('b_vtail', ac.tail.b_vtail)
 
         # Vert. Tail Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-        self.add_design_variable('vtail_chord', AC.tail.vtail_chord)
+        self.add_design_variable('vtail_chord', ac.tail.vtail_chord)
 
         # Distance from the CG to the landing gear
-        self.add_design_variable('dist_LG', AC.dist_LG)
+        self.add_design_variable('dist_LG', ac.dist_LG)
 
         # Wing dihedral angle (degrees)
         # self.add('dihedral',IndepVarComp('dihedral',1.0))
@@ -112,14 +141,14 @@ class constrainedMDO(Group):
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
                        'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG')
-        CreateAddModules(self, connections)
+        CreateAddModules(self, ac, connections, plot_obj=plot_obj)
 
     def add_design_variable(self, var, init_val):
         """Adds an independent design variable to the current model"""
         self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item, connections=()):
+def CreateAddModules(item, ac, connections=(), plot_obj=None):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -128,25 +157,33 @@ def CreateAddModules(item, connections=()):
         item - MUST be an OpenMDAO group
     """
     # Create modules
-    item.add('createAC', createAC())
+    item.add('createAC', createAC(ac))
     item.add('calcWeight', calcWeight())
-    item.add('aeroAnalysis', aeroAnalysis())
+    item.add('aeroAnalysis', aeroAnalysis(AC))
     item.add('structAnalysis', structAnalysis())
     item.add('objPerformance', objPerformance())
-    item.add('getBuildTime', getBuildTime())
+    item.add('getBuildTime', BuildTime())
     item.add('propulsionAnalysis', propulsionAnalysis())
+
+    # Add plot object, if applicable
+    if plot_obj is not None:
+        item.add('Plot', plot_obj)
 
     # Connect different variables, as per the format in constrainedMDO
     for connect in connections:
         item.connect('{0:s}.{0:s}'.format(connect), 'createAC.{:s}'.format(connect))
 
     # Setting up the MDO run by connecting all modules
-    item.connect('createAC.aircraft', 'calcWeight.in_aircraft')
+    item.connect('createAC.aircraft', 'propulsionAnalysis.in_aircraft')
+    item.connect('propulsionAnalysis.out_aircraft', 'calcWeight.in_aircraft')
     item.connect('calcWeight.out_aircraft', 'aeroAnalysis.in_aircraft')
     item.connect('aeroAnalysis.out_aircraft', 'structAnalysis.in_aircraft')
     item.connect('structAnalysis.out_aircraft', 'objPerformance.in_aircraft')
     item.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
-    item.connect('getBuildTime.out_aircraft', 'propulsionAnalysis.in_aircraft')
+
+    # Connect movie plotting if applicable
+    if plot_obj is not None:
+        item.connect('getBuildTime.out_aircraft', 'Plot.in_aircraft')
 
 
 def CreateRoot():
@@ -155,7 +192,7 @@ def CreateRoot():
     """
     # Create the root group and add all modules
     root = Group()
-    CreateAddModules(root)
+    CreateAddModules(root, AC)
 
     # Return the root
     return root
@@ -177,14 +214,14 @@ def CreateRunOnceProblem():
     return prob0
 
 
-def CreateOptimizationProblem():
+def CreateOptimizationProblem(plot_obj):
     """
     CreateOptimizationProblem creates the problem that can be used for optimization
-    - Setsup the problem, but DOES NOT RUN
+    - Sets up the problem, but DOES NOT RUN
     """
     # ============================================== Create Problem ============================================ #
     prob = Problem()
-    prob.root = constrainedMDO()
+    prob.root = constrainedMDO(plot_obj=plot_obj)
 
     # ================================================ Add Driver ============================================== #
     # Gradient-Free Method: Not currently working
@@ -207,55 +244,55 @@ def CreateOptimizationProblem():
 
     prob.driver.add_desvar('m_payload.m_payload',
                            lower=0.0,
-                           upper=4.53592)
+                           upper=4.53592/2)
 
-    # prob.driver.add_desvar('b_wing.b_wing',
-    #                        lower=0.25,
-    #                        upper=1.2192)
-    #
-    # # prob.driver.add_desvar('sweep.sweep',
-    # #                        lower = np.array([-5., -5., -5., -20.0 ]),
-    # #                        upper = np.array([5., 5., 5., 30.0 ]))
-    #
-    # prob.driver.add_desvar('chord.chord',
-    #                        lower=np.array([0.0, 0.0, 0.0, 0.1]),
-    #                        upper=np.array([0.0, 0.0, 0.0, 2.0]))
-    #
-    # prob.driver.add_desvar('boom_len.boom_len',
-    #                        lower=0.1,
-    #                        upper=10.)
-    #
-    # prob.driver.add_desvar('motor_KV.motor_KV',
-    #                        lower=300.,
-    #                        upper=900.)
-    #
-    # prob.driver.add_desvar('prop_diam.prop_diam',
-    #                        lower=8.,
-    #                        upper=11.)
-    #
-    # prob.driver.add_desvar('prop_pitch.prop_pitch',
-    #                        lower=5.,
-    #                        upper=9.)
-    #
-    # prob.driver.add_desvar('b_htail.b_htail',
-    #                        lower=0.2,
-    #                        upper=4.0)
-    #
-    # prob.driver.add_desvar('htail_chord.htail_chord',
-    #                        lower=np.array([0.0, 0.0, 0.0, 0.1]),
-    #                        upper=np.array([0.0, 0.0, 0.0, 3.0]) )
-    #
-    # prob.driver.add_desvar('b_vtail.b_vtail',
-    #                        lower=0.2,
-    #                        upper=1.2)
-    #
-    # prob.driver.add_desvar('vtail_chord.vtail_chord',
-    #                        lower=np.array([0., 0., 0., 0.1 ]),
-    #                        upper=np.array([0., 0., 0., 0.45 ]) )
-    #
-    # prob.driver.add_desvar('dist_LG.dist_LG',
-    #                        lower=0.0,
-    #                        upper=3.0)
+    prob.driver.add_desvar('b_wing.b_wing',
+                           lower=1.0,
+                           upper=1.2192)
+
+    # prob.driver.add_desvar('sweep.sweep',
+    #                        lower = np.array([-5., -5., -5., -20.0 ]),
+    #                        upper = np.array([5., 5., 5., 30.0 ]))
+
+    prob.driver.add_desvar('chord.chord',
+                           lower=np.array([0.0, 0.0, 0.0, 0.20]),
+                           upper=np.array([0.0, 0.0, 0.0, 2.0]))
+
+    prob.driver.add_desvar('boom_len.boom_len',
+                           lower=0.5,
+                           upper=10.)
+
+    prob.driver.add_desvar('motor_KV.motor_KV',
+                           lower=600.,
+                           upper=900.)
+
+    prob.driver.add_desvar('prop_diam.prop_diam',
+                           lower=9.,
+                           upper=12.)
+
+    prob.driver.add_desvar('prop_pitch.prop_pitch',
+                           lower=5.,
+                           upper=8.)
+
+    prob.driver.add_desvar('b_htail.b_htail',
+                           lower=0.2,
+                           upper=0.40)
+
+    prob.driver.add_desvar('htail_chord.htail_chord',
+                           lower=np.array([0.0, 0.0, 0.0, 0.1]),
+                           upper=np.array([0.0, 0.0, 0.0, 3.0]) )
+
+    prob.driver.add_desvar('b_vtail.b_vtail',
+                           lower=0.2,
+                           upper=1.2)
+
+    prob.driver.add_desvar('vtail_chord.vtail_chord',
+                           lower=np.array([0., 0., 0., 0.1 ]),
+                           upper=np.array([0., 0., 0., 0.45 ]) )
+
+    prob.driver.add_desvar('dist_LG.dist_LG',
+                           lower=0.0,
+                           upper=3.0)
 
     # prob.driver.add_desvar('dihedral.dihedral',   			lower = 1,    upper = 3 )
     # prob.driver.add_desvar('dist_LG.dist_LG', 				lower = 0.05, upper = 0.1)
@@ -275,10 +312,10 @@ def CreateOptimizationProblem():
 
     # ======================================== Add Objective Function and Constraints========================== #
     prob.driver.add_objective('objPerformance.score')
-    prob.driver.add_constraint('objPerformance.sum_y', lower = 0.0)
+    prob.driver.add_constraint('objPerformance.sum_y', lower=0.0)
     prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
-    # prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
+    prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)
     # prob.driver.add_constraint('structAnalysis.stress_tail', lower = 0.00, upper = 60000.)
 
@@ -294,4 +331,3 @@ def CreateOptimizationProblem():
     prob.setup()
 
     return prob
-

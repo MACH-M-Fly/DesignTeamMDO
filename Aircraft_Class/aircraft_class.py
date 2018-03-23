@@ -21,7 +21,52 @@ class Aircraft(object):
     def __init__(self):
         # TODO - UPDATE PARASITIC DRAG
         self.CD_p = 0.0  # Parasitic drag coefficient
-        self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0])
+        self.I = ([0.195995656591, 1.5429026885, 1.73889834509, 0.0, 0.0, 0.0]) # TODO - Constant I?
+        self.score = 0
+
+    def update_aircraft(self):
+        """
+        Function to update the aircraft on each iteration of MDO
+
+        Inputs
+        ----------
+        cur_AC          :   Class
+                            Class containing all aircraft data
+
+
+        Outputs
+        ----------
+        none, just updates the aircraft (AC)
+        """
+
+        # Create an instance of AC for wing values
+        self.wing = Wing(self.wing.num_sections, self.is_linear, self.wing.b_wing, self.wing.sweep,
+                       self.wing.chord, self.Xo, self.Yo, self.Zo, self.wing.dihedral, self.wing.camber,
+                       self.wing.max_camber, self.wing.thickness, self.wing.max_thickness)
+
+        # Add wing structural parameters
+        self.wing.dist_type = self.wing_dist_type
+        self.wing.spar_type = self.wing_spar_type
+        self.wing.spar_dim = self.wing_spar_dim
+        self.wing.spar_E = self.wing_spar_E
+
+        # Add propulsion system
+        self.propulsion = Propulsion(self.propulsion.motorKV, self.propulsion.diameter, self.propulsion.pitch,
+                                   self.propulsion.cellNum, self.propulsion.thrustCurve,
+                                   self.propulsion.escCur)
+
+        # Create an instance of AC for tail values
+        self.tail = Tail(self.tail.num_sections, self.is_linear, self.tail.b_htail,
+                       self.tail.htail_chord, self.tail.b_vtail, self.tail.vtail_chord, self.Xo, self.Yo,
+                       self.Zo, self.boom_len, self.wing.chord_vals[0] / 4.)
+
+        # Add tail boom structural parameters
+        self.tail.boom_Type = self.tail_boom_type
+        self.tail.boom_Dim = self.tail_boom_Dim
+        self.tail.boom_E = self.tail_boom_E
+
+        # Reset score
+        self.score = 0
 
 
 class Wing(object):

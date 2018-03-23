@@ -1,5 +1,3 @@
-from Aircraft_Class.aircraft_class import *
-
 """
 Input.py
 - User modifies:
@@ -14,6 +12,8 @@ SI UNITS ONLY
 - m
 - s
 """
+
+from Aircraft_Class.aircraft_class import *
 
 # Create initial class
 AC = Aircraft()
@@ -173,9 +173,35 @@ AC.bank_angle = 20
 
 AC.actual_takeoff = 200
 
-#       =========================================================================
-#		Weights
-#       =========================================================================
+# =========================================================================
+# Structures
+# =========================================================================
+
+# Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
+AC.wing_dist_type = 'elliptical'
+
+# Add wing structural parameters ('C', R', 'I')
+AC.wing_spar_type = 'C'
+
+# Add spar dimensions (m)
+outer_radius = 0.015
+inner_radius = outer_radius * 0.75
+AC.wing_spar_dim = [outer_radius, inner_radius]
+
+# Spar Young's Modulus
+AC.wing_spar_E = 68.9e9
+
+AC.tail_boom_type = 'C'
+
+outer_radius = 0.0381 / 2.
+inner_radius = 0.0174
+AC.tail_boom_Dim = [outer_radius, inner_radius]
+
+AC.tail_boom_E = 68.9e9
+
+# =========================================================================
+# Weights
+# =========================================================================
 # density of aluminum (kg/m^3)
 AC.spar_den = 2700.0
 # Linear density of wooden spar (kg/m)
@@ -223,65 +249,8 @@ AC.tail = Tail(num_sections_tail, AC.is_linear, b_htail,
 AC.propulsion = Propulsion(motor_KV, prop_diam, prop_pitch, cell_Num, thrust, esc_max)
 
 
-def updateAircraft(cur_AC):
-    """
-    Function to update the aircraft on each iteration of MDO
-
-    Inputs
-    ----------
-    cur_AC          :   Class
-                        Class containing all aircraft data
-
-
-    Outputs
-    ----------
-    none, just updates the aircraft (AC)
-    """
-
-    # Create an instance of AC for wing values
-    AC.wing = Wing(cur_AC.wing.num_sections, cur_AC.is_linear, cur_AC.wing.b_wing, cur_AC.wing.sweep,
-                   cur_AC.wing.chord, cur_AC.Xo, cur_AC.Yo, cur_AC.Zo, cur_AC.wing.dihedral, cur_AC.wing.camber,
-                   cur_AC.wing.max_camber, cur_AC.wing.thickness, cur_AC.wing.max_thickness)
-
-    # Add wing structural parameters ('elliptical', 'uniform', 'lin_decrease', 'lin_increase')
-    AC.wing.dist_type = 'elliptical'
-
-    # Add wing structural parameters ('C', R', 'I')
-    AC.wing.spar_type = 'C'
-
-    # Add spar dimensions (m)
-    outer_radius = 0.015
-    inner_radius = outer_radius * 0.75
-    AC.wing.spar_dim = [outer_radius, inner_radius]
-
-    # Spar Young's Modulus
-    AC.wing.spar_E = 68.9e9
-
-    # Add propulsion system
-    AC.propulsion = Propulsion(cur_AC.propulsion.motorKV, cur_AC.propulsion.diameter, cur_AC.propulsion.pitch,
-                               cur_AC.propulsion.cellNum, cur_AC.propulsion.thrustCurve, cur_AC.propulsion.escCur)
-
-    # Create an instance of AC for tail values
-    AC.tail = Tail(cur_AC.tail.num_sections, cur_AC.is_linear, cur_AC.tail.b_htail,
-                   cur_AC.tail.htail_chord, cur_AC.tail.b_vtail, cur_AC.tail.vtail_chord, cur_AC.Xo, cur_AC.Yo,
-                   cur_AC.Zo, AC.boom_len, cur_AC.wing.chord_vals[0] / 4.)
-
-    AC.tail.boom_Type = 'C'
-
-    outer_radius = 0.0381 / 2.
-    inner_radius = 0.0174
-    AC.tail.boom_Dim = [outer_radius, inner_radius]
-
-    AC.tail.boom_E = 68.9e9
-
-    # Reset score
-    AC.score = 0
-
-
-
-
 # Call the above function to update the aircraft for this MDO iteration
-updateAircraft(AC)
+AC.update_aircraft()
 
 print('=============== Initial vehicle Parameters =============')
 print('CDp', AC.CD_p)

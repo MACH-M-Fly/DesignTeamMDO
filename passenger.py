@@ -1,8 +1,8 @@
 import numpy as np
 
 ball_weight = np.array([0.4, 0.67, 1.12, 1.85, 2.39])  # oz
-ball_percent = np.array([0.15, 0.2, 0.3, 0.2, 0.15])  
-ball_diameter = np.array([27,32, 38, 45, 49])  
+ball_percent = np.array([0.15, 0.2, 0.3, 0.2, 0.15])
+ball_diameter = np.array([27,32, 38, 45, 49])
 
 average_weight = np.sum(ball_weight*ball_percent)
 average_diameter = np.sum(ball_weight*ball_diameter)
@@ -21,9 +21,9 @@ def ballWeight(N):
 
 	return (average_weight + 1.5 *std_N)*N, average_weight + 1.5 *std_N
 
-print '15         ', ballWeight(15)
-print '14         ', ballWeight(14)
-print '10         ', ballWeight(10)
-print '5         ', ballWeight(5)
+print('15         ', ballWeight(15))
+print('14         ', ballWeight(14))
+print('10         ', ballWeight(10))
+print('5         ', ballWeight(5))
 
 

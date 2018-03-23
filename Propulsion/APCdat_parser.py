@@ -4,7 +4,6 @@ import math
 
 # Kriging Library
 from pykrige.ok3d import OrdinaryKriging3D
-from pykrige.uk3d import UniversalKriging3D
 
 
 # Plotting

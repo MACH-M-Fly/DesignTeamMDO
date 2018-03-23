@@ -16,7 +16,7 @@ from scipy.optimize import *
 # from sympy import Symbol, nsolve
 
 # Import self-created components
-from Input import AC, updateAircraft
+#from Input import AC, updateAircraft
 from Aircraft_Class.aircraft_class import *
 
 
@@ -24,7 +24,7 @@ class createAC(Component):
     """
     OpenMDAO component for updating the aircaft (AC) after each iteration of MDO
 
-    Inputs
+    :Inputs:
     -------
     Aircraft_Class  :   class
                         in_aircraft class
@@ -32,17 +32,15 @@ class createAC(Component):
                         Variables for modification
 
 
-    Outputs
+    :Outputs:
     -------
     Aircraft_Class  :   class
                         out_aircraft class
 
     """
 
-    def __init__(self):
+    def __init__(self, AC):
         super(createAC, self).__init__()
-
-        ac = AC
 
         # Input instance of aircraft - before modification
         self.add_param('def_aircraft', val=AC, desc='Aircraft Class')
@@ -107,7 +105,7 @@ class createAC(Component):
         AC.propulsion.pitch = params['prop_pitch']
 
         # Update aircraft before analysis
-        updateAircraft(AC)
+        AC.update_aircraft()
 
         # Set output to updated instance of aircraft
         unknowns['aircraft'] = AC
