@@ -59,16 +59,14 @@ class objPerformance(Component):
                     Tail chord value at each section, returned to top level for constraining
     """
 
-    def __init__(self):
+    def __init__(self, ac):
         super(objPerformance, self).__init__()
 
-        from Input import AC
-
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
         # Output instance of aircaft - after modification
-        self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
+        self.add_output('out_aircraft', val=ac, desc='Output Aircraft Class')
 
         # Other outputs to be used in top_level group (e.g. constraints)
         self.add_output('score', val=0.0, desc='score')
@@ -76,8 +74,8 @@ class objPerformance(Component):
         self.add_output('N', val=0.0, desc='number of laps')
         self.add_output('NP', val=0.0, desc='Netual point')
         self.add_output('tot_time', val=0.0, desc='time')
-        self.add_output('chord_vals', val=np.zeros((AC.wing.num_sections, 1)), desc='chord values')
-        self.add_output('htail_chord_vals', val=np.zeros((AC.tail.num_sections, 1)), desc='tail chord values')
+        self.add_output('chord_vals', val=np.zeros((ac.wing.num_sections, 1)), desc='chord values')
+        self.add_output('htail_chord_vals', val=np.zeros((ac.tail.num_sections, 1)), desc='tail chord values')
         self.add_output('takeoff_distance', val=0.0, desc='Takeoff Distance')
 
     def solve_nonlinear(self, params, unknowns, resids):

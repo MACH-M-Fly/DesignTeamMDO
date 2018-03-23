@@ -9,9 +9,6 @@ from scipy.integrate import cumtrapz
 from openmdao.api import Component
 # from sympy import Symbol, nsolve
 
-# Import self-created components
-from Input import AC
-
 
 class structAnalysis(Component):
     """
@@ -35,14 +32,14 @@ class structAnalysis(Component):
                         stress in tail boom
     """
 
-    def __init__(self):
+    def __init__(self, ac):
         super(structAnalysis, self).__init__()
 
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
         # Output instance of aircaft - after modification
-        self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
+        self.add_output('out_aircraft', val=ac, desc='Output Aircraft Class')
 
         # Other outputs to be used in top_level group (e.g. constraints)
         self.add_output('stress_wing', val=0.0, desc='Stress on wing')

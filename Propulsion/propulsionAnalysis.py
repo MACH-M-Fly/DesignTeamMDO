@@ -1,27 +1,14 @@
 # python stantdard libraries
 from __future__ import division
-from time import localtime, strftime, time
 
 # addition python libraries
 import numpy as np
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 
 # open MDAO libraries
-from openmdao.api import IndepVarComp, Component, Problem, Group
-from openmdao.api import ScipyOptimizer, ExecComp, SqliteRecorder
-# from openmdao.drivers.pyoptsparse_driver import pyOptSparseDriver
-from openmdao.drivers.latinhypercube_driver import OptimizedLatinHypercubeDriver
-from scipy.optimize import *
-from sympy import Symbol, nsolve
+from openmdao.api import Component
 
 # Import self-created components
-from Input import AC
 from APCdat_parser import createKriging
-
-# Kriging Library
-from pykrige.ok3d import OrdinaryKriging3D
-from pykrige.uk3d import UniversalKriging3D
 
 
 # Change the name of your componenet here
@@ -36,14 +23,14 @@ class propulsionAnalysis(Component):
             - Aircraft_Class: Output and modified aircraft instance
     """
 
-    def __init__(self):
+    def __init__(self, ac):
         super(propulsionAnalysis, self).__init__()
 
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
         # Output instance of aircaft - after modification
-        self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
+        self.add_output('out_aircraft', val=ac, desc='Output Aircraft Class')
 
         # Initialize Kriging Model
         self.model = createKriging([8, 11], [5, 9], [1000, 10000], 'exponential')

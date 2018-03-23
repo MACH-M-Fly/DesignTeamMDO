@@ -3,12 +3,10 @@ from __future__ import division
 
 from openmdao.api import Component
 import numpy as np
-
 import math
-
 from Aircraft_Class.gen_files import genMass, genGeo
-
 from Constants import rib_dens, rib_dens_t
+
 
 class calcWeight(Component):
     """
@@ -41,17 +39,14 @@ class calcWeight(Component):
     """
 
     # set up interface to the framework
-    def __init__(self):
+    def __init__(self, ac):
         super(calcWeight, self).__init__()
 
-        # Import the starting aircraft
-        from Input import AC
-
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft',val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
         # Output instance of aircraft - after modification
-        self.add_output('out_aircraft',val=AC, desc='Output Aircraft Class')
+        self.add_output('out_aircraft', val=ac, desc='Output Aircraft Class')
 
         # Output for Mass
         self.add_output('ac_mass', val=0.0, desc='Output Mass of the AC')

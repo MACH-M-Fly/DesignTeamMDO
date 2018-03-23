@@ -25,20 +25,20 @@ from Performance.objPerformance import objPerformance
 from Propulsion.propulsionAnalysis import propulsionAnalysis
 from Build_Time.BuildTime import BuildTime
 
-from Input import AC
-
 # Animation Setup
 # FFMpegWriter = animation.writers['ffmpeg']
 # metadata = dict(title='MACH MDO', artist='MACH',comment='MDO Animation')
 # writer = FFMpegWriter(fps=15, metadata=metadata)
 
-class constrainedMDO(Group):
+
+class ConstrainedMDO(Group):
     """
     Return evenly spaced numbers over a specified interval.
     Returns `num` evenly spaced samples, calculated over the
     interval [`start`, `stop`].
     The endpoint of the interval can optionally be excluded.
-    Parameters
+
+    :Parameters:
     ----------
     start : scalar
         The starting value of the sequence.
@@ -59,7 +59,8 @@ class constrainedMDO(Group):
         The type of the output array.  If `dtype` is not given, infer the data
         type from the other input arguments.
         .. versionadded:: 1.9.0
-    Returns
+
+    :Returns:
     -------
     samples : ndarray
         There are `num` equally spaced samples in the closed interval
@@ -70,14 +71,14 @@ class constrainedMDO(Group):
         Size of spacing between samples.
     """
 
-    def __init__(self, plot_obj):
-        super(constrainedMDO, self).__init__()
+    def __init__(self, ac, plot_obj):
+        super(ConstrainedMDO, self).__init__()
 
         # ====================================== Params =============================================== #
         # - Uncomment a param to add it as a design variable
         # - Must also uncomment the parameter in createAC.py
 
-        ac = copy.deepcopy(AC)
+        ac = copy.deepcopy(ac)
         self.ac = ac
 
         # Mass Payload
@@ -158,12 +159,12 @@ def CreateAddModules(item, ac, connections=(), plot_obj=None):
     """
     # Create modules
     item.add('createAC', createAC(ac))
-    item.add('calcWeight', calcWeight())
-    item.add('aeroAnalysis', aeroAnalysis(AC))
-    item.add('structAnalysis', structAnalysis())
-    item.add('objPerformance', objPerformance())
-    item.add('getBuildTime', BuildTime())
-    item.add('propulsionAnalysis', propulsionAnalysis())
+    item.add('calcWeight', calcWeight(ac))
+    item.add('aeroAnalysis', aeroAnalysis(ac))
+    item.add('structAnalysis', structAnalysis(ac))
+    item.add('objPerformance', objPerformance(ac))
+    item.add('getBuildTime', BuildTime(ac))
+    item.add('propulsionAnalysis', propulsionAnalysis(ac))
 
     # Add plot object, if applicable
     if plot_obj is not None:
@@ -186,25 +187,25 @@ def CreateAddModules(item, ac, connections=(), plot_obj=None):
         item.connect('getBuildTime.out_aircraft', 'Plot.in_aircraft')
 
 
-def CreateRoot():
+def CreateRoot(ac):
     """
     CreateRoot creates the linked problem set that is used to define a problem
     """
     # Create the root group and add all modules
     root = Group()
-    CreateAddModules(root, AC)
+    CreateAddModules(root, ac)
 
     # Return the root
     return root
 
 
-def CreateRunOnceProblem():
+def CreateRunOnceProblem(ac):
     """
     CreateRunOnceProblem Creates the Initial Run-Once Problem to connect everything together
     - Sets up the problem, but DOES NOT RUN
     """
     # Define the problem
-    root = CreateRoot()
+    root = CreateRoot(ac)
 
     # Setup the problem (but do not run)
     prob0 = Problem(root)
@@ -214,14 +215,14 @@ def CreateRunOnceProblem():
     return prob0
 
 
-def CreateOptimizationProblem(plot_obj):
+def CreateOptimizationProblem(ac, plot_obj):
     """
     CreateOptimizationProblem creates the problem that can be used for optimization
     - Sets up the problem, but DOES NOT RUN
     """
     # ============================================== Create Problem ============================================ #
     prob = Problem()
-    prob.root = constrainedMDO(plot_obj=plot_obj)
+    prob.root = ConstrainedMDO(ac=ac, plot_obj=plot_obj)
 
     # ================================================ Add Driver ============================================== #
     # Gradient-Free Method: Not currently working
@@ -313,7 +314,7 @@ def CreateOptimizationProblem(plot_obj):
     # ======================================== Add Objective Function and Constraints========================== #
     prob.driver.add_objective('objPerformance.score')
     prob.driver.add_constraint('objPerformance.sum_y', lower=0.0)
-    prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((AC.wing.num_sections, 1)) * 0.1)
+    prob.driver.add_constraint('objPerformance.chord_vals', lower=np.ones((ac.wing.num_sections, 1)) * 0.1)
     # prob.driver.add_constraint('objPerformance.htail_chord_vals', lower = np.ones((AC.tail.num_sections,1))*0.01  )
     prob.driver.add_constraint('aeroAnalysis.SM', lower=0.05, upper=0.4)
     # prob.driver.add_constraint('structAnalysis.stress_wing', lower = 0.00, upper = 60000.)

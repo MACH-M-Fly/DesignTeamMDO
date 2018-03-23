@@ -37,10 +37,8 @@ class Plot(Component):
     """
 
     # Plots each iteration configuration
-    def __init__(self, geo1, geo2, A, writer, fig):
+    def __init__(self, ac, geo1, geo2, A, writer, fig):
         super(Plot, self).__init__()
-
-        from Input import AC
 
         self.geo1 = geo1
         self.geo2 = geo2
@@ -50,7 +48,7 @@ class Plot(Component):
         self.writer = writer
 
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
@@ -61,7 +59,7 @@ class Plot(Component):
         Yle = AC.wing.Yle
         C = AC.wing.chord_vals
         Xle_ht = AC.tail.Xle_ht
-        Yle_ht = AC.tail.Yle
+        Yle_ht = AC.tail.Yle_ht
         C_t = AC.tail.htail_chord_vals
         x_cg = AC.x_cg
         NP = AC.NP
@@ -98,7 +96,7 @@ class Plot(Component):
         self.geo2.set_ylim([-0.5, 0.5])
 
         for i in range(1, len(self.A) + 1):
-            f = open('./airfoils/A_' + str(i) + '.dat', 'r')
+            f = open('./Aerodynamics/airfoils/A_' + str(i) + '.dat', 'r')
             flines = f.readlines()
 
             X = []
@@ -119,7 +117,7 @@ class Plot(Component):
 
             self.A[i - 1].plot(X, Y, 'm-')
 
-        self.writer.grab_frame(figure=self.fig)
+        self.writer.grab_frame()
 
         at.remove()
         self.geo1.lines = []

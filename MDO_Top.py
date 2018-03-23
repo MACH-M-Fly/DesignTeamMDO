@@ -12,6 +12,8 @@ import CreateProblem
 
 import argparse
 
+from Input import AC
+
 # ================================= Interperate cmd line options =================================
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--movie',
@@ -55,7 +57,7 @@ if args.movie:
     writer = FFMpegWriter(fps=15, metadata=metadata)
 
     # Create the plot object
-    plot_obj = Plot(geo1, geo2, A, writer, fig)
+    plot_obj = Plot(AC, geo1, geo2, A, writer, fig)
 else:
     fig = None
     writer = None
@@ -65,13 +67,13 @@ else:
 
 if __name__ == '__main__':
     # Create the run-once problem
-    prob0 = CreateProblem.CreateRunOnceProblem()
+    prob0 = CreateProblem.CreateRunOnceProblem(AC)
     prob0.run()
     in_ac = copy.deepcopy(prob0['createAC.aircraft'])
 
     # Create the constrained problem, if applicable
     if not args.once:
-        prob = CreateProblem.CreateOptimizationProblem(plot_obj=plot_obj)
+        prob = CreateProblem.CreateOptimizationProblem(ac=AC, plot_obj=plot_obj)
 
         # Run the optimization problem
         if args.movie:
@@ -88,7 +90,6 @@ if __name__ == '__main__':
     else:
         out_ac = in_ac
         in_ac = None
-
 
     # Post-Process Results
     postProcess_Main(in_ac, out_ac)

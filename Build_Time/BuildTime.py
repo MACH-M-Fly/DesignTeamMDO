@@ -31,18 +31,15 @@ class BuildTime(Component):
         * Update the historical values in the solve_nonlinear function based on new parameters
     """
 
-    def __init__(self):
+    def __init__(self, ac):
         """Constructor for the class to setup the OpenMDAO inputs and outputs"""
         super(BuildTime, self).__init__()
 
-        # Import AC for the initial build time values
-        from Input import AC
-
         # Input instance of aircraft - before modification
-        self.add_param('in_aircraft', val=AC, desc='Input Aircraft Class')
+        self.add_param('in_aircraft', val=ac, desc='Input Aircraft Class')
 
         # Output instance of aircraft - after modification
-        self.add_output('out_aircraft', val=AC, desc='Output Aircraft Class')
+        self.add_output('out_aircraft', val=ac, desc='Output Aircraft Class')
 
     def solve_nonlinear(self, params, unknowns, resids):
         """Solves the input aircraft unknown for the required build time.
