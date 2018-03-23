@@ -17,28 +17,50 @@ from openmdao.api import Component
 class Plot(Component):
     """
     OpenMDAO component for post-processing
-    - Movie writing DOES NOT work on CAEN linux
-    - Plots aircraft:
-        - During each iteration and at the end (plotGeoFinal)
-        - Plots wing (blue) and tail (red)
-        - Plots CG (black) and NP (light blue - cyan)
-        - Includes configuration number (fig)
+        * Movie writing DOES NOT work on CAEN linux
+        * Plots aircraft:
+            * During each iteration and at the end (plotGeoFinal)
+            * Plots wing (blue) and tail (red)
+            * Plots CG (black) and NP (light blue - cyan)
+            * Includes configuration number (fig)
 
 
-    Inputs
+    :Inputs:
     -------
     Aircraft_Class:	class
                     in_aircraft class (now has data from upstream components)
 
 
-    Outputs
+    :Outputs:
     -------
     Plots
     """
 
     # Plots each iteration configuration
-    def __init__(self, ac, geo1, geo2, A, writer, fig):
+    def __init__(self, ac, writer):
         super(Plot, self).__init__()
+
+        # Plotting Setup
+        fig = plt.figure(figsize=[12, 8])
+        self.fig = fig
+
+        geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
+        geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
+        geo1.set_xlim([-2, 2])
+        geo1.set_ylim([-0.5, 2])
+        geo2.set_xlim([-2, 2])
+        geo2.set_ylim([-0.5, 0.5])
+
+        A = list()
+        A.append(plt.subplot2grid((5, 5), (0, 3), colspan=2))
+        A.append(plt.subplot2grid((5, 5), (1, 3), colspan=2))
+        A.append(plt.subplot2grid((5, 5), (2, 3), colspan=2))
+        A.append(plt.subplot2grid((5, 5), (3, 3), colspan=2))
+        A.append(plt.subplot2grid((5, 5), (4, 3), colspan=2))
+
+        for i in range(0, 5):
+            A[i].set_xlim([0, 0.7])
+            A[i].set_ylim([-0.1, 0.2])
 
         self.geo1 = geo1
         self.geo2 = geo2
@@ -129,40 +151,34 @@ class Plot(Component):
         self.A[4].lines = []
 
 
-# Function: Plots a final geometry with given inputs
-# Inputs:
-#     	Xle: Wing leading edge at each section (x coord.)
-#		Yle: Wing leading edge at each section (y coord.)
-#  		C: Chord at each section
-#   	Xle_ht: Tail leading edge at each section (x coord.)
-#   	Yle_ht: Tail leading edge at each section (y coord.)
-#  		C_t: Tail chord at each section
-#		x_cg: CG position
-#		NP: Neutral point position
-#		Score: Objective function score
 def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
     """
     Plots the final optimized geometry
 
-    Inputs
+    :Inputs:
     -------
-        Xle: Wing leading edge at each section (x coord.)
-        Yle: Wing leading edge at each section (y coord.)
-        C: Chord at each section
+    Xle : ndarray
+        Wing leading edge at each section (x coord.)
+    Yle : ndarray
+        Wing leading edge at each section (y coord.)
+    C : ndarray
+        Chord at each section
         Xle_ht: Tail leading edge at each section (x coord.)
         Yle_ht: Tail leading edge at each section (y coord.)
         C_t: Tail chord at each section
         x_cg: CG position
-        NP: Neutral point position
-        Score: Objective function score
-        mount_len: Motor mount length to plot the motor
+        NP : float?
+        Neutral point position
+    score : float
+        Objective function score
+    mount_len : float
+        Motor mount length to plot the motor
 
 
-    Outputs
+    :Outputs:
     -------
     Single plot
     """
-
     wing_edge = Xle + [sum(x) for x in zip(Xle, C)][::-1] + [sum(x) for x in zip(Xle, C)] + [1 * x for x in Xle[::-1]]
     wing_pos = Yle + Yle[::-1] + [-1 * x for x in Yle] + [-1 * x for x in Yle[::-1]]
     wing_zpos = [0.0 * abs(x) for x in wing_pos]
@@ -236,6 +252,20 @@ def plotGeoFinal(Xle, Yle, C, Xle_ht, Yle_ht, C_t, x_cg, NP, score, mount_len):
 
 
 def plotGeoFinalDuo(in_AC, out_AC):
+    """
+    Plots the final geometry compared to the input geometry
+
+    :Inputs:
+    -------
+    in_AC : Aircraft
+        input, or starting, aircraft to compare against. Note: in_AC can be None
+    out_AC : Aircraft
+        final aircraft
+
+    :Outputs:
+    -------
+    Single plot
+    """
     plt.close('all')
     fig = plt.figure(figsize=[12, 8])
 
@@ -279,7 +309,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
             raise ValueError('Invalid aircraft presented in lib_plot')
 
         # Continue if AC is None
-        if AC is None:
+        if in_AC is None:
             continue
 
         Xle = AC.wing.Xle.tolist()
@@ -387,10 +417,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
     # geo2.set_xlim(min(geo2_xlim[0][0], geo2_xlim[1][0]), max(geo2_xlim[0][1], geo2_xlim[1][1]))
     # geo2.set_ylim(min(geo2_ylim[0][0], geo2_ylim[1][0]), max(geo2_ylim[0][1], geo2_ylim[1][1]))
 
-    if in_AC is not None:
-        name = in_AC.AC_name
-    else:
-        name = out_AC.AC_name
+    name = out_AC.AC_name
 
     plt.tight_layout()
     plt.savefig(('OPT_%s.pdf' % name), bbox_inches='tight')

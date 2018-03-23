@@ -84,7 +84,7 @@ ANGLE
 #------------------TAIL ROOT/ELEVATOR------------------
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.8125    0.0    0       0.1     0.0       
+0.812500003906    0.0    0       0.099999984375     0.0       
 NACA
 0012
 CLAF
@@ -96,7 +96,7 @@ Elevator -1.00 0.5 0 1 0 1.00
 
 SECTION
 #Xle  Yle  Zle  |  Chord   Ainc   Nspan   Sspace
-0.8125    0.1    0       0.1     0.0       
+0.812500003906    0.1    0       0.099998046875     0.0       
 NACA
 0012
 CLAF

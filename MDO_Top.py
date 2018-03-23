@@ -27,41 +27,12 @@ args = parser.parse_args()
 
 # ==================================== Initailize plots for animation ===================================== #
 if args.movie:
-    # Plotting Setup
-
-    fig = plt.figure(figsize=[12,8])
-
-    geo1 = plt.subplot2grid((5, 5), (0, 0), colspan=3, rowspan=4)
-    geo2 = plt.subplot2grid((5, 5), (4, 0), colspan=3, rowspan=1)
-    geo1.set_xlim([-2, 2])
-    geo1.set_ylim([-0.5, 2])
-    geo2.set_xlim([-2, 2])
-    geo2.set_ylim([-0.5,0.5])
-
-    A = list()
-    A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
-
-    for i in range(0,5):
-        A[i].set_xlim([0, 0.7])
-        A[i].set_ylim([-0.1, 0.2])
-
-    plt.tight_layout()
-
     # Animation Setup
     FFMpegWriter = animation.writers['ffmpeg']
     metadata = dict(title='MACH MDO', artist='MACH', comment='MDO Animation')
     writer = FFMpegWriter(fps=15, metadata=metadata)
-
-    # Create the plot object
-    plot_obj = Plot(AC, geo1, geo2, A, writer, fig)
 else:
-    fig = None
     writer = None
-    plot_obj = None
 
 # ============================================== Create Problem ============================================ #
 
@@ -73,11 +44,11 @@ if __name__ == '__main__':
 
     # Create the constrained problem, if applicable
     if not args.once:
-        prob = CreateProblem.CreateOptimizationProblem(ac=AC, plot_obj=plot_obj)
+        prob = CreateProblem.CreateOptimizationProblem(ac=AC, writer=writer)
 
-        # Run the optimization problem
+        # Run the optimization problem, adding a movie if applicable
         if args.movie:
-            with writer.saving(fig, 'opt_run.mp4', 100):
+            with writer.saving(prob.driver.root.Plot.fig, 'opt_run.mp4', 100):
                 prob.run()
         else:
             prob.run()

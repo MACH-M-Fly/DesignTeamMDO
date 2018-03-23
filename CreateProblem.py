@@ -24,6 +24,7 @@ from Structures.structAnalysis import structAnalysis
 from Performance.objPerformance import objPerformance
 from Propulsion.propulsionAnalysis import propulsionAnalysis
 from Build_Time.BuildTime import BuildTime
+from Post_Process.lib_plot import Plot
 
 # Animation Setup
 # FFMpegWriter = animation.writers['ffmpeg']
@@ -71,7 +72,7 @@ class ConstrainedMDO(Group):
         Size of spacing between samples.
     """
 
-    def __init__(self, ac, plot_obj):
+    def __init__(self, ac, writer):
         super(ConstrainedMDO, self).__init__()
 
         # ====================================== Params =============================================== #
@@ -142,14 +143,14 @@ class ConstrainedMDO(Group):
         connections = ('chord', 'b_wing', 'motor_KV', 'prop_diam',
                        'prop_pitch', 'boom_len', 'b_htail', 'htail_chord',
                        'b_vtail', 'vtail_chord', 'm_payload', 'dist_LG')
-        CreateAddModules(self, ac, connections, plot_obj=plot_obj)
+        CreateAddModules(self, ac, connections, writer)
 
     def add_design_variable(self, var, init_val):
         """Adds an independent design variable to the current model"""
         self.add(var, IndepVarComp(var, init_val))
 
 
-def CreateAddModules(item, ac, connections=(), plot_obj=None):
+def CreateAddModules(item, ac, connections=(), writer=None):
     """
     CreateAddModules creates modules for each and adds them to the problem
     - Additional items can be connected later
@@ -167,8 +168,8 @@ def CreateAddModules(item, ac, connections=(), plot_obj=None):
     item.add('propulsionAnalysis', propulsionAnalysis(ac))
 
     # Add plot object, if applicable
-    if plot_obj is not None:
-        item.add('Plot', plot_obj)
+    if writer is not None:
+        item.add('Plot', Plot(ac, writer))
 
     # Connect different variables, as per the format in constrainedMDO
     for connect in connections:
@@ -183,7 +184,7 @@ def CreateAddModules(item, ac, connections=(), plot_obj=None):
     item.connect('objPerformance.out_aircraft', 'getBuildTime.in_aircraft')
 
     # Connect movie plotting if applicable
-    if plot_obj is not None:
+    if writer is not None:
         item.connect('getBuildTime.out_aircraft', 'Plot.in_aircraft')
 
 
@@ -215,14 +216,14 @@ def CreateRunOnceProblem(ac):
     return prob0
 
 
-def CreateOptimizationProblem(ac, plot_obj):
+def CreateOptimizationProblem(ac, writer=None):
     """
     CreateOptimizationProblem creates the problem that can be used for optimization
     - Sets up the problem, but DOES NOT RUN
     """
     # ============================================== Create Problem ============================================ #
     prob = Problem()
-    prob.root = ConstrainedMDO(ac=ac, plot_obj=plot_obj)
+    prob.root = ConstrainedMDO(ac=ac, writer=writer)
 
     # ================================================ Add Driver ============================================== #
     # Gradient-Free Method: Not currently working
