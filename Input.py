@@ -71,10 +71,10 @@ ch_d = 0.3048
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
-AC.dist_LG = 0.35
+AC.dist_LG = 0.12446
 
 # Length of tailboom (m)
-AC.boom_len = 0.73152
+AC.boom_len = 0.719328
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 0
