@@ -156,12 +156,12 @@ AC.mu = 0.8
 # Number of battery cells
 cell_Num = 3.0
 # Motor KV
-motor_KV = 900.0
+motor_KV = 1000.0
 # Propeller Diameter
 
 prop_diam = 11.0
 # Propeller Pitch
-prop_pitch = 5.0
+prop_pitch = 6.0
 
 # ESC max current
 esc_max = 50.0
