@@ -71,10 +71,10 @@ ch_d = 0.3048
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
 # Distance between LE of wing and landing gear (m)
-AC.dist_LG = 0.35
+AC.dist_LG = 0.12446
 
 # Length of tailboom (m)
-AC.boom_len = 0.73152
+AC.boom_len = 0.719328
 
 # Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
 c_a = 0
@@ -156,12 +156,12 @@ AC.mu = 0.8
 # Number of battery cells
 cell_Num = 3.0
 # Motor KV
-motor_KV = 900.0
+motor_KV = 1000.0
 # Propeller Diameter
 
 prop_diam = 11.0
 # Propeller Pitch
-prop_pitch = 5.0
+prop_pitch = 6.0
 
 # ESC max current
 esc_max = 50.0
