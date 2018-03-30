@@ -37,11 +37,11 @@ if args.movie:
     geo2.set_ylim([-0.5,0.5])
 
     A = list()
-    A.append(plt.subplot2grid((5, 5), ( 0, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 1, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 2, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 3, 3), colspan=2))
-    A.append(plt.subplot2grid((5, 5), ( 4, 3), colspan=2))
+    A.append(plt.subplot2grid((5, 5), (0, 3), colspan=2))
+    A.append(plt.subplot2grid((5, 5), (1, 3), colspan=2))
+    A.append(plt.subplot2grid((5, 5), (2, 3), colspan=2))
+    A.append(plt.subplot2grid((5, 5), (3, 3), colspan=2))
+    A.append(plt.subplot2grid((5, 5), (4, 3), colspan=2))
 
     for i in range(0,5):
         A[i].set_xlim([0, 0.7])
@@ -88,7 +88,6 @@ if __name__ == '__main__':
     else:
         out_ac = in_ac
         in_ac = None
-
 
     # Post-Process Results
     postProcess_Main(in_ac, out_ac)

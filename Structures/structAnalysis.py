@@ -172,16 +172,18 @@ def getIntegrals(x, w):
 
 # Solves beam theory differential equations
 def calcDistribution(x, w, I, E, c):
-    # Inputs: x - positions along the spar
-    #		  w - biggest magnitude for distributed load
-    #		  I - area moment of inertia
-    # 		  E - Young's modulus
-    # 		  c - distance b/w neutral point and farthest point in the neutral plane
-    # Outputs:V - shear force distribution
-    #		  M - moment distribution
-    #		  theta - distribution of slope of beam in degrees
-    # 		  y - beam deflection distribution
-    # 		  sigma - stress distribution
+    """
+    Inputs: x - positions along the spar
+            w - biggest magnitude for distributed load
+            I - area moment of inertia
+            E - Young's modulus
+            c - distance b/w neutral point and farthest point in the neutral plane
+    Outputs:V - shear force distribution
+            M - moment distribution
+            theta - distribution of slope of beam in degrees
+            y - beam deflection distribution
+            sigma - stress distribution
+    """
 
     EI = E * I
     w1, w2, w3, w4 = getIntegrals(x, w / EI)

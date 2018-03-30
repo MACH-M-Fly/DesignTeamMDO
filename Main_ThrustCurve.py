@@ -8,7 +8,7 @@ ac = prob0['createAC.aircraft']
 
 thrustCurve = ac.propulsion.getThrustCurve()
 
-vel_vals = np.linspace(0, 18, 1000)
+vel_vals = np.linspace(0, 18, 100)
 t_vals = np.polyval(thrustCurve, vel_vals)
 
 v_str = ''
