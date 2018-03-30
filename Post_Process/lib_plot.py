@@ -309,7 +309,7 @@ def plotGeoFinalDuo(in_AC, out_AC):
             raise ValueError('Invalid aircraft presented in lib_plot')
 
         # Continue if AC is None
-        if in_AC is None:
+        if AC is None:
             continue
 
         Xle = AC.wing.Xle.tolist()
