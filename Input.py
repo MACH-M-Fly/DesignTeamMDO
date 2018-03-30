@@ -156,15 +156,15 @@ AC.mu = 0.8
 # Number of battery cells
 cell_Num = 3.0
 # Motor KV
-motor_KV = 900.0
+motor_KV = 1000.0
 # Propeller Diameter
 
 prop_diam = 11.0
 # Propeller Pitch
-prop_pitch = 5.0
+prop_pitch = 6.0
 
 # ESC max current
-esc_max = 50.0
+esc_max = 40.0
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)
@@ -180,6 +180,7 @@ AC.x_struct = 0.25
 #       =========================================================================
 # density of aluminum (kg/m^3)
 AC.spar_den = 2700.0
+AC.boom_den = 0.0
 # Linear density of wooden spar (kg/m)
 AC.spar_lindens = 0.15361
 # Boom Linear Density (kg/m^3)

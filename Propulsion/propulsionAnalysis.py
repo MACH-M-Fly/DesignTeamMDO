@@ -86,8 +86,6 @@ class propulsionAnalysis(Component):
         X = [0, (maxVel/4.0), (maxVel/2.0), (maxVel*3.0/4.0), maxVel]
         Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
 
-
-
         thrust_Curve = np.polyfit(X, Y, 4)
         #torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]
 
