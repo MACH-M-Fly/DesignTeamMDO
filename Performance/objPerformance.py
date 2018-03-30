@@ -4,6 +4,8 @@ from openmdao.api import Component
 from scipy.optimize import *
 import numpy as np
 
+from datetime import datetime
+
 # Add xfoil library to python path
 import sys
 
@@ -14,6 +16,8 @@ from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCr
 import math
 
 from Constants import Rho, g, mu_k
+
+run_times_s = []
 
 
 class objPerformance(Component):
@@ -74,6 +78,8 @@ class objPerformance(Component):
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
+
+        start_time = datetime.now()
 
         # Specifically using the values of camber/thickness at each spanwise split
         # print('Camber: '+ str(AC.wing.camber_vals))
@@ -150,6 +156,7 @@ class objPerformance(Component):
 
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
+        run_times_s.append(datetime.now() - start_time)
 
 
 

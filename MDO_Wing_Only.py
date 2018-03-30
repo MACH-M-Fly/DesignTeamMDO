@@ -1,4 +1,4 @@
-from InputWing import AC, updateAircraft
+from Input import AC, updateAircraft
 
 #from Aerodynamics.aeroAnalysis import aeroAnalysis
 from Structures.structAnalysis import structAnalysis

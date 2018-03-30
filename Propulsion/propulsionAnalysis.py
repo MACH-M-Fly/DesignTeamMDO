@@ -15,7 +15,9 @@ from pykrige.ok3d import OrdinaryKriging3D
 from pykrige.uk3d import UniversalKriging3D
 
 
+from datetime import datetime
 
+run_times_s = []
 
 # Change the name of your componenet here
 class propulsionAnalysis(Component):
@@ -45,6 +47,8 @@ class propulsionAnalysis(Component):
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         ac = params['in_aircraft']
+
+        start_time = datetime.now()
 
         # Calculate battery parameters
         # Set it such that the only in increments of 3.7 V
@@ -106,3 +110,5 @@ class propulsionAnalysis(Component):
 
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = ac
+
+        run_times_s.append(datetime.now() - start_time)

@@ -17,6 +17,9 @@ import pyAVL
 from Constants import Rho, inced_ang
 from Constants import xfoil_path
 
+from datetime import datetime
+
+run_times_s = []
 
 class aeroAnalysis(Component):
     """
@@ -59,6 +62,8 @@ class aeroAnalysis(Component):
     def solve_nonlinear(self, params, unknowns, resids):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
+
+        start_time = datetime.now()
 
         # print('================  Current Results ===================')
         # print('\n')
@@ -114,6 +119,8 @@ class aeroAnalysis(Component):
         unknowns['out_aircraft'] = AC
         unknowns['SM'] = AC.SM
         unknowns['cruise_AoA'] = AC.ang
+
+        run_times_s.append(datetime.now() - start_time)
 
 
 def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aerodynamics/aircraft.mass'):
