@@ -1,19 +1,20 @@
-from Aircraft_Class.aircraft_class import *
-
 """
 Input.py
 - User modifies:
-	- Starting design variables
-	- Constraints
-	- Mission select (0 for Mach or 1 for M-Fly)
-	- Weights data
-	- Thrust data
+    - Starting design variables
+    - Constraints
+    - Mission select (0 for Mach or 1 for M-Fly)
+    - Weights data
+    - Thrust data
 
 SI UNITS ONLY
 - kg
 - m
 - s
 """
+
+from Aircraft_Class.aircraft_class import *
+
 
 # Create initial class
 AC = Aircraft()
@@ -153,6 +154,7 @@ thrust = [a, b, c, d, e]
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
 AC.mu = 0.8
+
 # Number of battery cells
 cell_Num = 3.0
 # Motor KV
@@ -165,6 +167,7 @@ prop_pitch = 6.0
 
 # ESC max current
 esc_max = 40.0
+
 # Runway length (m)
 AC.runway_length = 60.96
 # Desired climb rate (for carpet plot, m/s)

@@ -220,15 +220,10 @@ def calcPointLoad(x, L, P, I, E, c):
 
     return M, y, sigma
 
-<<<<<<< HEAD
 def calcPointLoadSimplySupported(x, l, L, P, I, E, c):
     M = P * L
 
     # y = P / (6 * E * I) * (-x ** 3 + 3 * L ** 2 * x - 2 * L ** 3)
-    sigma = np.ones_like(x, dtype=float) * -c * M / I
-=======
-def calcPointLoadSimplySupported(x, l, L, P, I, E):
->>>>>>> 0d831a9c841a95e691c43633260e01a6fa0a01ad
     y = (P * x / (6 * E * I)) * (2 * l * L + 3 * L * x - x**2)
 
     return y
