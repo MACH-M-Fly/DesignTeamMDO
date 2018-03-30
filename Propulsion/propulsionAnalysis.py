@@ -17,7 +17,7 @@ from pykrige.uk3d import UniversalKriging3D
 
 from datetime import datetime
 
-run_times_s = []
+run_times = []
 
 # Change the name of your componenet here
 class propulsionAnalysis(Component):
@@ -111,4 +111,4 @@ class propulsionAnalysis(Component):
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = ac
 
-        run_times_s.append(datetime.now() - start_time)
+        run_times.append(datetime.now() - start_time)

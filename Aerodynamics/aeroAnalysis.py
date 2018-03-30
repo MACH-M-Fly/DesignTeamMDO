@@ -19,7 +19,7 @@ from Constants import xfoil_path
 
 from datetime import datetime
 
-run_times_s = []
+run_times = []
 
 class aeroAnalysis(Component):
     """
@@ -120,7 +120,7 @@ class aeroAnalysis(Component):
         unknowns['SM'] = AC.SM
         unknowns['cruise_AoA'] = AC.ang
 
-        run_times_s.append(datetime.now() - start_time)
+        run_times.append(datetime.now() - start_time)
 
 
 def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aerodynamics/aircraft.mass'):

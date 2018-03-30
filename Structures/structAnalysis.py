@@ -10,7 +10,7 @@ from openmdao.api import Component
 
 from datetime import datetime
 
-run_time_s = []
+run_time = []
 
 class structAnalysis(Component):
     """
@@ -67,7 +67,7 @@ class structAnalysis(Component):
         print("Max Stress on Wing Spar = %E Pa" % AC.sig_max)
         print("Max Stress on Tail Boom = %E Pa" % AC.sig_max_tail)
 
-        run_time_s.append(datetime.now() - start_time)
+        run_time.append(datetime.now() - start_time)
 
 
 # Calculate area moment of inertia for input spar

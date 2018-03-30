@@ -17,7 +17,7 @@ import math
 
 from Constants import Rho, g, mu_k
 
-run_times_s = []
+run_times = []
 
 
 class objPerformance(Component):
@@ -156,7 +156,7 @@ class objPerformance(Component):
 
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
-        run_times_s.append(datetime.now() - start_time)
+        run_times.append(datetime.now() - start_time)
 
 
 

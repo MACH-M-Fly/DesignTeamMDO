@@ -1,9 +1,9 @@
 import CreateProblem
-from Aerodynamics.aeroAnalysis import run_times_s as aero_time_s
-from Performance.objPerformance import run_times_s as perf_time_s
-from Structures.structAnalysis import run_time_s as struct_time_s
-from Propulsion.propulsionAnalysis import run_times_s as prop_time_s
-from Weights.calcWeight import run_times_s as weight_time_s
+from Aerodynamics.aeroAnalysis import run_times as aero_time_s
+from Performance.objPerformance import run_times as perf_time_s
+from Structures.structAnalysis import run_time as struct_time_s
+from Propulsion.propulsionAnalysis import run_times as prop_time_s
+from Weights.calcWeight import run_times as weight_time_s
 from datetime import datetime
 
 
@@ -11,11 +11,11 @@ from datetime import datetime
 def avg(x):
     s = 0
     for v in x:
-        s += float(v)
+        s += v.microseconds * 1e-6
     return s / len(x)
 
 # Define the number of run cases to average
-num_runs = 10
+num_runs = 1
 total_s = []
 
 # Run the cases
