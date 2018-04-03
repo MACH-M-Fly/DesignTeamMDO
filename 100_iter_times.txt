@@ -1,0 +1,6 @@
+Aero Time: 0.945 s
+Perf Time: 0.526 s
+Prop Time: 0.072 s
+Str. Time: 0.001 s
+Wgt. Time: 0.009 s
+Tot. Time: 1.554 s
