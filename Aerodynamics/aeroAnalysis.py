@@ -17,9 +17,9 @@ import pyAVL
 from Constants import Rho, inced_ang
 from Constants import xfoil_path
 
-from datetime import datetime
+import time
 
-run_times = []
+aero_run_times = []
 
 class aeroAnalysis(Component):
     """
@@ -63,7 +63,7 @@ class aeroAnalysis(Component):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
 
-        start_time = datetime.now()
+        start_time = time.time()
 
         # print('================  Current Results ===================')
         # print('\n')
@@ -120,7 +120,7 @@ class aeroAnalysis(Component):
         unknowns['SM'] = AC.SM
         unknowns['cruise_AoA'] = AC.ang
 
-        run_times.append(datetime.now() - start_time)
+        aero_run_times.append(time.time() - start_time)
 
 
 def getAeroCoef(geo_filename='./Aerodynamics/aircraft.txt', mass_filename='./Aerodynamics/aircraft.mass'):

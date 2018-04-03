@@ -8,9 +8,9 @@ import math
 
 from Aircraft_Class.gen_files import genMass, genGeo
 
-from datetime import datetime
+import time
 
-run_times = []
+weight_run_times = []
 
 class calcWeight(Component):
     """
@@ -63,13 +63,13 @@ class calcWeight(Component):
         # make all input variables local for ease
         AC = params['in_aircraft']
 
-        start_time = datetime.now()
+        start_time = time.time()
 
         unknowns['out_aircraft'] = calcWeight_process(AC)
 
         unknowns['ac_mass'] = AC.mass
 
-        run_times.append(datetime.now() - start_time)
+        weight_run_times.append(time.time() - start_time)
 
 def getWing_mass(AC):
     """

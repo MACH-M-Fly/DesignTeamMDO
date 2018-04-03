@@ -15,9 +15,9 @@ from pykrige.ok3d import OrdinaryKriging3D
 from pykrige.uk3d import UniversalKriging3D
 
 
-from datetime import datetime
+import time
 
-run_times = []
+prop_run_times = []
 
 # Change the name of your componenet here
 class propulsionAnalysis(Component):
@@ -48,7 +48,7 @@ class propulsionAnalysis(Component):
         # Used passed in instance of aircraft
         ac = params['in_aircraft']
 
-        start_time = datetime.now()
+        start_time = time.time()
 
         # Calculate battery parameters
         # Set it such that the only in increments of 3.7 V
@@ -111,4 +111,4 @@ class propulsionAnalysis(Component):
         # Set output to updated instance of aircraft
         unknowns['out_aircraft'] = ac
 
-        run_times.append(datetime.now() - start_time)
+        prop_run_times.append(time.time() - start_time)

@@ -1,29 +1,31 @@
 import CreateProblem
-from Aerodynamics.aeroAnalysis import run_times as aero_time_s
-from Performance.objPerformance import run_times as perf_time_s
-from Structures.structAnalysis import run_time as struct_time_s
-from Propulsion.propulsionAnalysis import run_times as prop_time_s
-from Weights.calcWeight import run_times as weight_time_s
-from datetime import datetime
+from Aerodynamics.aeroAnalysis import aero_run_times as aero_time_s
+from Performance.objPerformance import perf_run_times as perf_time_s
+from Structures.structAnalysis import struct_run_time as struct_time_s
+from Propulsion.propulsionAnalysis import prop_run_times as prop_time_s
+from Weights.calcWeight import weight_run_times as weight_time_s
+import time
 
 
 # Define an averaging function
 def avg(x):
     s = 0
     for v in x:
-        s += v.microseconds * 1e-6
+        s += v
     return s / len(x)
 
+
 # Define the number of run cases to average
-num_runs = 1
+num_runs = 100
 total_s = []
 
 # Run the cases
 for i in range(num_runs):
+    print('Iteration %d' % i)
     prob0 = CreateProblem.CreateRunOnceProblem()
-    start = datetime.now()
+    start = time.time()
     prob0.run()
-    total_s.append(datetime.now() - start)
+    total_s.append(time.time() - start)
     ac = prob0['createAC.aircraft']
 
 # Find the resulting averages for each

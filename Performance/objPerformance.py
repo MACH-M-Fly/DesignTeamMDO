@@ -4,12 +4,9 @@ from openmdao.api import Component
 from scipy.optimize import *
 import numpy as np
 
-from datetime import datetime
-
 # Add xfoil library to python path
-import sys
-
-#sys.path.insert(0, 'Aerodynamics/xfoil/')
+# import sys
+# sys.path.insert(0, 'Aerodynamics/xfoil/')
 
 from Aerodynamics.aeroAnalysis import getThrust, grossLift, getTailCL, calcVelCruise
 
@@ -17,7 +14,8 @@ import math
 
 from Constants import Rho, g, mu_k
 
-run_times = []
+import time as py_time
+perf_run_times = []
 
 
 class objPerformance(Component):
@@ -79,7 +77,7 @@ class objPerformance(Component):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
 
-        start_time = datetime.now()
+        start_time = py_time.time()
 
         # Specifically using the values of camber/thickness at each spanwise split
         # print('Camber: '+ str(AC.wing.camber_vals))
@@ -156,7 +154,7 @@ class objPerformance(Component):
 
         # Assign number of laps(N), total flight time (tot_time), neutral point(NP),
         # static margin (SM), and objective value to instance of AC
-        run_times.append(datetime.now() - start_time)
+        perf_run_times.append(py_time.time() - start_time)
 
 
 

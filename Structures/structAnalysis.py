@@ -8,9 +8,9 @@ from scipy.integrate import cumtrapz
 # open MDAO libraries
 from openmdao.api import Component
 
-from datetime import datetime
+import time
 
-run_time = []
+struct_run_time = []
 
 class structAnalysis(Component):
     """
@@ -53,7 +53,7 @@ class structAnalysis(Component):
         # Used passed in instance of aircraft
         AC = params['in_aircraft']
 
-        start_time = datetime.now()
+        start_time = time.time()
 
         # Modify instance of aircraft - This is where analysis would happen
         AC.sig_max, AC.y_max, AC.sig_max_tail, AC.y_max_tail = runStructAnalysis(AC)
@@ -67,7 +67,7 @@ class structAnalysis(Component):
         print("Max Stress on Wing Spar = %E Pa" % AC.sig_max)
         print("Max Stress on Tail Boom = %E Pa" % AC.sig_max_tail)
 
-        run_time.append(datetime.now() - start_time)
+        struct_run_time.append(time.time() - start_time)
 
 
 # Calculate area moment of inertia for input spar
