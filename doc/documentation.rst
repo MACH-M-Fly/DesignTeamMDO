@@ -36,3 +36,4 @@ From here, in order to get the html files updated on the GitHub Pages, simply ad
     git add --all
     git commit -m <ENTER A HELPFUL MESSAGE>
     git push
+
