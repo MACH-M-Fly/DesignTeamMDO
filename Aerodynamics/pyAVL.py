@@ -1,4 +1,4 @@
-'''
+"""
 pyAVL
 
 pyAVL is a wrapper for Mark Drela's Xfoil code. The purpose of this
@@ -12,7 +12,7 @@ Developers:
 History
 -------
 	v. 1.0 - Initial Class Creation (JLA, 08 2016)
-'''
+"""
 
 __version__ = 1.0
 

@@ -1,11 +1,11 @@
 """
 Input.py
 - User modifies:
-	- Starting design variables
-	- Constraints
-	- Mission select (0 for Mach or 1 for M-Fly)
-	- Weights data
-	- Thrust data
+    - Starting design variables
+    - Constraints
+    - Mission select (0 for Mach or 1 for M-Fly)
+    - Weights data
+    - Thrust data
 
 SI UNITS ONLY
 - kg
@@ -41,10 +41,10 @@ num_sections_tail = 5
 # 1 = Linear constant sweep leading edge, linearly varying wing values
 AC.is_linear = 0
 
-# Specify origin for aicraft build (root chord leading edge position)
-AC.Xo = 0
-AC.Yo = 0
-AC.Zo = 0
+# Specify origin for aircraft build (root chord leading edge position)
+AC.Xo = 0.
+AC.Yo = 0.
+AC.Zo = 0.
 
 # =========================================================================
 # Wing Parameters (Design Variables)
@@ -56,17 +56,19 @@ b_wing = 1.0
 dihedral = 5.0
 
 # Quarter Chord Sweep in degrees (cubic)
-# (can constrain to no sweep by making max and min 0 degrees)
-s_a = 0
-s_b = 0
-s_c = 0
-s_d = 0.0
+# Cubic constants: sweep = a x^3 + b x^2 + c x + d, x = half-span position
+# Note: can constrain to no sweep by making max and min 0 degrees
+s_a = 0.
+s_b = 0.
+s_c = 0.
+s_d = 0.
 sweep = np.array([s_a, s_b, s_c, s_d])
 
-# Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
-ch_a = .0
-ch_b = .0
-ch_c = .0
+# Chord
+# Cubic constants: chord = a x^3 + b x^2 + c x + d, x = half-span position
+ch_a = 0.
+ch_b = 0.
+ch_c = 0.
 ch_d = 0.35
 chord = np.array([ch_a, ch_b, ch_c, ch_d])
 
@@ -76,38 +78,44 @@ AC.dist_LG = 0.35
 # Length of tailboom (m)
 AC.boom_len = 0.75
 
-# Wing camber (cubic constants: camber = c_ax^3+c_bx^2+c_c*x + c_d, x = half-span position)
-c_a = 1
-c_b = 1
-c_c = 1
-c_d = 1
+# Wing camber
+# Cubic constants: camber = a x^3 + b x^2 + c x + d, x = half-span position
+c_a = 0.
+c_b = 0.
+c_c = 0.
+c_d = 0.
 camber = np.array([c_a, c_b, c_c, c_d])
-# Percent chord at max wing camber constraint (cubic constants: max camber = mc_ax^2+mc_bx+mc_c, x = half-span position)
-mc_a = 1
-mc_b = 1
-mc_c = 1
-mc_d = 1
+
+# Percent chord at max wing camber constraint
+# Cubic constants: max camber = a x^3 + b x^2 + c x + d, x = half-span position
+mc_a = 0.
+mc_b = 0.
+mc_c = 0.
+mc_d = 0.
 max_camber = np.array([mc_a, mc_b, mc_c, mc_d])
 
-# Wing thickness (cubic constants: thickness = t_ax^2+t_bx+t_c, x = half-span position)
-t_a = 1
-t_b = 1
-t_c = 1
-t_d = 1
+# Wing thickness
+# Cubic constants: thickness = a x^3 + b x^2 + c x + d, x = half-span position
+t_a = 0.
+t_b = 0.
+t_c = 0.
+t_d = 0.
 thickness = np.array([t_a, t_b, t_c, t_d])
 
-# Percent chord at max wing thickness constraint (cubic constants: thickness = mt_ax^2+mt_bx+mt_c, x = half-span position)
-mt_a = 1
-mt_b = 1
-mt_c = 1
-mt_d = 1
+# Percent chord at max wing thickness constraint
+# Cubic constants: thickness = a x^3 + b x^2 + c x + d, x = half-span position
+mt_a = 0.
+mt_b = 0.
+mt_c = 0.
+mt_d = 0.
 max_thickness = np.array([mt_a, mt_b, mt_c, mt_d])
 
-# Inclination angle of wing (degrees) (cubic constants: Ainc = ang_ax^3+ang_bx^2+ang_c*x + ang_d, x = half-span position)
-ang_a = 1
-ang_b = 1
-ang_c = 1
-ang_d = 1
+# Inclination angle of wing (degrees)
+# Cubic constants: inclination angle = a x^3 + b x^2 + c x + d, x = half-span position
+ang_a = 0.
+ang_b = 0.
+ang_c = 0.
+ang_d = 0.
 ainc = np.array([ang_a, ang_b, ang_c, ang_d])
 
 # =========================================================================
@@ -120,14 +128,16 @@ b_htail = 0.25
 # Vertical tail span (m)
 b_vtail = 0.2
 
-# Horizontal Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
+# Horizontal Chord
+# Cubic constants: chord = a x^3 + b x^2 + c x + d, x = half-span position
 ht_a = 0
 ht_b = 0
 ht_c = 0
 ht_d = 0.1
 htail_chord = np.array([ht_a, ht_b, ht_c, ht_d])
 
-# Vertical Chord (cubic constants: chord = ax^3+bx^2+c*x+d, x = half-span position)
+# Vertical Chord
+# Cubic constants: chord = a x^3 + b x^2 + c x + d, x = half-span position
 vt_a = 0
 vt_b = 0
 vt_c = 0
@@ -141,13 +151,16 @@ vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 # =========================================================================
 # Propulsion
 # =========================================================================
-# Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
+# Thrust
+# Cubic constants: thrust [N] = a u^3 + b u^2 + c u + d, u = velocity
 a = 0
 b = 0
 c = 0
 d = 0
 e = 1
 thrust = [a, b, c, d, e]
+
+
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
@@ -170,8 +183,6 @@ AC.runway_length = 60.96
 AC.climb_rate = 0.4
 # Desired bank angle (sustained load factor turn, steady level, degrees)
 AC.bank_angle = 20
-
-AC.actual_takeoff = 200
 
 # =========================================================================
 # Structures
@@ -236,6 +247,8 @@ AC.m_electronics = 0.381
 AC.ultrakote_Density = 0.1318
 # Payload
 AC.m_payload = 1.
+
+
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
                AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)
