@@ -151,13 +151,16 @@ vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 # =========================================================================
 # Propulsion
 # =========================================================================
-# Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
+# Thrust
+# Cubic constants: thrust [N] = a u^3 + b u^2 + c u + d, u = velocity
 a = 0
 b = 0
 c = 0
 d = 0
 e = 1
 thrust = [a, b, c, d, e]
+
+
 # Lap perimiter (m)
 AC.lap_perim = 350
 # Coefficient of rolling friction (mu)
@@ -180,8 +183,6 @@ AC.runway_length = 60.96
 AC.climb_rate = 0.4
 # Desired bank angle (sustained load factor turn, steady level, degrees)
 AC.bank_angle = 20
-
-AC.actual_takeoff = 200
 
 # =========================================================================
 # Structures

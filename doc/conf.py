@@ -23,6 +23,8 @@
 import os
 import sys
 
+import sphinx_bootstrap_theme
+
 sys.path.insert(0, os.path.abspath('../'))
 os.chdir('../')
 
@@ -58,6 +60,9 @@ project = 'DesignTeamMDO'
 copyright = '2018, MACH and M-Fly'
 author = 'MACH and M-Fly'
 
+# Disable showing the page sourcelink
+html_show_sourcelink = False
+
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
@@ -91,7 +96,11 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+# Default: alabaster
+html_theme = 'bootstrap'
+
+# Default HTML theme path
+html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

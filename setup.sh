@@ -16,10 +16,14 @@ pip install --user scipy --upgrade
 pip install --user sympy
 pip install --user sympy --upgrade
 pip install --user pykrige
-# pip install --user matplotlib --upgrade 
+# pip install --user matplotlib --upgrade
 
 # Install OpenMDAO
 pip install --user openmdao==1.7.3
 
-# Copy ffmpeg to the users local directory 
+# Copy ffmpeg to the users local directory
 #cp ./Resources/ffmpeg ~/.local/bin/
+
+# Install sphinx and related theme for documentation
+pip install --user sphinx
+pip install --user sphinx_bootstrap_theme

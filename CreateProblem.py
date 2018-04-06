@@ -97,7 +97,8 @@ class ConstrainedMDO(Group):
         self.add_design_variable('prop_pitch', ac.propulsion.pitch)
 
         # Length of tailboom (m)
-        self.add_design_variable('boom_len', ac.tail.boom_len)
+        self.add_design_variable('boom_len', ac.tails
+        l.boom_len)
 
         # Length of tailboom (m)
         # self.add('boom_len',IndepVarComp('boom_len', 1.60))

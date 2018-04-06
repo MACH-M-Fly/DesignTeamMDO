@@ -14,6 +14,11 @@ import argparse
 
 from Input import AC
 
+import warnings
+import numpy as np
+warnings.filterwarnings("error")
+np.seterr('raise')
+
 # ================================= Interperate cmd line options =================================
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--movie',
