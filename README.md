@@ -7,12 +7,14 @@ This MDO allows for both teams to work together on an MDO to suit needs of both 
 
 
 
-Contributors: \
-MACH\
+Contributors:  
+MACH  
+
 - Josh Anibal 
 - Kohki
 - Miles
-M-Fly\
+M-Fly  
+
 - Chris Reynolds 
 - Beldon Lin
 - Ian 
