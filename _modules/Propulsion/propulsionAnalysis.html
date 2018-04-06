@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Propulsion.propulsionAnalysis &#8212; DesignTeamMDO 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          DesignTeamMDO</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation.html">Building the Documentation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <h1>Source code for Propulsion.propulsionAnalysis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># python stantdard libraries</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+
+<span class="c1"># addition python libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># open MDAO libraries</span>
+<span class="kn">from</span> <span class="nn">openmdao.api</span> <span class="k">import</span> <span class="n">Component</span>
+
+<span class="c1"># Import self-created components</span>
+<span class="kn">from</span> <span class="nn">APCdat_parser</span> <span class="k">import</span> <span class="n">createKriging</span>
+
+
+<span class="c1"># Change the name of your componenet here</span>
+<div class="viewcode-block" id="propulsionAnalysis"><a class="viewcode-back" href="../../Propulsion.html#Propulsion.propulsionAnalysis.propulsionAnalysis">[docs]</a><span class="k">class</span> <span class="nc">propulsionAnalysis</span><span class="p">(</span><span class="n">Component</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Propulsion Analysis: Uses the current iteration of the aircraft, performances</span>
+<span class="sd">        &quot;input analysis name&quot; analysis</span>
+<span class="sd">        Inputs:</span>
+<span class="sd">            - Aircraft_Class: Input aircraft instance</span>
+<span class="sd">            - Design variables: These will be modified based on new MDO iteration</span>
+<span class="sd">        Outputs:</span>
+<span class="sd">            - Aircraft_Class: Output and modified aircraft instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ac</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">propulsionAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Input instance of aircraft - before modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="s1">&#39;in_aircraft&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">ac</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Input Aircraft Class&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Output instance of aircaft - after modification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_output</span><span class="p">(</span><span class="s1">&#39;out_aircraft&#39;</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="n">ac</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Output Aircraft Class&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize Kriging Model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">createKriging</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span> <span class="s1">&#39;exponential&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="propulsionAnalysis.solve_nonlinear"><a class="viewcode-back" href="../../Propulsion.html#Propulsion.propulsionAnalysis.propulsionAnalysis.solve_nonlinear">[docs]</a>    <span class="k">def</span> <span class="nf">solve_nonlinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">unknowns</span><span class="p">,</span> <span class="n">resids</span><span class="p">):</span>
+        <span class="c1"># Used passed in instance of aircraft</span>
+        <span class="n">AC</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;in_aircraft&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Calculate battery parameters</span>
+        <span class="c1"># Set it such that the only in increments of 3.7 V</span>
+        <span class="n">total_Voltage</span> <span class="o">=</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">cellNum</span> <span class="o">*</span> <span class="mf">3.7</span> <span class="o">*</span> <span class="o">.</span><span class="mi">8</span>
+
+        <span class="n">RPM</span> <span class="o">=</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">motorKV</span> <span class="o">*</span> <span class="n">total_Voltage</span>
+        <span class="c1"># Calcualte thrust curve</span>
+        <span class="n">coeff1Model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff1&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff2Model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff2&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff3Model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff3&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff4Model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff4&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff5Model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff5&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff1ModelQ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff1Q&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff2ModelQ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff2Q&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff3ModelQ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff3Q&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff4ModelQ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff4Q&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">coeff5ModelQ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">[</span><span class="s1">&#39;coeff5Q&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">coeff1T</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff1Model</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff2T</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff2Model</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff3T</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff3Model</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff4T</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff4Model</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff5T</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff5Model</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff1Q</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff1ModelQ</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff2Q</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff2ModelQ</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff3Q</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff3ModelQ</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff4Q</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff4ModelQ</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+        <span class="n">coeff5Q</span><span class="p">,</span> <span class="n">ss</span> <span class="o">=</span> <span class="n">coeff5ModelQ</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;points&#39;</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">,</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="n">RPM</span><span class="p">)</span>
+
+        <span class="n">thrust_Curve</span> <span class="o">=</span> <span class="p">[</span><span class="n">coeff1T</span><span class="p">,</span> <span class="n">coeff2T</span><span class="p">,</span> <span class="n">coeff3T</span><span class="p">,</span> <span class="n">coeff4T</span><span class="p">,</span> <span class="n">coeff5T</span><span class="p">]</span>
+        <span class="c1">#torque_Curve = [coeff1Q, coeff2Q, coeff3Q, coeff4Q, coeff5Q]</span>
+
+        <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">setThrustCurve</span><span class="p">(</span><span class="n">thrust_Curve</span><span class="p">)</span>
+
+        <span class="c1"># Calculate max current</span>
+        <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+        <span class="n">torqueActual</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">speed</span> <span class="ow">in</span> <span class="n">speeds</span><span class="p">:</span>
+            <span class="n">torqueActual</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span>
+                <span class="n">speed</span> <span class="o">**</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">coeff1Q</span> <span class="o">+</span> <span class="n">speed</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">coeff2Q</span> <span class="o">+</span> <span class="n">speed</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">coeff3Q</span> <span class="o">+</span> <span class="n">speed</span> <span class="o">*</span> <span class="n">coeff4Q</span> <span class="o">+</span> <span class="n">coeff5Q</span><span class="p">))</span>
+
+        <span class="n">maxTorque</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">torqueActual</span><span class="p">)</span>
+        <span class="n">KT</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">motorKV</span>
+        <span class="n">maxCurrent</span> <span class="o">=</span> <span class="n">maxTorque</span> <span class="o">/</span> <span class="n">KT</span>
+        <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">escCur</span> <span class="o">=</span> <span class="n">maxCurrent</span> <span class="o">*</span> <span class="mf">1.1</span>  <span class="c1"># Provide 30% margin</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">######  Propulsion Analysis #######&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Motor KV: </span><span class="si">%.3f</span><span class="s1"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">motorKV</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Prop Diam: </span><span class="si">%.3f</span><span class="s1"> In&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">diameter</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Prop Pitch: </span><span class="si">%.3f</span><span class="s1"> In&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">pitch</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Thrust Curve: &#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">thrustCurve</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RPM: </span><span class="si">%.3f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">motorKV</span><span class="o">*</span> <span class="p">(</span><span class="n">AC</span><span class="o">.</span><span class="n">propulsion</span><span class="o">.</span><span class="n">cellNum</span> <span class="o">*</span> <span class="mf">3.7</span><span class="p">)))</span>
+
+        <span class="c1"># Set output to updated instance of aircraft</span>
+        <span class="n">unknowns</span><span class="p">[</span><span class="s1">&#39;out_aircraft&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AC</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, MACH and M-Fly.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.4.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

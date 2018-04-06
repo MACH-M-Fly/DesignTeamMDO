@@ -1,12 +1,10 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Propulsion package &#8212; DesignTeamMDO 1.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,33 +20,158 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
   <body>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          DesignTeamMDO</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Building the Documentation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Propulsion package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-Propulsion.APCdat_parser">Propulsion.APCdat_parser module</a></li>
+<li><a class="reference internal" href="#module-Propulsion.propulsionAnalysis">Propulsion.propulsionAnalysis module</a></li>
+<li><a class="reference internal" href="#module-Propulsion">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
   <div class="section" id="propulsion-package">
 <h1>Propulsion package<a class="headerlink" href="#propulsion-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="propulsion-apcdat-parser-module">
-<h2>Propulsion.APCdat_parser module<a class="headerlink" href="#propulsion-apcdat-parser-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Propulsion.APCdat_parser">
+<span id="propulsion-apcdat-parser-module"></span><h2>Propulsion.APCdat_parser module<a class="headerlink" href="#module-Propulsion.APCdat_parser" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Propulsion.APCdat_parser.createKriging">
+<code class="descclassname">Propulsion.APCdat_parser.</code><code class="descname">createKriging</code><span class="sig-paren">(</span><em>rangeD</em>, <em>rangeP</em>, <em>rangeRPM</em>, <em>vario</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Propulsion/APCdat_parser.html#createKriging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Propulsion.APCdat_parser.createKriging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the Kriging model with diameter, pitch, and rpm as inputs (3D)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Propulsion.APCdat_parser.isfloat">
+<code class="descclassname">Propulsion.APCdat_parser.</code><code class="descname">isfloat</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Propulsion/APCdat_parser.html#isfloat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Propulsion.APCdat_parser.isfloat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="Propulsion.APCdat_parser.propDataParse">
+<code class="descclassname">Propulsion.APCdat_parser.</code><code class="descname">propDataParse</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Propulsion/APCdat_parser.html#propDataParse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Propulsion.APCdat_parser.propDataParse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in APC data files and outputs coefficients</p>
+</dd></dl>
+
 </div>
-<div class="section" id="propulsion-propulsionanalysis-module">
-<h2>Propulsion.propulsionAnalysis module<a class="headerlink" href="#propulsion-propulsionanalysis-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Propulsion.propulsionAnalysis">
+<span id="propulsion-propulsionanalysis-module"></span><h2>Propulsion.propulsionAnalysis module<a class="headerlink" href="#module-Propulsion.propulsionAnalysis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Propulsion.propulsionAnalysis.propulsionAnalysis">
+<em class="property">class </em><code class="descclassname">Propulsion.propulsionAnalysis.</code><code class="descname">propulsionAnalysis</code><span class="sig-paren">(</span><em>ac</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Propulsion/propulsionAnalysis.html#propulsionAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Propulsion.propulsionAnalysis.propulsionAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">openmdao.core.component.Component</span></code></p>
+<p>Propulsion Analysis: Uses the current iteration of the aircraft, performances
+“input analysis name” analysis
+Inputs:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Aircraft_Class: Input aircraft instance</li>
+<li>Design variables: These will be modified based on new MDO iteration</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>Outputs:</dt>
+<dd><ul class="first last simple">
+<li>Aircraft_Class: Output and modified aircraft instance</li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Propulsion.propulsionAnalysis.propulsionAnalysis.solve_nonlinear">
+<code class="descname">solve_nonlinear</code><span class="sig-paren">(</span><em>params</em>, <em>unknowns</em>, <em>resids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Propulsion/propulsionAnalysis.html#propulsionAnalysis.solve_nonlinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Propulsion.propulsionAnalysis.propulsionAnalysis.solve_nonlinear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-Propulsion">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-Propulsion" title="Permalink to this headline">¶</a></h2>
@@ -56,63 +179,21 @@
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Propulsion package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#propulsion-apcdat-parser-module">Propulsion.APCdat_parser module</a></li>
-<li><a class="reference internal" href="#propulsion-propulsionanalysis-module">Propulsion.propulsionAnalysis module</a></li>
-<li><a class="reference internal" href="#module-Propulsion">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/Propulsion.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, MACH and M-Fly.
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
       
-      |
-      <a href="_sources/Propulsion.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
+    </p>
+    <p>
+        &copy; Copyright 2018, MACH and M-Fly.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.4.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>

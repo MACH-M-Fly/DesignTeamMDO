@@ -1,12 +1,10 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Post_Process package &#8212; DesignTeamMDO 1.0.0 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -22,33 +20,244 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
 
   </head>
   <body>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          DesignTeamMDO</a>
+        <span class="navbar-text navbar-version pull-left"><b>1.0.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Building the Documentation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Post_Process package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-Post_Process.lib_plot">Post_Process.lib_plot module</a></li>
+<li><a class="reference internal" href="#module-Post_Process.postProcess">Post_Process.postProcess module</a></li>
+<li><a class="reference internal" href="#module-Post_Process">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
   <div class="section" id="post-process-package">
 <h1>Post_Process package<a class="headerlink" href="#post-process-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="post-process-lib-plot-module">
-<h2>Post_Process.lib_plot module<a class="headerlink" href="#post-process-lib-plot-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Post_Process.lib_plot">
+<span id="post-process-lib-plot-module"></span><h2>Post_Process.lib_plot module<a class="headerlink" href="#module-Post_Process.lib_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Post_Process.lib_plot.Plot">
+<em class="property">class </em><code class="descclassname">Post_Process.lib_plot.</code><code class="descname">Plot</code><span class="sig-paren">(</span><em>ac</em>, <em>writer</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/lib_plot.html#Plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.lib_plot.Plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">openmdao.core.component.Component</span></code></p>
+<dl class="docutils">
+<dt>OpenMDAO component for post-processing</dt>
+<dd><ul class="first last simple">
+<li>Movie writing DOES NOT work on CAEN linux</li>
+<li><dl class="first docutils">
+<dt>Plots aircraft:</dt>
+<dd><ul class="first last">
+<li>During each iteration and at the end (plotGeoFinal)</li>
+<li>Plots wing (blue) and tail (red)</li>
+<li>Plots CG (black) and NP (light blue - cyan)</li>
+<li>Includes configuration number (fig)</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Inputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Aircraft_Class:     class</dt>
+<dd>in_aircraft class (now has data from upstream components)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Outputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Plots</p>
+<dl class="method">
+<dt id="Post_Process.lib_plot.Plot.solve_nonlinear">
+<code class="descname">solve_nonlinear</code><span class="sig-paren">(</span><em>params</em>, <em>unknowns</em>, <em>resids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/lib_plot.html#Plot.solve_nonlinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.lib_plot.Plot.solve_nonlinear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Post_Process.lib_plot.plotGeoFinal">
+<code class="descclassname">Post_Process.lib_plot.</code><code class="descname">plotGeoFinal</code><span class="sig-paren">(</span><em>Xle</em>, <em>Yle</em>, <em>C</em>, <em>Xle_ht</em>, <em>Yle_ht</em>, <em>C_t</em>, <em>x_cg</em>, <em>NP</em>, <em>score</em>, <em>mount_len</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/lib_plot.html#plotGeoFinal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.lib_plot.plotGeoFinal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the final optimized geometry</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Inputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Xle <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Wing leading edge at each section (x coord.)</dd>
+<dt>Yle <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Wing leading edge at each section (y coord.)</dd>
+<dt>C <span class="classifier-delimiter">:</span> <span class="classifier">ndarray</span></dt>
+<dd>Chord at each section
+Xle_ht: Tail leading edge at each section (x coord.)
+Yle_ht: Tail leading edge at each section (y coord.)
+C_t: Tail chord at each section
+x_cg: CG position
+NP : float?
+Neutral point position</dd>
+<dt>score <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Objective function score</dd>
+<dt>mount_len <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
+<dd>Motor mount length to plot the motor</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Outputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Single plot</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Post_Process.lib_plot.plotGeoFinalDuo">
+<code class="descclassname">Post_Process.lib_plot.</code><code class="descname">plotGeoFinalDuo</code><span class="sig-paren">(</span><em>in_AC</em>, <em>out_AC</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/lib_plot.html#plotGeoFinalDuo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.lib_plot.plotGeoFinalDuo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the final geometry compared to the input geometry</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Inputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>in_AC <span class="classifier-delimiter">:</span> <span class="classifier">Aircraft</span></dt>
+<dd>input, or starting, aircraft to compare against. Note: in_AC can be None</dd>
+<dt>out_AC <span class="classifier-delimiter">:</span> <span class="classifier">Aircraft</span></dt>
+<dd>final aircraft</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Outputs:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Single plot</p>
+</dd></dl>
+
 </div>
-<div class="section" id="post-process-postprocess-module">
-<h2>Post_Process.postProcess module<a class="headerlink" href="#post-process-postprocess-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-Post_Process.postProcess">
+<span id="post-process-postprocess-module"></span><h2>Post_Process.postProcess module<a class="headerlink" href="#module-Post_Process.postProcess" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Post_Process.postProcess.postProcess_Main">
+<code class="descclassname">Post_Process.postProcess.</code><code class="descname">postProcess_Main</code><span class="sig-paren">(</span><em>in_ac</em>, <em>out_ac</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/postProcess.html#postProcess_Main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.postProcess.postProcess_Main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="Post_Process.postProcess.printParameters">
+<code class="descclassname">Post_Process.postProcess.</code><code class="descname">printParameters</code><span class="sig-paren">(</span><em>AC</em>, <em>param_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Post_Process/postProcess.html#printParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Post_Process.postProcess.printParameters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-Post_Process">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-Post_Process" title="Permalink to this headline">¶</a></h2>
@@ -56,63 +265,21 @@
 </div>
 
 
-          </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Post_Process package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#post-process-lib-plot-module">Post_Process.lib_plot module</a></li>
-<li><a class="reference internal" href="#post-process-postprocess-module">Post_Process.postProcess module</a></li>
-<li><a class="reference internal" href="#module-Post_Process">Module contents</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  </ul></li>
-</ul>
-</div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/Post_Process.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2018, MACH and M-Fly.
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
       
-      |
-      <a href="_sources/Post_Process.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
+    </p>
+    <p>
+        &copy; Copyright 2018, MACH and M-Fly.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.4.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>
