@@ -1,4 +1,4 @@
-##Design team MDO for MACH and M-Fly
+## Design team MDO for MACH and M-Fly
 
 [See our documentation site](https://www.google.com "Documentation Site!")
 
@@ -7,12 +7,12 @@ This MDO allows for both teams to work together on an MDO to suit needs of both 
 
 
 
-Contributors:
-MACH
+Contributors: \
+MACH\
 - Josh Anibal 
 - Kohki
 - Miles
-M-Fly
+M-Fly\
 - Chris Reynolds 
 - Beldon Lin
 - Ian 
