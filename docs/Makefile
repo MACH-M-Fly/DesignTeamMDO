@@ -6,7 +6,10 @@ SPHINXOPTS    =
 SPHINXBUILD   = python2 -msphinx
 SPHINXPROJ    = DesignTeamMDO
 SOURCEDIR     = .
-BUILDDIR      = _build
+# BUILDDIR      = _build
+BUILDDIR      = ../../DesignTeamMDO-Docs
+
+
 
 # Put it first so that "make" without argument is like "make help".
 help:
