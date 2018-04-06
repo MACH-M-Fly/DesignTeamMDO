@@ -1,15 +1,21 @@
-# Joint_MDO_v1
-Design team MDO for MACH and M-Fly
+##Design team MDO for MACH and M-Fly
 
-**NOTE** This is specifically for the 405 MDO validation project with SAE Micro class aircraft
-
-Creators:
-- Chris Reynolds (CLR)
-- Josh Anibal (JLA)
-- Beldon Lin (BCL)
+[See our documentation site](https://www.google.com "Documentation Site!")
 
 Purpose: The Joint Design Team MDO is used for both the AIAA DBF Team (MACH) and the SAE Aero Design Team (M-Fly) at U of M. 
 This MDO allows for both teams to work together on an MDO to suit needs of both teams.
+
+
+
+Contributors:
+MACH
+- Josh Anibal 
+- Kohki
+- Miles
+M-Fly
+- Chris Reynolds 
+- Beldon Lin
+- Ian 
 
 
 Version 1:
