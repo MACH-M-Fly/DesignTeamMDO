@@ -1,6 +1,6 @@
 ## Design team MDO for MACH and M-Fly
 
-[See our documentation site](https://www.google.com "Documentation Site!")
+[See our documentation site](https://mach-m-fly.github.io/DesignTeamMDO/ "Documentation Site!")
 
 Purpose: The Joint Design Team MDO is used for both the AIAA DBF Team (MACH) and the SAE Aero Design Team (M-Fly) at U of M. 
 This MDO allows for both teams to work together on an MDO to suit needs of both teams.
@@ -13,7 +13,8 @@ MACH
 - Josh Anibal 
 - Kohki
 - Miles
-M-Fly  
+M-Fly   
+
 
 - Chris Reynolds 
 - Beldon Lin
