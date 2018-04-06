@@ -1,0 +1,397 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Aerodynamics.pyAVL &#8212; DesignTeamMDO 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Aerodynamics.pyAVL</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">pyAVL</span>
+
+<span class="sd">pyAVL is a wrapper for Mark Drela&#39;s Xfoil code. The purpose of this</span>
+<span class="sd">class is to provide an easy to use wrapper for avl for intergration</span>
+<span class="sd">into other projects.</span>
+
+<span class="sd">Developers:</span>
+<span class="sd">-----------</span>
+<span class="sd">- Josh Anibal (JLA)</span>
+
+<span class="sd">History</span>
+<span class="sd">-------</span>
+<span class="sd">	v. 1.0 - Initial Class Creation (JLA, 08 2016)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Standard Python modules</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">string</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">pdb</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Process</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># External Python modules</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Extension modules</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="kn">import</span> <span class="nn">pyavl</span> <span class="k">as</span> <span class="nn">avl</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># AVL Trim and Constraint Options</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="n">avl_const_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;roll rate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;R &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;pitch rate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;P &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;yaw rate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;elevator&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D1&#39;</span><span class="p">,</span> <span class="s1">&#39;PM &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;rudder&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D2&#39;</span><span class="p">,</span> <span class="s1">&#39;YM &#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;aileron&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D3&#39;</span><span class="p">,</span> <span class="s1">&#39;RM &#39;</span><span class="p">]}</span>
+
+
+<div class="viewcode-block" id="set_constraint_cond"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.set_constraint_cond">[docs]</a><span class="k">def</span> <span class="nf">set_constraint_cond</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">avl</span><span class="o">.</span><span class="n">conset</span><span class="p">(</span><span class="n">avl_const_options</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">avl_const_options</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span></div>
+
+
+<span class="n">avl_trim_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bankAng&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;CL&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;dens&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;X_cg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;X&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;Y_cg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Y&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;Z_cg&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">]}</span>
+
+
+<div class="viewcode-block" id="set_trim_cond"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.set_trim_cond">[docs]</a><span class="k">def</span> <span class="nf">set_trim_cond</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">avl</span><span class="o">.</span><span class="n">trmset</span><span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;1 &#39;</span><span class="p">,</span> <span class="n">avl_trim_options</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span></div>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Multiprocessing AVL Run Function</span>
+<span class="c1"># =============================================================================</span>
+
+<div class="viewcode-block" id="SequenceType"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.SequenceType">[docs]</a><span class="k">class</span> <span class="nc">SequenceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ALFA</span> <span class="o">=</span> <span class="s1">&#39;alpha&#39;</span>
+    <span class="n">CL</span> <span class="o">=</span> <span class="s1">&#39;CL&#39;</span></div>
+
+
+<div class="viewcode-block" id="run_avl_with_params"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.run_avl_with_params">[docs]</a><span class="k">def</span> <span class="nf">run_avl_with_params</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">sequence_key</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+    <span class="c1"># Get the AVL analysis object</span>
+    <span class="n">avl_analysis</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="c1"># Setup the AVL run file</span>
+    <span class="n">avl</span><span class="o">.</span><span class="n">avl</span><span class="p">()</span>
+    <span class="n">avl</span><span class="o">.</span><span class="n">loadgeo</span><span class="p">(</span><span class="n">avl_analysis</span><span class="o">.</span><span class="n">geo_file</span><span class="p">)</span>
+    <span class="n">avl</span><span class="o">.</span><span class="n">loadmass</span><span class="p">(</span><span class="n">avl_analysis</span><span class="o">.</span><span class="n">mass_file</span><span class="p">)</span>
+
+    <span class="c1"># Add in constraints</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">avl_analysis</span><span class="o">.</span><span class="n">constraints</span><span class="p">:</span>
+        <span class="n">constraint</span> <span class="o">=</span> <span class="n">avl_analysis</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">constraint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">constraint</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">set_constraint_cond</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># Add in trim conditions</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">avl_analysis</span><span class="o">.</span><span class="n">trim_conds</span><span class="p">:</span>
+        <span class="n">trims</span> <span class="o">=</span> <span class="n">avl_analysis</span><span class="o">.</span><span class="n">trim_conds</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">variable</span> <span class="o">=</span> <span class="n">trims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">trims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">set_trim_cond</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># Put in a default sequence Length</span>
+    <span class="k">if</span> <span class="n">sequence</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sequence</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span>
+
+    <span class="c1"># Default length 1, but loop over all items in a sequence</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sequence_key</span> <span class="o">==</span> <span class="n">SequenceType</span><span class="o">.</span><span class="n">ALFA</span><span class="p">:</span>
+            <span class="n">set_constraint_cond</span><span class="p">(</span><span class="n">sequence_key</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sequence_key</span> <span class="o">==</span> <span class="n">SequenceType</span><span class="o">.</span><span class="n">CL</span><span class="p">:</span>
+            <span class="n">set_trim_cond</span><span class="p">(</span><span class="n">sequence_key</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sequence_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid type for sequence </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">sequence_key</span><span class="p">)</span>
+
+        <span class="c1"># Attempt to run the operation</span>
+        <span class="n">avl</span><span class="o">.</span><span class="n">oper</span><span class="p">()</span>
+
+        <span class="c1"># Set the executable flag to true</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">__exe</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># If success, append data items</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">alpha</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">alfa</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">180.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>  <span class="c1"># *(180.0/np.pi) # returend in radians)</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">CL</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">cltot</span><span class="p">))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">CD</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">cdtot</span><span class="p">))</span>  <span class="c1"># append(avl.case_r.cdvtot)  for total viscous)</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">CM</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">cmtot</span><span class="p">))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">span_eff</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">spanef</span><span class="p">))</span>
+
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">elev_def</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">delcon</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">rud_def</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">delcon</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">vinf</span><span class="p">))</span>
+
+        <span class="c1"># get section properties</span>
+        <span class="n">NS</span> <span class="o">=</span> <span class="n">avl</span><span class="o">.</span><span class="n">surf_i</span><span class="o">.</span><span class="n">nj</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">sec_CL</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">strp_r</span><span class="o">.</span><span class="n">clstrp</span><span class="p">[:</span><span class="n">NS</span><span class="p">]))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">sec_CD</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">strp_r</span><span class="o">.</span><span class="n">cdstrp</span><span class="p">[:</span><span class="n">NS</span><span class="p">]))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">sec_Chord</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">strp_r</span><span class="o">.</span><span class="n">chord</span><span class="p">[:</span><span class="n">NS</span><span class="p">]))</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">sec_Yle</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">avl</span><span class="o">.</span><span class="n">strp_r</span><span class="o">.</span><span class="n">rle</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="n">NS</span><span class="p">]))</span>
+
+        <span class="c1"># Calculate the neutral point</span>
+        <span class="n">avl</span><span class="o">.</span><span class="n">calcst</span><span class="p">()</span>
+        <span class="n">avl_analysis</span><span class="o">.</span><span class="n">NP</span> <span class="o">=</span> <span class="n">avl</span><span class="o">.</span><span class="n">case_r</span><span class="o">.</span><span class="n">xnp</span>
+
+    <span class="c1"># Put avl_analysis back into queue</span>
+    <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">avl_analysis</span><span class="p">)</span></div>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># AVL Data File</span>
+<span class="c1"># =============================================================================</span>
+
+<div class="viewcode-block" id="avlAnalysis"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis">[docs]</a><span class="k">class</span> <span class="nc">avlAnalysis</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geo_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mass_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aircraft_object</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clearVals</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">geo_file</span> <span class="o">=</span> <span class="n">geo_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass_file</span> <span class="o">=</span> <span class="n">mass_file</span>
+
+        <span class="k">if</span> <span class="n">geo_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">files_exist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">geo_file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">mass_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">files_exist</span> <span class="o">=</span> <span class="n">files_exist</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mass_file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">files_exist</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;ERROR:  There was an error opening the file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">file</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">aircraft_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;avlAnalysis does not yet support aircraft object inputs&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ERROR: in avlAnalysis, neither a geometry file or aircraft object was given&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="avlAnalysis.clearVals"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.clearVals">[docs]</a>    <span class="k">def</span> <span class="nf">clearVals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resets pertinent values that can be obtained from AVL&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exe</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">NP</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CL</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CD</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CM</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">span_eff</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elev_def</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rud_def</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_CL</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_CD</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_Chord</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sec_Yle</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trim_conds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.addConstraint"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.addConstraint">[docs]</a>    <span class="k">def</span> <span class="nf">addConstraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exe</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">avl_const_options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ERROR:  constraint variable not a valid option&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.addTrimCondition"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.addTrimCondition">[docs]</a>    <span class="k">def</span> <span class="nf">addTrimCondition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__exe</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">avl_trim_options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;ERROR:  constraint variable not a valid option&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trim_conds</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.executeRun"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.executeRun">[docs]</a>    <span class="k">def</span> <span class="nf">executeRun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,)):</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Process</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">run_avl_with_params</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">sequence_key</span><span class="p">,</span> <span class="n">sequence</span><span class="p">))</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Oper Times Out&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.calcNP"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.calcNP">[docs]</a>    <span class="k">def</span> <span class="nf">calcNP</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># executeRun must be run first</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__exe</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;ERROR:  executeRun most be called first&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.alphaSweep"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.alphaSweep">[docs]</a>    <span class="k">def</span> <span class="nf">alphaSweep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_alpha</span><span class="p">,</span> <span class="n">end_alpha</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start_alpha</span><span class="p">,</span> <span class="n">end_alpha</span> <span class="o">+</span> <span class="n">increment</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executeRun</span><span class="p">(</span><span class="n">SequenceType</span><span class="o">.</span><span class="n">ALFA</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">alphas</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="avlAnalysis.CLSweep"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.pyAVL.avlAnalysis.CLSweep">[docs]</a>    <span class="k">def</span> <span class="nf">CLSweep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_CL</span><span class="p">,</span> <span class="n">end_CL</span><span class="p">,</span> <span class="n">increment</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="n">CLs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start_CL</span><span class="p">,</span> <span class="n">end_CL</span> <span class="o">+</span> <span class="n">increment</span><span class="p">,</span> <span class="n">increment</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">executeRun</span><span class="p">(</span><span class="n">SequenceType</span><span class="o">.</span><span class="n">CL</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">CLs</span><span class="p">))</span></div></div>
+
+    <span class="c1"># def calcSectionalCPDist(self):</span>
+
+    <span class="c1">#     for N in [1, avl.case_i.nsurf]:</span>
+
+    <span class="c1">#         J1 = avl.surf_i.jfrst(N)</span>
+    <span class="c1">#         JN = J1 + avl.surf_i.nj - 1</span>
+    <span class="c1">#         JINC = 1</span>
+
+    <span class="c1">#         CPSCL = avl.   cpfac*  avl.case_r.cref</span>
+
+    <span class="c1">#         for</span>
+
+    <span class="c1">#     return</span>
+
+<span class="c1">#### fortran code</span>
+
+<span class="c1">#       DO N = 1, NSURF</span>
+
+<span class="c1">#         J1 = JFRST(N)</span>
+<span class="c1">#         JN = JFRST(N) + NJ(N)-1</span>
+<span class="c1">#         JINC = 1</span>
+
+
+<span class="c1">#            CPSCL = CPFAC*CREF</span>
+
+
+<span class="c1">#          IP = 0</span>
+<span class="c1">#          DO J = J1, JN, JINC</span>
+<span class="c1">#            I1 = IJFRST(J)</span>
+<span class="c1">#            NV = NVSTRP(J)</span>
+<span class="c1">#            DO II = 1, NV</span>
+<span class="c1">#              IV = I1 + II-1</span>
+<span class="c1">#              XAVE = RV(1,IV)</span>
+<span class="c1">#              YAVE = RV(2,IV)</span>
+<span class="c1">#              ZAVE = RV(3,IV)</span>
+<span class="c1">#              DELYZ = DCP(IV) * CPSCL</span>
+<span class="c1">#              XLOAD = XAVE</span>
+<span class="c1">#              YLOAD = YAVE + DELYZ*ENSY(J)</span>
+<span class="c1">#              ZLOAD = ZAVE + DELYZ*ENSZ(J)</span>
+
+<span class="c1"># c             XLOAD = XAVE + DELYZ*ENC(1,IV)</span>
+<span class="c1"># c             YLOAD = YAVE + DELYZ*ENC(2,IV)</span>
+<span class="c1"># c             ZLOAD = ZAVE + DELYZ*ENC(3,IV)</span>
+
+<span class="c1">#              IF(II.GT.1) THEN</span>
+<span class="c1">#                IP = IP+1</span>
+<span class="c1">#                PTS_LINES(1,1,IP) = XLOADOLD</span>
+<span class="c1">#                PTS_LINES(2,1,IP) = YLOADOLD</span>
+<span class="c1">#                PTS_LINES(3,1,IP) = ZLOADOLD</span>
+<span class="c1">#                PTS_LINES(1,2,IP) = XLOAD</span>
+<span class="c1">#                PTS_LINES(2,2,IP) = YLOAD</span>
+<span class="c1">#                PTS_LINES(3,2,IP) = ZLOAD</span>
+<span class="c1">#                ID_LINES(IP) = 0</span>
+<span class="c1">#              ENDIF</span>
+<span class="c1">#              XLOADOLD = XLOAD</span>
+<span class="c1">#              YLOADOLD = YLOAD</span>
+<span class="c1">#              ZLOADOLD = ZLOAD</span>
+<span class="c1">#            END DO</span>
+<span class="c1">#          END DO</span>
+<span class="c1">#          NLINES = IP</span>
+<span class="c1">#          NPROJ = 2*NLINES</span>
+<span class="c1">#          CALL VIEWPROJ(PTS_LINES,NPROJ,PTS_LPROJ)</span>
+<span class="c1">#          CALL PLOTLINES(NLINES,PTS_LPROJ,ID_LINES)</span>
+<span class="c1">#          CALL NEWCOLOR(ICOL)</span>
+<span class="c1">#          CALL NEWPEN(IPN)</span>
+<span class="c1">#         ENDIF</span>
+<span class="c1"># C</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, MACH and M-Fly.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,479 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Aerodynamics.xfoil_lib &#8212; DesignTeamMDO 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Aerodynamics.xfoil_lib</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">localtime</span><span class="p">,</span> <span class="n">strftime</span>
+
+<span class="c1"># Specify path</span>
+<span class="n">xfoilpath</span> <span class="o">=</span> <span class="s1">&#39;/home/josh/xfoil&#39;</span>
+
+
+<div class="viewcode-block" id="xfoilAlt"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.xfoil_lib.xfoilAlt">[docs]</a><span class="k">def</span> <span class="nf">xfoilAlt</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">camber</span><span class="p">,</span> <span class="n">max_camb_pos</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">max_thick_pos</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">alpha</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Alters an airfoil from an existing airfoil</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name        :   string</span>
+<span class="sd">                    airfoil name</span>
+<span class="sd">    camber      :   float</span>
+<span class="sd">                    camber of new airfoil</span>
+<span class="sd">    max_camb_pos:   float</span>
+<span class="sd">                    % chord of maximum camber</span>
+<span class="sd">    thickness   :   float</span>
+<span class="sd">                    t/c of new airfoil</span>
+<span class="sd">    max_thick_pos:  float</span>
+<span class="sd">                    % chord of maximum thickness</span>
+<span class="sd">    Re:             float</span>
+<span class="sd">                    Reynolds number</span>
+<span class="sd">    alpha:          float</span>
+<span class="sd">                    angle of attack</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    Saves airfoil to airfoils directory</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">Cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Alter name if needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_data.dat&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Open xfoil</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span> <span class="n">xfoilpath</span> <span class="p">,</span><span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Setup</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PLOP&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Load geometry to alter</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;load E420.dat&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Alter geometry</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;GDES&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;TSET&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">thickness</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">camber</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;HIGH&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_thick_pos</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_camb_pos</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Increase paneling</span>
+    <span class="c1"># Cmd(&#39;PANE&#39;)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PPAR&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;150&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate data</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;OPER&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;ITER 100&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;visc &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Re</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_data.dat&#39;</span><span class="p">)</span>  <span class="c1"># output file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>          <span class="c1"># no dump file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;a &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">alpha</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PDEL 0&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;SAVE&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;./airfoils/&#39;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.dat&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span>  <span class="c1"># exit</span>
+
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="xfoilRunFlap"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.xfoil_lib.xfoilRunFlap">[docs]</a><span class="k">def</span> <span class="nf">xfoilRunFlap</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">alpha_start</span><span class="p">,</span> <span class="n">alpha_end</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runs xfoil with a flap (elevator deflection)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name        :   string</span>
+<span class="sd">                    airfoil name</span>
+<span class="sd">    Re:             float</span>
+<span class="sd">                    Reynolds number</span>
+<span class="sd">    alpha_start:    float</span>
+<span class="sd">                    angle of attack to start collecting data</span>
+<span class="sd">    alpha_end:      float</span>
+<span class="sd">                    angle of attack to end collecting data</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    Saves all data to a .dat file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">Cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Modify name if needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;elev_data_flap.dat&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="c1"># Modify name if needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;elev_data.dat&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Open xfoil</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">xfoilpath</span><span class="p">,</span><span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;GDES&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;FLAP&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;0.5&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;-20&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Increase paneling</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PPAR&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;250&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate data</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;OPER&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;ITER 200&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;visc &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Re</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;elev_data_flap.dat&#39;</span><span class="p">)</span>  <span class="c1"># output file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>          <span class="c1"># no dump file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;aseq &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">alpha_start</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha_end</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 1&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># time.sleep(5)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PDEL 0&#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="c1"># Increase paneling</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;GDES&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># calculate data</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;OPER&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;elev_data.dat&#39;</span><span class="p">)</span>  <span class="c1"># output file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>          <span class="c1"># no dump file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;aseq &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">alpha_start</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha_end</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 1&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PDEL 0&#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span>  <span class="c1"># exit</span>
+
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="xfoilRun"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.xfoil_lib.xfoilRun">[docs]</a><span class="k">def</span> <span class="nf">xfoilRun</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">alpha_start</span><span class="p">,</span> <span class="n">alpha_end</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runs xfoil, no deflections</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name        :   string</span>
+<span class="sd">                    airfoil name</span>
+<span class="sd">    Re:             float</span>
+<span class="sd">                    Reynolds number</span>
+<span class="sd">    alpha_start:    float</span>
+<span class="sd">                    angle of attack to start collecting data</span>
+<span class="sd">    alpha_end:      float</span>
+<span class="sd">                    angle of attack to end collecting data</span>
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    Saves all data to a .dat file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">Cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Modify name if needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_data.dat&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Open xfoil</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">xfoilpath</span><span class="p">,</span><span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Load airfoil</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;load &#39;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.dat&#39;</span><span class="p">)</span>
+
+
+    <span class="c1"># Increase paneling</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PANE&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PPAR&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;250&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Calculate data</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;OPER&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;ITER 200&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;visc &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">Re</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_data.dat&#39;</span><span class="p">)</span>  <span class="c1"># output file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>          <span class="c1"># no dump file</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;aseq &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">alpha_start</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpha_end</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; 1&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PACC&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PDEL&#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span>  <span class="c1"># exit</span>
+
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="xfoilFinal"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.xfoil_lib.xfoilFinal">[docs]</a><span class="k">def</span> <span class="nf">xfoilFinal</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">camber</span><span class="p">,</span> <span class="n">max_camb_pos</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">max_thick_pos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Alters an airfoil from an existing airfoil</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name        :   string</span>
+<span class="sd">                    airfoil name</span>
+<span class="sd">    camber      :   float</span>
+<span class="sd">                    camber of new airfoil</span>
+<span class="sd">    max_camb_pos:   float</span>
+<span class="sd">                    % chord of maximum camber</span>
+<span class="sd">    thickness   :   float</span>
+<span class="sd">                    t/c of new airfoil</span>
+<span class="sd">    max_thick_pos:  float</span>
+<span class="sd">                    % chord of maximum thickness</span>
+
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    Saves airfoil to airfoils directory</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">Cmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Modify name if needed</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_data.dat&#39;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span> <span class="n">xfoilpath</span> <span class="p">,</span><span class="n">stdin</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;PLOP&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Load base airfoil</span>
+    <span class="c1"># Cmd(&#39;load ./airfoils/&#39;+name+&#39;.dat&#39;)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;load E420.dat&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Alter geometry</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;GDES&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;TSET&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">thickness</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">camber</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;HIGH&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_thick_pos</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">max_camb_pos</span><span class="p">))</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Save new geometry</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;SAVE&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;./airfoils/&#39;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.dat&#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="n">Cmd</span><span class="p">(</span><span class="s1">&#39;quit&#39;</span><span class="p">)</span>  <span class="c1"># exit</span>
+
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">ps</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
+
+
+
+
+<div class="viewcode-block" id="getDataXfoil"><a class="viewcode-back" href="../../Aerodynamics.html#Aerodynamics.xfoil_lib.getDataXfoil">[docs]</a><span class="k">def</span> <span class="nf">getDataXfoil</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads in previously run xfoil data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename    :   string</span>
+<span class="sd">                    name of xfoil run file</span>
+
+
+<span class="sd">    Outputs</span>
+<span class="sd">    -------</span>
+<span class="sd">    alphas:     :   ndarray</span>
+<span class="sd">                    Angles of attack run</span>
+<span class="sd">    Cls:        :   ndarray</span>
+<span class="sd">                    Cl&#39;s from run</span>
+<span class="sd">    Cds:        :   ndarray</span>
+<span class="sd">                    Cd&#39;s from run</span>
+<span class="sd">    Cms:        :   ndarray</span>
+<span class="sd">                    Cm&#39;s from run</span>
+<span class="sd">    LtoDs:      :   ndarray</span>
+<span class="sd">                    L/D&#39;s (Ratios) from run</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Open file and read in</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">flines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="c1"># Initialize</span>
+    <span class="n">alphas</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Cls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Cds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">Cms</span> <span class="o">=</span>  <span class="p">[]</span>
+
+    <span class="c1"># Read data</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">flines</span><span class="p">)):</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">flines</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">alphas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">Cls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="n">Cds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span> <span class="mi">2</span><span class="p">]))</span>
+        <span class="n">Cms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">words</span><span class="p">[</span> <span class="mi">4</span><span class="p">]))</span>
+
+    <span class="c1"># Calculate lift-to-drag ratio</span>
+    <span class="n">LtoDs</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">/</span><span class="n">b</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Cls</span><span class="p">,</span><span class="n">Cds</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="n">Cls</span><span class="p">,</span> <span class="n">Cds</span><span class="p">,</span> <span class="n">Cms</span><span class="p">,</span> <span class="n">LtoDs</span><span class="p">)</span></div>
+
+<span class="c1"># def getLDmax(name):</span>
+<span class="c1">#     filename = name+&quot;_data.dat&quot;</span>
+<span class="c1">#     f = open(filename, &#39;r&#39;)</span>
+<span class="c1">#     flines = f.readlines()</span>
+<span class="c1">#     LDmax = 0</span>
+<span class="c1">#     for i in range(12,len(flines)):</span>
+<span class="c1">#         #print flines[i]</span>
+<span class="c1">#         words = string.split(flines[i])</span>
+<span class="c1">#         LD = float(words[1])/float(words[2])</span>
+<span class="c1">#         if(LD&gt;LDmax):</span>
+<span class="c1">#             LDmax = LD</span>
+<span class="c1">#     return LDmax</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, MACH and M-Fly.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
