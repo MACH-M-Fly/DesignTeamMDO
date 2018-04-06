@@ -1,4 +1,4 @@
-##Design team MDO for MACH and M-Fly
+## Design team MDO for MACH and M-Fly
 
 [See our documentation site](https://www.google.com "Documentation Site!")
 
