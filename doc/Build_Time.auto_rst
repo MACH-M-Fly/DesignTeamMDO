@@ -1,0 +1,22 @@
+Build\_Time package
+===================
+
+Submodules
+----------
+
+Build\_Time\.BuildTime module
+-----------------------------
+
+.. automodule:: Build_Time.BuildTime
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: Build_Time
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -6,6 +6,7 @@ DesignTeamMDO
 
    Aerodynamics
    Aircraft_Class
+   Build_Time
    Constants
    CreateAC
    CreateProblem
@@ -19,5 +20,4 @@ DesignTeamMDO
    Template_Component
    Weights
    basic_example_writer
-   getBuildTime
    passenger

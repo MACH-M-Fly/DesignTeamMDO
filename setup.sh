@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Change to root directory
 cd ~
 

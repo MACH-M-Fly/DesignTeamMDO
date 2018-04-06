@@ -6,6 +6,7 @@ Getting Started
 
 This brief tutorial will get the DesignTeamMDO code installed on your computer and all the other Python dependancies required installed. This assumes that Python is already installed. At the moment, the code requires Python 2 to function properly. These dependancies include:
 
+* pip
 * matplotlib
 * numpy
 * OpenMDAO 1.7.3
@@ -28,4 +29,4 @@ First before we can run the code we need to install all of the packages used. Th
 
     sh setup.sh
 
-Usually with python to install a package one just needs to use shell pip install thePackageName . The script just automates this process for each of the packages
+Usually, with Python, to install a package one just needs to use shell `pip install thePackageName'. The script just automates this process for each of the packages in the `setup.sh` file.

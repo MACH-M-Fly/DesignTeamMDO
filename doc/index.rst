@@ -14,7 +14,7 @@ Introduction
    :maxdepth: 2
 
    getting_started
-
+   documentation
 
 
 Indices and tables
