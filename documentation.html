@@ -119,15 +119,37 @@
       
   <div class="section" id="building-the-documentation">
 <h1>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h1>
+<p>In the directory that the ‘DesignTeamMDO’ folder lives, create a new folder called ‘DesignTeamMDO-Docs’.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">DesignTeamMDO</span><span class="o">-</span><span class="n">Docs</span>
+</pre></div>
+</div>
+<p>Now, in this directory, there should be two folders, one called ‘DesignTeamMDO’ and one called ‘DesignTeamMDO-Docs’. Change to the documentation folder with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">DesignTeamMDO</span><span class="o">-</span><span class="n">Docs</span>
+</pre></div>
+</div>
+<p>Within this folder, checkout the git repository and select the special GitHub Pages ‘gh-pages’ branch with the following commands.:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cessnao3</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">mach</span><span class="o">-</span><span class="n">m</span><span class="o">-</span><span class="n">fly</span><span class="o">/</span><span class="n">DesignTeamMDO</span><span class="o">.</span><span class="n">git</span> <span class="n">html</span>
+<span class="n">cd</span> <span class="n">html</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">gh</span><span class="o">-</span><span class="n">pages</span>
+</pre></div>
+</div>
+<p>Now, documentation folder is properly setup. We can return to the original ‘DesignTeamMDO’ folder for the remaining commands.</p>
 <p>In order to build the documentation, first run the ‘sphinx-apidoc-get.sh’ file in the root project directory.:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">apidoc</span><span class="o">-</span><span class="n">get</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>Then, change directories to the ‘doc’ folder and run the make command to generate the html files.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
-<p>From here, in order to get the html files updated on the GitHub Pages…</p>
+<p>To view the newly created html files with the documentation, open the ‘DesignTeamMDO-Docs/html/index.html’ file in your favorite web browser.</p>
+<p>From here, in order to get the html files updated on the GitHub Pages, simply add and push the files in the ‘DesignTeamMDO-Docs/html’ folder, as follows:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="o">--</span><span class="nb">all</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="o">&lt;</span><span class="n">ENTER</span> <span class="n">A</span> <span class="n">HELPFUL</span> <span class="n">MESSAGE</span><span class="o">&gt;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+</div>
 </div>
 
 
