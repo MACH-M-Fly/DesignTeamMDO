@@ -14,6 +14,7 @@ Introduction
    :maxdepth: 2
 
    getting_started
+   modules
    documentation
 
 
