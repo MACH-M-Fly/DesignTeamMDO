@@ -14,6 +14,8 @@ from APCdat_parser import createKriging
 from pykrige.ok3d import OrdinaryKriging3D
 from pykrige.uk3d import UniversalKriging3D
 
+import math
+
 
 import time
 
@@ -82,10 +84,15 @@ class propulsionAnalysis(Component):
 
         # Thrust
         maxThrust, ss = self.model[0]['max'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
-        maxVel, ss = self.model[0]['vel'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+        # maxVel, ss = self.model[0]['vel'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
         thrust14,ss = self.model[0]['14'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
         thrust24,ss = self.model[0]['24'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
         thrust34,ss = self.model[0]['34'].execute('points', ac.propulsion.diameter, ac.propulsion.pitch, RPM)
+
+        # Determine the wake velocity
+        rho = 1.225  # assume sea level
+        A = (ac.propulsion.diameter * 0.0254 / 2.0) ** 2 * 3.14
+        maxVel = math.sqrt(2 * maxThrust / (rho * A))
 
         X = [0, (maxVel/4.0), (maxVel/2.0), (maxVel*3.0/4.0), maxVel]
         Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]

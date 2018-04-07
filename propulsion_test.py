@@ -1,5 +1,6 @@
 from Propulsion.APCdat_parser import createKriging
 import numpy as np
+import math
 
 
 
@@ -23,31 +24,43 @@ thrust14, ss = power_model[0]['14'].execute('points', diameter, pitch, RPM)
 thrust24, ss = power_model[0]['24'].execute('points', diameter, pitch, RPM)
 thrust34, ss = power_model[0]['34'].execute('points', diameter, pitch, RPM)
 
-X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
-Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
-thrust_Curve = np.polyfit(X, Y, 4)
-print(thrust_Curve)
+# X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
+# Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
+# thrust_Curve = np.polyfit(X, Y, 4)
+# print(thrust_Curve)
+#
+# # Spherical model
+# maxThrust, ss = spherical_model[0]['max'].execute('points', diameter, pitch, RPM)
+# maxVel, ss = spherical_model[0]['vel'].execute('points', diameter, pitch, RPM)
+# thrust14, ss = spherical_model[0]['14'].execute('points', diameter, pitch, RPM)
+# thrust24, ss = spherical_model[0]['24'].execute('points', diameter, pitch, RPM)
+# thrust34, ss = spherical_model[0]['34'].execute('points', diameter, pitch, RPM)
+#
+# X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
+# Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
+# thrust_Curve = np.polyfit(X, Y, 4)
+# print(thrust_Curve)
+#
+# # Gaussian model
+# maxThrust, ss = g_model[0]['max'].execute('points', diameter, pitch, RPM)
+# maxVel, ss = g_model[0]['vel'].execute('points', diameter, pitch, RPM)
+# thrust14, ss = g_model[0]['14'].execute('points', diameter, pitch, RPM)
+# thrust24, ss = g_model[0]['24'].execute('points', diameter, pitch, RPM)
+# thrust34, ss = g_model[0]['34'].execute('points', diameter, pitch, RPM)
+#
+# X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
+# Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
+# thrust_Curve = np.polyfit(X, Y, 4)
+# print(thrust_Curve)
 
-# Spherical model
-maxThrust, ss = spherical_model[0]['max'].execute('points', diameter, pitch, RPM)
-maxVel, ss = spherical_model[0]['vel'].execute('points', diameter, pitch, RPM)
-thrust14, ss = spherical_model[0]['14'].execute('points', diameter, pitch, RPM)
-thrust24, ss = spherical_model[0]['24'].execute('points', diameter, pitch, RPM)
-thrust34, ss = spherical_model[0]['34'].execute('points', diameter, pitch, RPM)
+# New thrust prediction
 
-X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
-Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
-thrust_Curve = np.polyfit(X, Y, 4)
-print(thrust_Curve)
+# Determine the wake velocity
+rho = 1.105 # assume sea level
+A = (diameter*0.0254/2.0)**2*3.14
+Vw = math.sqrt(2*maxThrust/(rho*A))
+print(A)
+print(maxThrust)
+print(Vw)
 
-# Gaussian model
-maxThrust, ss = g_model[0]['max'].execute('points', diameter, pitch, RPM)
-maxVel, ss = g_model[0]['vel'].execute('points', diameter, pitch, RPM)
-thrust14, ss = g_model[0]['14'].execute('points', diameter, pitch, RPM)
-thrust24, ss = g_model[0]['24'].execute('points', diameter, pitch, RPM)
-thrust34, ss = g_model[0]['34'].execute('points', diameter, pitch, RPM)
 
-X = [0, (maxVel / 4.0), (maxVel / 2.0), (maxVel * 3.0 / 4.0), maxVel]
-Y = [maxThrust, thrust14, thrust24, thrust34, 0.0]
-thrust_Curve = np.polyfit(X, Y, 4)
-print(thrust_Curve)
