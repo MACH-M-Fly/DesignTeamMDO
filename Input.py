@@ -198,17 +198,17 @@ AC.k_ribs = 0.0025
 AC.rib_lindens = 14
 
 # Linear density of wooden tail spar (kg/m)
-AC.spar_lindens_t = 0.15361 / 2.
+AC.spar_lindens_t = 0.01619/0.4572
 # Tail Leading Edge (LE) density (kg/m)
-AC.LE_lindens_t = 5 * 0.453592 * 0.3048 * 0.25 / 2.
+AC.LE_lindens_t = (0.00074 / (0.4572 * 8.38 / 18.0))
 # Tail Trailing Edge (TE) density (kg/m)
-AC.TE_lindens_t = 5 * 0.453592 * 0.3048 * 0.15 / 2.
+AC.TE_lindens_t = 2.0 * 0.00238 / 0.4572
 
 
 # Tail Rib Mass (kg/r) per meter of rib
-AC.k_ribs_t = 0.0203 / 4.
+AC.k_ribs_t = 0.00068
 # Tail Rib spanwise desnity (# of ribs per m)
-AC.rib_lindens_t = 4
+AC.rib_lindens_t = 30.0
 
 
 # Motor mass (kg)
