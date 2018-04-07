@@ -229,7 +229,7 @@ def calcPointLoad(x, L, P, I, E, c):
 
     return M, y, sigma
 
-def calcPointLoadSimplySupported(x, l, L, P, I, E, c):
+def calcPointLoadSimplySupported(x, l, L, P, I, E):
     M = P * L
 
     # y = P / (6 * E * I) * (-x ** 3 + 3 * L ** 2 * x - 2 * L ** 3)
