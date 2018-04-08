@@ -10,8 +10,8 @@ import math
 g = 9.81
 
 # Aerodynamic Constants
-Rho = 1.225
-mu_k = 0.005
+Rho = 1.255450418
+mu_k = 0.03 #0.005
 inced_ang = math.radians(-5.0)
 
 # Specify path of xfoil

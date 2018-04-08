@@ -144,11 +144,11 @@ vtail_chord = np.array([vt_a, vt_b, vt_c, vt_d])
 # Propulsion
 # =========================================================================
 # Thrust (quadratic thrust curve: Thrust (N) = a*u^2 + b*u + c, u = velocity)
-a = 0
-b = 0
-c = 0
-d = 0
-e = 1
+a = 0.000058
+b = -0.001231
+c = -0.037892
+d = 0.047012
+e = 14.353323
 thrust = [a, b, c, d, e]
 # Lap perimiter (m)
 AC.lap_perim = 350
@@ -222,7 +222,7 @@ AC.m_electronics = 0.381
 # Ultrakote density (kg/m^2)
 AC.ultrakote_Density = 0.1318
 # Payload
-AC.m_payload = 0.5
+AC.m_payload = 0.562+0.217+.137+(1.665-1.63915)
 # Create an instance of AC for wing values
 AC.wing = Wing(num_sections_wing, AC.is_linear, b_wing, sweep, chord, AC.Xo,
                AC.Yo, AC.Zo, dihedral, camber, max_camber, thickness, max_thickness)

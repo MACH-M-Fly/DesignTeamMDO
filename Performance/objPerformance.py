@@ -575,6 +575,266 @@ def runwaySim_small(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG,
 
     return sum_y, dist, vel, ang, ang_vel, time
 
+def runwaySim_small_wind(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC, wind):
+    """
+    Runway simulation to find maximum payload
+
+    Inputs
+    -------
+    CL 			: 	function
+                    CL function from AVL run
+    CD 			: 	function
+                    CD function from AVL run
+    CM 			: 	function
+                    CM function from AVL run
+    sref_wing   :	float
+                    wing surface area
+    sref_tail 	: 	float
+                    tail surface area
+    weight 		: 	float
+                    weight of vehicle
+    boom_len    :	float
+                    length of tailboom
+    dist_LG 	: 	float
+                    distance between leading edge and CG
+    MAC 		: 	float
+                    MAC of wing
+    Iyy 		:  	float
+                    inertia of vehicle
+
+
+    Outputs
+    -------
+    sum_y 		:	float
+                    net lift at the end of the runway
+    dist 		:	float
+                    distance needed to takeoff
+    ang 	 	: 	float
+                    angle of attack at takeoff
+    ang_vel 	: 	float
+                    angular pitch velocity at takeoff
+    time 		: 	float
+                    time to takeoff
+    """
+
+    # Speify no flaps used for takeoff
+    Flapped = 0
+
+    # This should be a design variable eventually
+    landingGearHeight = 0.1  # [m]
+    # print (landingGearHeight - dist_LG)
+    # print landingGearHeight
+    max_rot_ang = np.arctan(0.1 / (boom_len - dist_LG))
+
+    # print max_rot_ang*180/np.pi
+    # exit()
+    # max_rot_ang = 10*np.pi/180.0
+
+    # Declare functions for kinematic variables (F = ma and M = I*ang_a)
+
+    # Get velocity
+    def getVelocity(vel):
+        return vel
+
+    # Get acceleration
+    def getAcceleration(vel, ang):
+        # Calculate the normal force from the runway (weight - lift)
+        N = weight - grossLift(vel+wind, ang, sref_wing, sref_tail, Flapped, CL, AC)[0]
+        # If N < 0, N = 0 (no normal force)
+        if N < 0:
+            N = 0
+
+        # Calculate the acceleration as thrust - drag - runway friction
+        mass = weight / g
+        drag = 0.5 * (vel+wind) ** 2 * Rho * CD(ang) * sref_wing
+        accel = (getThrust(vel+wind, ang, AC)[0] - drag - mu_k * N) / mass
+
+        # Return acceleration
+        return accel
+
+    # Get angular velocity
+    def getVelocity_ang(ang, ang_vel):
+        # Ensure that the aircraft cannot rotate forward
+        if (ang <= 0.0 and ang_vel < 0.0):
+            return 0
+        # Ensure that we cannot exceed the limit for the tail (tail cannot go into ground)
+        elif (ang >= max_rot_ang and ang_vel > 0.0):
+            return 0
+        # Otherwise, a = a_vel
+        else:
+            return ang_vel
+
+    # Get angular acceleration
+    def getAcceleration_ang(vel, ang, ang_vel):
+        # Calculate the dynamic pressure
+        q = 0.5 * Rho * (vel+wind) ** 2
+
+        # Calculate the moments due to the tail and the wing
+        moment_tail = - q * getTailCL(ang, Flapped) * sref_tail * (boom_len - dist_LG)
+        moment_wing = q * (CM(ang) * sref_wing * MAC + CL(ang) * sref_wing * dist_LG)
+
+        # damping_moment =  -np.sign(a_vel)*0.5*Rho*a_vel**2*50*sref_wing
+
+        # Determine the angular acceleration from the moment of inertia, mass, landing gear distribution, and the moments
+        mass = weight / g
+        ang_accel = 1.0 / (Iyy + (weight / g) * dist_LG ** 2) * (moment_wing + moment_tail)  # +damping_moment
+
+        # Ensure that the angular acceleration is 0 so nose doesn't rotate into ground
+        if (ang <= 0.0 and ang_accel < 0.0):
+            ang_accel = 0
+
+        # Add an opposite angular acceleration "jerk" if the tail bangs into the ground
+        elif (ang >= max_rot_ang and ang_vel >= 0.0):
+            ang_accel = -30 * ang_vel
+
+            # If flapped, then set the tail into the ground
+            if (abs(ang_accel) < 10 ** -27 and Flapped):
+                ang_accel = 0
+
+        # Return the resulting angular accelerations
+        return ang_accel
+
+    # Main loop
+    i = 0
+
+    dist = 0.0
+    vel = 0.0
+    ang = 0.0
+    ang_vel = 0.0
+
+    #accel = getAcceleration(vel, ang)
+    #ang_accel = getAcceleration_ang(vel, ang, ang_vel)
+
+    v_stall = np.sqrt(2 * weight / (Rho * sref_wing * 1.7))
+
+    time = 0.0
+    dt = 0.05
+    time_elap = 0.0
+
+    DT = [dt]
+
+    sum_y = grossLift(vel+wind, ang, sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
+
+    # While loop until no more net lift at the end oft he runway
+    # -  Uses a momentum buildup
+    while sum_y <= 0.0 and time_elap < 60.0 and dist < AC.runway_length:
+        # F = ma yeilds two second order equations => system of 4 first order
+        # runge Kutta 4th to approximate kinimatic varibles at time = time + dt
+        k1_dist = dt * getVelocity(vel)
+        k1_vel = dt * getAcceleration(vel, ang)
+        k1_ang = dt * getVelocity_ang(ang, ang_vel)
+        k1_ang_vel = dt * getAcceleration_ang(vel, ang, ang_vel)
+
+        k2_dist = dt * getVelocity(vel + 0.5 * k1_vel)
+        k2_vel = dt * getAcceleration(vel + 0.5 * k1_vel, ang + 0.5 * k1_ang)
+        k2_ang = dt * getVelocity_ang(ang_vel + 0.5 * k1_ang, ang + 0.5 * k1_ang)
+        k2_ang_vel = dt * getAcceleration_ang(vel + 0.5 * k1_vel, ang + 0.5 * k1_ang,
+                                              ang_vel + 0.5 * k1_ang_vel)
+
+        k3_dist = dt * getVelocity(vel + 0.5 * k2_vel)
+        k3_vel = dt * getAcceleration(vel + 0.5 * k2_vel, ang + 0.5 * k2_ang)
+        k3_ang = dt * getVelocity_ang(ang_vel + 0.5 * k2_ang, ang + 0.5 * k2_ang)
+        k3_ang_vel = dt * getAcceleration_ang(vel + 0.5 * k2_vel, ang + 0.5 * k2_ang,
+                                              ang_vel + 0.5 * k2_ang_vel)
+
+        k4_dist = dt * getVelocity(vel + k3_vel)
+        k4_vel = dt * getAcceleration(vel + k3_vel, ang + k3_ang)
+        k4_ang = dt * getVelocity_ang(ang_vel + k3_ang, ang + k3_ang)
+        k4_ang_vel = dt * getAcceleration_ang(vel + k3_vel, ang + k3_ang, ang_vel + k3_ang_vel)
+
+        dist = dist + 1.0 / 6 * (k1_dist + 2 * k2_dist + 2 * k3_dist + k4_dist)
+        vel = vel + 1.0 / 6 * (k1_vel + 2 * k2_vel + 2 * k3_vel + k4_vel)
+        ang = ang + 1.0 / 6 * (k1_ang + 2 * k2_ang + 2 * k3_ang + k4_ang)
+        ang_vel = ang_vel + 1.0 / 6 * (k1_ang_vel + 2 * k2_ang_vel + 2 * k3_ang_vel + k4_ang_vel)
+        #accel = getAcceleration(vel, ang)
+        #ang_accel = getAcceleration_ang(vel, ang, ang_vel)
+
+        i = i + 1
+
+        if abs(ang_vel) < 10 ** -8 and Flapped:
+            ang_vel = 0.0
+
+        if ang > max_rot_ang:
+            ang = max_rot_ang
+        elif ang < 0.0:
+            ang = 0.0
+
+        # Change time step as pilot deflect elevator, safe bet to just use the small timestep
+        if (vel < 0.92 * (v_stall + 2.0)) or (
+                abs(ang_vel) == 0.0 and (ang < 10 ** -10 or ang >= max_rot_ang)):
+            dt = 0.05
+        else:
+            dt = 0.05
+        #DT.append(dt)
+
+        time = time + dt
+        time_elap = time
+
+        sum_y = grossLift(vel+wind, ang, sref_wing, sref_tail, Flapped, CL, AC)[0] - weight
+
+        if vel > v_stall + 2.0:
+            Flapped = 1
+
+    # # 400 ft runway length in meters
+    # runway_len = 137.8
+
+    # if (sum_y > 0.0 and dist[i] <= runway_len):
+    # 	takeoff = 1
+    # else:
+    # 	takeoff = sum_y
+
+    # ============== Ploting ===============
+
+    # plt.figure(1)
+    # plt.subplot(611)
+    # plt.ylabel('Angle)')
+    # plt.xlabel('time')
+    # plt.plot(time, ang, 'b')
+
+    # plt.subplot(612)
+    # plt.ylabel('ang velocity')
+    # plt.xlabel('time')
+    # plt.plot(time, ang_vel, 'b')
+
+    # plt.subplot(613)
+    # plt.ylabel('ang acceleration')
+    # plt.xlabel('time')
+    # plt.plot(time, ang_accel, 'b')
+
+    # plt.subplot(614)
+    # plt.ylabel('distance')
+    # plt.xlabel('time')
+    # plt.plot(time, dist, 'b')
+
+    # plt.subplot(615)
+    # plt.ylabel('Velocity')
+    # plt.xlabel('time')
+    # plt.plot(time, vel, 'b')
+
+    # plt.subplot(616)
+    # plt.ylabel('Acceleration')
+    # plt.xlabel('time')
+    # plt.plot(time, accel, 'b')
+
+    # # plt.subplot(717)
+    # # plt.ylabel('dt')
+    # # plt.xlabel('time')
+    # # plt.plot(time, DT, 'b')
+
+    # print('weight: ' + str(weight))
+    # print('Sum Y:' + str(sum_y))
+    # print('Distance: ' + str(dist[i]))
+    # print('vel: ' + str(vel[i]))
+    # print('ang: ' + str(ang[i]*180.0/np.pi) + ' max_rot_ang: ' + str(max_rot_ang*180.0/np.pi))
+    # print('ang_vel: ' + str(ang_vel[i]))
+    # print('time: ' + str(time[i]))
+    # print('steps: ' + str(len(time)))
+    # print('\n')
+
+    # plt.show()
+
+    return sum_y, dist, vel, ang, ang_vel, time
+
 
 def num_laps(CL, CD, CM, sref_wing, sref_tail, weight, boom_len, dist_LG, MAC, Iyy, AC):
     """
