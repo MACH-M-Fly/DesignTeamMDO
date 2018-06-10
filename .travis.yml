@@ -1,0 +1,20 @@
+sudo: false
+
+os:
+  - linux
+
+language: generic
+
+env:
+- FORTRAN= PY=2.7
+
+install:
+- bash setup.sh
+
+
+script:
+- if [ "$FORTRAN" ]; then
+    make;
+  fi
+- 
+
